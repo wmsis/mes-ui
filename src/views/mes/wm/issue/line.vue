@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <el-row :gutter="10" class="mb8">
+  <div class="app-container">    
+    <el-row v-if="optType != 'view'" :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
           type="primary"
@@ -8,8 +8,19 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['mes:wm:rtvendor:add']"
+          v-hasPermi="['mes:wm:issueheader:add']"
         >新增</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          plain
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="single"
+          @click="handleUpdate"
+          v-hasPermi="['mes:wm:issueheader:edit']"
+        >修改</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -19,39 +30,39 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['mes:wm:rtvendor:remove']"
+          v-hasPermi="['mes:wm:issueheader:remove']"
         >删除</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="rtvendorlineList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="issuelineList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="物料编码" width="120px" align="center" prop="itemCode" />
-      <el-table-column label="物料名称" width="150px" align="center" prop="itemName" :show-overflow-tooltip="true"/>
+      <el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" />
+      <el-table-column label="产品物料名称" width="120px"  align="center" prop="itemName" :show-overflow-tooltip="true"/>
       <el-table-column label="规格型号" align="center" prop="specification" :show-overflow-tooltip="true"/>
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
-      <el-table-column label="退货数量" align="center" prop="quantityRted" />
+      <el-table-column label="领料数量" align="center" prop="quantityIssued" />
       <el-table-column label="批次号" align="center" prop="batchCode" />
-      <el-table-column label="仓库" align="center" prop="warehouseName" />
-      <el-table-column label="库区" align="center" prop="locationName" />
-      <el-table-column label="库位" align="center" prop="areaName" />
+      <el-table-column label="仓库名称" align="center" prop="warehouseName" />
+      <el-table-column label="库区名称" align="center" prop="locationName" />
+      <el-table-column label="库位名称" align="center" prop="areaName" />
       <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true"/>
-      <el-table-column label="操作" width="100px"  v-if="optType != 'view'" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" v-if="optType != 'view'" width="100px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['mes:wm:rtvendor:edit']"
+            v-hasPermi="['mes:wm:issueheader:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['mes:wm:rtvendor:remove']"
+            v-hasPermi="['mes:wm:issueheader:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -65,7 +76,7 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改供应商退货行对话框 -->
+    <!-- 添加或修改生产领料单行对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
@@ -82,13 +93,13 @@
                     <el-input v-model="form.itemName" readonly="readonly" />
                 </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="退货数量" prop="quantityRted">
-                <el-input-number :max="form.quantityMax" v-model="form.quantityRted" placeholder="请输入退货数量" />
-              </el-form-item>
-            </el-col>
+          <el-col :span="8">
+            <el-form-item label="领料数量" prop="quantityIssued">
+              <el-input-number :max="form.quantityMax" v-model="form.quantityIssued" placeholder="请输入领料数量" />
+            </el-form-item>
+          </el-col>
         </el-row>
-        <el-row>
+         <el-row>
             <el-col :span="24">
                 <el-form-item label="规格型号" prop="specification">
                     <el-input v-model="form.specification" readonly="readonly" type="textarea" />
@@ -144,16 +155,17 @@
 </template>
 
 <script>
-import { listRtvendorline, getRtvendorline, delRtvendorline, addRtvendorline, updateRtvendorline } from "@/api/mes/wm/rtvendorline";
+import { listIssueline, getIssueline, delIssueline, addIssueline, updateIssueline } from "@/api/mes/wm/issueline";
 import StockSelect from "@/components/stockSelect/single.vue"
 export default {
-  name: "Rtvendorline",
+  name: "Issueline",
   components:{StockSelect},
-  props:{
+    props:{
     optType: null,
-    rtId: null,
-    batchCode: null,
-    vendorId: null
+    issueId: null,
+    warehouseId: null,
+    locationId: null,
+    areaId: null
   },
   data() {
     return {
@@ -169,8 +181,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 供应商退货行表格数据
-      rtvendorlineList: [],
+      // 生产领料单行表格数据
+      issuelineList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -179,13 +191,13 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        rtId: this.rtId,
+        issueId: null,
         itemId: null,
         itemCode: null,
         itemName: null,
         specification: null,
         unitOfMeasure: null,
-        quantityRted: null,
+        quantityIssued: null,
         batchCode: null,
         warehouseId: null,
         warehouseCode: null,
@@ -198,16 +210,14 @@ export default {
         areaName: null,
       },
       // 表单参数
-      form: {
-        rtId: this.rtId
-      },
+      form: {},
       // 表单校验
       rules: {
         itemId: [
           { required: true, message: "产品物料不能为空", trigger: "blur" }
         ],
-        quantityRted: [
-          { required: true, message: "退货数量不能为空", trigger: "blur" }
+        quantityIssued: [
+          { required: true, message: "领料数量不能为空", trigger: "blur" }
         ],
       }
     };
@@ -216,11 +226,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询供应商退货行列表 */
+    /** 查询生产领料单行列表 */
     getList() {
       this.loading = true;
-      listRtvendorline(this.queryParams).then(response => {
-        this.rtvendorlineList = response.rows;
+      listIssueline(this.queryParams).then(response => {
+        this.issuelineList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -234,13 +244,13 @@ export default {
     reset() {
       this.form = {
         lineId: null,
-        rtId: this.rtId,
+        issueId: this.issueId,
         itemId: null,
         itemCode: null,
         itemName: null,
         specification: null,
         unitOfMeasure: null,
-        quantityRted: null,
+        quantityIssued: null,
         batchCode: null,
         warehouseId: null,
         warehouseCode: null,
@@ -283,16 +293,16 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加供应商退货行";
+      this.title = "添加生产领料单行";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const lineId = row.lineId || this.ids
-      getRtvendorline(lineId).then(response => {
+      getIssueline(lineId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改供应商退货行";
+        this.title = "修改生产领料单行";
       });
     },
     /** 提交按钮 */
@@ -300,13 +310,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.lineId != null) {
-            updateRtvendorline(this.form).then(response => {
+            updateIssueline(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addRtvendorline(this.form).then(response => {
+            addIssueline(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -318,8 +328,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const lineIds = row.lineId || this.ids;
-      this.$modal.confirm('是否确认删除供应商退货行编号为"' + lineIds + '"的数据项？').then(function() {
-        return delRtvendorline(lineIds);
+      this.$modal.confirm('是否确认删除生产领料单行编号为"' + lineIds + '"的数据项？').then(function() {
+        return delIssueline(lineIds);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -329,7 +339,7 @@ export default {
       this.$refs.stockSelect.showFlag = true;
       this.$refs.stockSelect.getList();
     },
-    //物料选择弹出框
+        //物料选择弹出框
     onStockSelected(obj){
         if(obj != undefined && obj != null){
           this.form.materialStockId = obj.materialStockId;
@@ -347,10 +357,16 @@ export default {
           this.form.areaId = obj.areaId;
           this.form.areaCode = obj.areaCode;
           this.form.areaName = obj.areaName;
-          this.form.quantityRted = obj.quantityOnhand;
+          this.form.quantityIssued = obj.quantityOnhand;
           this.form.quantityMax = obj.quantityOnhand;
         }
     },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('wm/issueline/export', {
+        ...this.queryParams
+      }, `issueline_${new Date().getTime()}.xlsx`)
+    }
   }
 };
 </script>
