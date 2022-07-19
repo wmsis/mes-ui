@@ -134,6 +134,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
+            v-if="scope.row.status =='PREPARE'"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['mes:wm:issueheader:edit']"
           >修改</el-button>
@@ -141,6 +142,7 @@
             size="mini"
             type="text"
             icon="el-icon-delete"
+            v-if="scope.row.status =='PREPARE'"
             @click="handleDelete(scope.row)"
             v-hasPermi="['mes:wm:issueheader:remove']"
           >删除</el-button>
