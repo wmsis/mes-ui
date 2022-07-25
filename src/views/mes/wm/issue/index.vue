@@ -183,12 +183,27 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
-            <el-form-item label="工作站" prop="workstationName">
-              <el-input v-model="form.workstationName" placeholder="请选择工作站" />
+          <el-col :span="8">
+             <el-form-item label="领料日期" prop="issueDate">
+              <el-date-picker clearable
+                v-model="form.issueDate"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择领料日期">
+              </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
+            <el-form-item label="领料仓库">
+              <el-cascader v-model="warehouseInfo"
+                :options="warehouseOptions"
+                :props="warehouseProps"
+                @change="handleWarehouseChanged"
+              >                  
+              </el-cascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="单据状态" prop="status">
               <el-select v-model="form.status" disabled>
                 <el-option
@@ -202,51 +217,28 @@
           </el-col>
         </el-row>        
         <el-row>
-          <el-col :span="12">
-            <el-form-item label="生产工单编号" prop="workorderCode">
-              <el-input v-model="form.workorderCode" />
+          <el-col :span="8">
+            <el-form-item label="工作站" prop="workstationName">
+              <el-input v-model="form.workstationName" placeholder="请选择工作站" >
+                <el-button slot="append" icon="el-icon-search" @click="handleWorkstationSelect"></el-button>
+              </el-input>
             </el-form-item>
+            <WorkstationSelect ref="wsSelect"  @onSelected="onWorkstationSelected"> </WorkstationSelect>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="生产工单名称" prop="workorderName">
-              <el-input v-model="form.workorderName" />
+          <el-col :span="8">
+            <el-form-item label="生产工单" prop="workorderCode">
+              <el-input v-model="form.workorderCode" placeholder="请选择生产工单" >
+                <el-button slot="append" icon="el-icon-search" @click="handleWorkorderSelect"></el-button>
+              </el-input>
             </el-form-item>
+            <WorkorderSelect ref="woSelect" @onSelected="onWorkorderSelected"></WorkorderSelect>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="生产任务编码" prop="taskCode">
+          <el-col :span="8">
+            <el-form-item label="生产任务" prop="taskCode">
               <el-input v-model="form.taskCode" placeholder="请输入生产任务编码" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="生产任务名称" prop="taskName">
-              <el-input v-model="form.taskName" placeholder="请输入生产任务名称" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="领料仓库">
-              <el-cascader v-model="warehouseInfo"
-                :options="warehouseOptions"
-                :props="warehouseProps"
-                @change="handleWarehouseChanged"
-              >                  
-              </el-cascader>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="领料日期" prop="issueDate">
-              <el-date-picker clearable
-                v-model="form.issueDate"
-                type="date"
-                value-format="yyyy-MM-dd"
-                placeholder="请选择领料日期">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        </el-row>        
         <el-row>
           <el-col :span="24">
             <el-form-item label="备注" prop="remark">
@@ -270,13 +262,15 @@
 
 <script>
 import { listIssueheader, getIssueheader, delIssueheader, addIssueheader, updateIssueheader, execute } from "@/api/mes/wm/issueheader";
+import WorkstationSelect from "@/components/workstationSelect/simpletableSingle.vue"
+import WorkorderSelect from "@/components/workorderSelect/single.vue"
 import {getTreeList} from "@/api/mes/wm/warehouse"
 import {genCode} from "@/api/system/autocode/rule"
 import Issueline from "./line.vue";
 export default {
   name: "Issueheader",
   dicts: ['mes_order_status'],
-  components: {Issueline},
+  components: {Issueline,WorkstationSelect,WorkorderSelect},
   data() {
     return {
       autoGenFlag:false,
@@ -390,8 +384,10 @@ export default {
         issueName: null,
         workstationId: null,
         workstationCode: null,
+        workstationName: null,
         workorderId: null,
         workorderCode: null,
+        workorderName: null,
         taskId: null,
         taskCode: null,
         warehouseId: null,
@@ -438,7 +434,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加生产领料单头";
+      this.title = "添加生产领料单";
       this.optType = "add";
     },
     /** 修改按钮操作 */
@@ -446,12 +442,13 @@ export default {
       this.reset();
       const issueId = row.issueId || this.ids
       getIssueheader(issueId).then(response => {
+        debugger;
         this.form = response.data;
         this.warehouseInfo[0] = response.data.warehouseId;    
         this.warehouseInfo[1] = response.data.locationId;    
         this.warehouseInfo[2] = response.data.areaId;  
         this.open = true;
-        this.title = "修改生产领料单头";
+        this.title = "修改生产领料单";
         this.optType = "edit";
       });
     },
@@ -523,7 +520,30 @@ export default {
         this.form.areaId = obj[2];
       }
     },
-        //自动生成编码
+    //选择工作站
+    handleWorkstationSelect(){
+      this.$refs.wsSelect.showFlag = true;
+    },
+    onWorkstationSelected(row){
+      debugger;
+      if(row != undefined && row != null){
+        this.form.workstationId = row.workstationId;
+        this.form.workstationCode = row.workstationCode;
+        this.form.workstationName = row.workstationName;
+      }
+    },
+    //选择生产工单
+    handleWorkorderSelect(){
+      this.$refs.woSelect.showFlag = true;
+    },
+    onWorkorderSelected(row){
+      if(row != undefined && row != null){
+        this.form.workorderId = row.workorderId;
+        this.form.workorderCode = row.workorderCode;
+        this.form.workorderName = row.workorderName;
+      }
+    },
+    //自动生成编码
     handleAutoGenChange(autoGenFlag){
       if(autoGenFlag){
         genCode('ISSUE_CODE').then(response =>{

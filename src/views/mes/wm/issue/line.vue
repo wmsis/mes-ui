@@ -191,7 +191,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        issueId: null,
+        issueId: this.issueId,
         itemId: null,
         itemCode: null,
         itemName: null,
