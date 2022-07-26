@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="设备选择"
+  <el-dialog title="工作站选择"
     v-if="showFlag"
     :visible.sync="showFlag"
     :modal= false
