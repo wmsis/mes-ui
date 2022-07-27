@@ -316,7 +316,7 @@
         <el-tab-pane label="替代品"></el-tab-pane>
         <el-tab-pane label="SIP"></el-tab-pane>
         <el-tab-pane label="SOP">
-          <SOPTab></SOPTab>
+          <SOPTab :itemId="form.itemId" :optType="optType"></SOPTab>
         </el-tab-pane>
       </el-tabs>
       <div slot="footer" class="dialog-footer">

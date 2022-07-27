@@ -48,12 +48,12 @@
             <div v-for="(item,index) in sopList" :key="index" class="image-middle">
                 <el-card shadow="hover" :body-style="{pading: '10px'}">
                     <el-popover>
-                        <img :src="sopList[index].url" slot="reference" class="image"/>
-                        <el-image class="imagePreview" :src="sopList[index].url" :preview-src-list="imageList"></el-image>                        
+                        <img :src="sopList[index].sopUrl" slot="reference" class="image"/>
+                        <el-image class="imagePreview" :src="sopList[index].sopUrl" :preview-src-list="imageList"></el-image>                        
                     </el-popover>
                     <div style="text-align:center;padding-top:12px">
                         <span>
-                            {{sopList[index].sopDescription}}
+                            {{sopList[index].sopTitle}}
                         </span>
                         <el-button @click="handleUpdate(sopList[index])" type="primary" icon="el-icon-edit"></el-button>
                         <el-button @click="handleDelete(sopList[index])" type="danger" icon="el-icon-delete"></el-button>
@@ -88,28 +88,31 @@ export default{
                 ],
             },     
             // 产品SOP表格数据
-            sopList: [
-                {
-                    sopId: 1,
-                    sopTitle: '移液盒注塑作业指导书-1',
-                    sopDescription: "请注意操作顺序",
-                    sopUrl: "https://t7.baidu.com/it/u=1595072465,3644073269&fm=193&f=GIF"
-                }
-            ], 
+            sopList: [], 
             //用于图片预览的清单
             imageList: [],
             //工序选项
             processOptions:[],
-            
+            queryParams: {
+                itemId: this.itemId
+            }            
         }
     },
     created(){
+        this.getList();
         this.getProcess();
     },
     methods: {
         //获取当前产品的SOP资料清单
-        getSopList(){
-
+        getList(){
+            listSop(this.queryParams).then(response =>{
+                debugger;
+                this.imageList = [];
+                this.sopList = response.rows;
+                this.sopList.forEach(row => {
+                    this.imageList.push(row.sopUrl);
+                });
+            });
         },
          //查询工序信息
         getProcess(){
@@ -154,10 +157,6 @@ export default{
                 this.open = true;
                 this.title = "修改产品SOP";
             });
-        },
-        //选择工序
-        handleSelectProcess(){
-
         },
         //图片上传成功
         handleImgUplaoded(imgUrl){
