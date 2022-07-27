@@ -77,7 +77,7 @@ export default {
       dialogVisible: false,
       hideUpload: false,
       baseUrl: process.env.VUE_APP_BASE_API,
-      uploadImgUrl: process.env.VUE_APP_BASE_API + "/common/upload", // 上传的图片服务器地址
+      uploadImgUrl: process.env.VUE_APP_BASE_API + "/common/uploadMinio", // 上传的图片服务器地址
       headers: {
         Authorization: "Bearer " + getToken(),
       },
@@ -122,7 +122,7 @@ export default {
       const findex = this.fileList.map(f => f.name).indexOf(file.name);
       if(findex > -1) {
         this.fileList.splice(findex, 1);
-        this.$emit("input", this.listToString(this.fileList));
+        this.$emit("onRemoved", this.listToString(this.fileList));
       }
     },
     // 上传成功回调
@@ -132,7 +132,7 @@ export default {
         this.fileList = this.fileList.concat(this.uploadList);
         this.uploadList = [];
         this.number = 0;
-        this.$emit("input", this.listToString(this.fileList));
+        this.$emit("onUploaded", this.listToString(this.fileList));
         this.$modal.closeLoading();
       }
     },

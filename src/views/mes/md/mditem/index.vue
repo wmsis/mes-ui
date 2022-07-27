@@ -315,7 +315,9 @@
         <el-tab-pane label="供应商"></el-tab-pane>
         <el-tab-pane label="替代品"></el-tab-pane>
         <el-tab-pane label="SIP"></el-tab-pane>
-        <el-tab-pane label="SOP"></el-tab-pane>
+        <el-tab-pane label="SOP">
+          <SOPTab></SOPTab>
+        </el-tab-pane>
       </el-tabs>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view'">返回</el-button>
@@ -360,6 +362,7 @@
 import { listMdItem, getMdItem, delMdItem, addMdItem, updateMdItem} from "@/api/mes/md/mdItem";
 
 import ItemBom from "./components/itembom.vue";
+import SOPTab from  "./components/sop.vue"
 import { listAllUnitmeasure} from "@/api/mes/md/unitmeasure";
 import {genCode} from "@/api/system/autocode/rule"
 import { getToken } from "@/utils/auth";
@@ -370,7 +373,7 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
   name: "MdItem",
   dicts: ['sys_yes_no','mes_item_product'],
-  components: { Treeselect,ItemBom },
+  components: { Treeselect,ItemBom,SOPTab },
   data() {
     return {
       // 遮罩层
