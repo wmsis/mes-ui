@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="维修单编号" prop="repairCode">
         <el-input
           v-model="queryParams.repairCode"
@@ -17,14 +17,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="设备ID" prop="machineryId">
-        <el-input
-          v-model="queryParams.machineryId"
-          placeholder="请输入设备ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+     
       <el-form-item label="设备编码" prop="machineryCode">
         <el-input
           v-model="queryParams.machineryCode"
@@ -41,54 +34,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="品牌" prop="machineryBrand">
-        <el-input
-          v-model="queryParams.machineryBrand"
-          placeholder="请输入品牌"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="规格型号" prop="machinerySpec">
-        <el-input
-          v-model="queryParams.machinerySpec"
-          placeholder="请输入规格型号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="设备类型ID" prop="machineryTypeId">
-        <el-input
-          v-model="queryParams.machineryTypeId"
-          placeholder="请输入设备类型ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="报修日期" prop="requireDate">
-        <el-date-picker clearable
-          v-model="queryParams.requireDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择报修日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="维修完成日期" prop="finishDate">
-        <el-date-picker clearable
-          v-model="queryParams.finishDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择维修完成日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="验收日期" prop="confirmDate">
-        <el-date-picker clearable
-          v-model="queryParams.confirmDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择验收日期">
-        </el-date-picker>
-      </el-form-item>
       <el-form-item label="维修结果" prop="repairResult">
         <el-select v-model="queryParams.repairResult" placeholder="请选择维修结果" clearable>
           <el-option
@@ -98,22 +43,6 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item label="维修人员" prop="acceptedBy">
-        <el-input
-          v-model="queryParams.acceptedBy"
-          placeholder="请输入维修人员"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="验收人员" prop="confirmBy">
-        <el-input
-          v-model="queryParams.confirmBy"
-          placeholder="请输入验收人员"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
       </el-form-item>
       <el-form-item label="单据状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择单据状态" clearable>
@@ -139,7 +68,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['dv:repair:add']"
+          v-hasPermi="['mes:dv:repair:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -150,7 +79,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['dv:repair:edit']"
+          v-hasPermi="['mes:dv:repair:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -161,44 +90,29 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['dv:repair:remove']"
+          v-hasPermi="['mes:dv:repair:remove']"
         >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['dv:repair:export']"
-        >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="repairList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="维修单ID" align="center" prop="repairId" />
-      <el-table-column label="维修单编号" align="center" prop="repairCode" />
-      <el-table-column label="维修单名称" align="center" prop="repairName" />
-      <el-table-column label="设备ID" align="center" prop="machineryId" />
+      <el-table-column label="维修单编号" width="100px" align="center" prop="repairCode" />
+      <el-table-column label="维修单名称" width="150px" align="center" prop="repairName" :show-overflow-tooltip="true"/>
       <el-table-column label="设备编码" align="center" prop="machineryCode" />
       <el-table-column label="设备名称" align="center" prop="machineryName" />
-      <el-table-column label="品牌" align="center" prop="machineryBrand" />
-      <el-table-column label="规格型号" align="center" prop="machinerySpec" />
-      <el-table-column label="设备类型ID" align="center" prop="machineryTypeId" />
-      <el-table-column label="报修日期" align="center" prop="requireDate" width="180">
+      <el-table-column label="报修日期" align="center" prop="requireDate" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.requireDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="维修完成日期" align="center" prop="finishDate" width="180">
+      <el-table-column label="维修完成日期" align="center" prop="finishDate" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.finishDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="验收日期" align="center" prop="confirmDate" width="180">
+      <el-table-column label="验收日期" align="center" prop="confirmDate" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.confirmDate, '{y}-{m}-{d}') }}</span>
         </template>
@@ -215,7 +129,6 @@
           <dict-tag :options="dict.type.mes_order_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -223,14 +136,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['dv:repair:edit']"
+            v-hasPermi="['mes:dv:repair:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['dv:repair:remove']"
+            v-hasPermi="['mes:dv:repair:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -245,87 +158,117 @@
     />
 
     <!-- 添加或修改设备维修单对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="维修单编号" prop="repairCode">
-          <el-input v-model="form.repairCode" placeholder="请输入维修单编号" />
-        </el-form-item>
-        <el-form-item label="维修单名称" prop="repairName">
-          <el-input v-model="form.repairName" placeholder="请输入维修单名称" />
-        </el-form-item>
-        <el-form-item label="设备ID" prop="machineryId">
-          <el-input v-model="form.machineryId" placeholder="请输入设备ID" />
-        </el-form-item>
-        <el-form-item label="设备编码" prop="machineryCode">
-          <el-input v-model="form.machineryCode" placeholder="请输入设备编码" />
-        </el-form-item>
-        <el-form-item label="设备名称" prop="machineryName">
-          <el-input v-model="form.machineryName" placeholder="请输入设备名称" />
-        </el-form-item>
-        <el-form-item label="品牌" prop="machineryBrand">
-          <el-input v-model="form.machineryBrand" placeholder="请输入品牌" />
-        </el-form-item>
-        <el-form-item label="规格型号" prop="machinerySpec">
-          <el-input v-model="form.machinerySpec" placeholder="请输入规格型号" />
-        </el-form-item>
-        <el-form-item label="设备类型ID" prop="machineryTypeId">
-          <el-input v-model="form.machineryTypeId" placeholder="请输入设备类型ID" />
-        </el-form-item>
-        <el-form-item label="报修日期" prop="requireDate">
-          <el-date-picker clearable
-            v-model="form.requireDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择报修日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="维修完成日期" prop="finishDate">
-          <el-date-picker clearable
-            v-model="form.finishDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择维修完成日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="验收日期" prop="confirmDate">
-          <el-date-picker clearable
-            v-model="form.confirmDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择验收日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="维修结果">
-          <el-radio-group v-model="form.repairResult">
-            <el-radio
-              v-for="dict in dict.type.mes_repair_result"
-              :key="dict.value"
-:label="dict.value"
-            >{{dict.label}}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="维修人员" prop="acceptedBy">
-          <el-input v-model="form.acceptedBy" placeholder="请输入维修人员" />
-        </el-form-item>
-        <el-form-item label="验收人员" prop="confirmBy">
-          <el-input v-model="form.confirmBy" placeholder="请输入验收人员" />
-        </el-form-item>
-        <el-form-item label="单据状态" prop="status">
-          <el-select v-model="form.status" placeholder="请选择单据状态">
-            <el-option
-              v-for="dict in dict.type.mes_order_status"
-              :key="dict.value"
-              :label="dict.label"
-:value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
+    <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="维修单编号" prop="repairCode">
+              <el-input v-model="form.repairCode" placeholder="请输入维修单编号" />
+            </el-form-item>
+          </el-col>
+           <el-col :span="4">
+            <el-form-item  label-width="80">
+              <el-switch v-model="autoGenFlag"
+                  active-color="#13ce66"
+                  active-text="自动生成"
+                  @change="handleAutoGenChange(autoGenFlag)" v-if="optType != 'view'">               
+              </el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="维修单名称" prop="repairName">
+              <el-input v-model="form.repairName" placeholder="请输入维修单名称" />
+            </el-form-item>
+          </el-col>          
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="设备编号" prop="machineryCode">
+              <el-input v-model="form.machineryCode" placeholder="请输入设备编号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="设备名称" prop="machineryName">
+              <el-input v-model="form.machineryName" placeholder="请输入设备名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="品牌" prop="machineryBrand">
+              <el-input v-model="form.machineryBrand" placeholder="请输入品牌" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="报修日期" prop="requireDate">
+              <el-date-picker clearable
+                v-model="form.requireDate"
+                style="width: 187px"
+                type="date"                
+                value-format="yyyy-MM-dd"
+                placeholder="请选择报修日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="维修完成日期" v-if="form.status =='APPROVING' || form.status=='FINISHED' || form.status=='CONFIRMED' " prop="finishDate">
+              <el-date-picker clearable
+                v-model="form.finishDate"
+                style="width: 187px"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择维修完成日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="验收日期" v-if="form.status=='FINISHED' || form.status=='CONFIRMED' " prop="confirmDate">
+              <el-date-picker clearable
+                v-model="form.confirmDate"
+                style="width: 187px"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择验收日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="维修结果" v-if="form.status =='APPROVING' || form.status=='FINISHED' || form.status=='CONFIRMED' ">
+              <el-radio-group v-model="form.repairResult">
+                <el-radio
+                  v-for="dict in dict.type.mes_repair_result"
+                  :key="dict.value"
+                  :label="dict.value"
+                >{{dict.label}}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="维修人员" prop="acceptedName" v-if="form.status =='APPROVING' || form.status=='FINISHED' || form.status=='CONFIRMED' ">
+              <el-input v-model="form.acceptedName" readonly="readonly"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="验收人员" prop="confirmName" v-if="form.status=='FINISHED' || form.status=='CONFIRMED' ">
+              <el-input v-model="form.confirmName" readonly="readonly"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>          
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" v-if="form.status =='PREPARE' && optType !='view'" @click="submitForm">提 交</el-button>
+        <el-button type="primary" v-if="form.status == 'APPROVING' && optType !='view'" @click="finish">完成维修</el-button> 
+        <el-button type="success" v-if="form.status == 'FINISHED' && optType !='view'" @click="confirm">验收通过</el-button>
+        <el-button type="danger" v-if="form.status == 'FINISHED' && optType !='view'" @click="unconfirm">不通过</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -340,6 +283,8 @@ export default {
   dicts: ['mes_repair_result', 'mes_order_status'],
   data() {
     return {
+      autoGenFlag:false,
+      optType: undefined,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -433,10 +378,10 @@ export default {
         requireDate: null,
         finishDate: null,
         confirmDate: null,
-        repairResult: "0",
+        repairResult: "",
         acceptedBy: null,
         confirmBy: null,
-        status: null,
+        status: 'PREPARE',
         remark: null,
         attr1: null,
         attr2: null,
@@ -516,6 +461,16 @@ export default {
       this.download('dv/repair/export', {
         ...this.queryParams
       }, `repair_${new Date().getTime()}.xlsx`)
+    },
+        //自动生成编码
+    handleAutoGenChange(autoGenFlag){      
+      if(autoGenFlag){
+        genCode('REPAIR_CODE').then(response =>{
+          this.form.repairCode = response;
+        });
+      }else{
+        this.form.repairCode = null;
+      }
     }
   }
 };
