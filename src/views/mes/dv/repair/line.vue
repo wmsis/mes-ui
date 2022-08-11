@@ -9,7 +9,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['dv:repairline:add']"
+          v-hasPermi="['mes:dv:repair:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -20,7 +20,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['dv:repairline:remove']"
+          v-hasPermi="['mes:dv:repair:remove']"
         >删除</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -29,8 +29,14 @@
     <el-table v-loading="loading" :data="repairlineList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="项目名称" align="center" prop="subjectName" />
-      <el-table-column label="故障描述" align="center" prop="malfunction" />
-      <el-table-column label="故障描述资源" align="center" prop="malfunctionUrl" />
+      <el-table-column label="故障描述" align="center" prop="malfunction" >
+        <template slot-scope="scope">
+          <el-input type="textarea">{{scope.row.malfunction}}</el-input>
+        </template>
+      </el-table-column>
+      <el-table-column label="故障描述资源" align="center" prop="malfunctionUrl" >
+        
+      </el-table-column>
       <el-table-column label="维修情况" align="center" prop="repairDes" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -39,14 +45,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['dv:repairline:edit']"
+            v-hasPermi="['mes:dv:repair:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['dv:repairline:remove']"
+            v-hasPermi="['mes:dv:repair:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -70,10 +76,10 @@
           <el-input v-model="form.malfunction" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="故障描述资源" prop="malfunctionUrl">
-          <el-input v-model="form.malfunctionUrl" placeholder="请输入故障描述资源" />
+          <el-input type="textarea" v-model="form.malfunctionUrl" placeholder="请输入故障描述资源" />
         </el-form-item>
         <el-form-item label="维修情况" prop="repairDes">
-          <el-input v-model="form.repairDes" type="textarea" placeholder="请输入内容" />
+          <el-input  v-model="form.repairDes" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

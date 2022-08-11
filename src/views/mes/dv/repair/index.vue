@@ -264,6 +264,11 @@
           </el-col>          
         </el-row>
       </el-form>
+      <el-divider v-if="form.repairId !=null" content-position="center">维修内容</el-divider>
+      <el-card shadow="always" v-if="form.repairId !=null" class="box-card">
+        <Repairline ref="line" :repairId="form.issueId" :optType="optType"></Repairline>    
+      </el-card>
+
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" v-if="form.status =='PREPARE' && optType !='view'" @click="submitForm">提 交</el-button>
         <el-button type="primary" v-if="form.status == 'APPROVING' && optType !='view'" @click="finish">完成维修</el-button> 
@@ -277,10 +282,12 @@
 
 <script>
 import { listRepair, getRepair, delRepair, addRepair, updateRepair } from "@/api/mes/dv/repair";
+import Repairline from './line.vue'
 
 export default {
   name: "Repair",
   dicts: ['mes_repair_result', 'mes_order_status'],
+  components: {Repairline},
   data() {
     return {
       autoGenFlag:false,
