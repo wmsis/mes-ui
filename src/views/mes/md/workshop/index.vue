@@ -271,6 +271,7 @@ export default {
         updateBy: null,
         updateTime: null
       };
+      this.autoGenFlag = false;
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
