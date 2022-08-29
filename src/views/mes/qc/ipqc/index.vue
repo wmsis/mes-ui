@@ -195,29 +195,35 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="工单编码" prop="workorderCode">
-              <el-input v-model="form.workorderCode" placeholder="请输入工单编码" />
-            </el-form-item>
+              <el-input v-model="form.workorderCode" placeholder="请选择生产工单" >
+                <el-button slot="append" icon="el-icon-search" @click="handleWorkorderSelect"></el-button>
+              </el-input>
+            </el-form-item>              
+            <WorkorderSelect ref="woSelect" @onSelected="onWorkorderSelected"></WorkorderSelect>
           </el-col>
           <el-col :span="8">
             <el-form-item label="工单名称" prop="workorderName">
-              <el-input v-model="form.workorderName" placeholder="请输入工单名称" />
+              <el-input v-model="form.workorderName" readonly="readonly" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="工作站编号" prop="workstationCode">
-              <el-input v-model="form.workstationCode" placeholder="请输入工作站编号" />
+              <el-input v-model="form.workstationCode" placeholder="请输入工作站编号" >
+                <el-button slot="append" icon="el-icon-search" @click="handleWorkstationSelect"></el-button>
+              </el-input>
             </el-form-item>
+            <WorkstationSelect ref="wsSelect"  @onSelected="onWorkstationSelected"> </WorkstationSelect>
           </el-col>
           <el-col :span="8">
             <el-form-item label="工作站名称" prop="workstationName">
-              <el-input v-model="form.workstationName" placeholder="请输入工作站名称" />
+              <el-input v-model="form.workstationName" readonly="readonly"  />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="任务编号" prop="taskCode">
-              <el-input v-model="form.taskCode" placeholder="请输入任务编号" />
+            <el-form-item label="检测数量" prop="quantityCheck">
+              <el-input v-model="form.quantityCheck" placeholder="请输入检测数量" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -238,17 +244,19 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
+                <el-form-item label="单位" prop="unitOfMeasure">
+                  <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
                 <el-form-item label="规格型号" prop="specification">
                   <el-input v-model="form.specification" type="textarea" placeholder="请输入内容" />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="8">
-                <el-form-item label="单位" prop="unitOfMeasure">
-                  <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
-                </el-form-item>
-              </el-col>
               <el-col :span="8">
                 <el-form-item label="工序编码" prop="processCode">
                   <el-input v-model="form.processCode" placeholder="请输入工序编码" />
@@ -259,43 +267,49 @@
                   <el-input v-model="form.processName" placeholder="请输入工序名称" />
                 </el-form-item>
               </el-col>
+              <el-col :span="8">
+                <el-form-item label="任务编号" prop="taskCode">
+                  <el-input v-model="form.taskCode" placeholder="请输入任务编号" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="任务名称" prop="taskName">
+                  <el-input v-model="form.taskCode" placeholder="请输入任务编号" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="不合格数" prop="quantityUnqualified">
+                  <el-input v-model="form.quantityUnqualified" placeholder="请输入不合格数" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="合格品数量" prop="quantityQualified">
+                  <el-input v-model="form.quantityQualified" placeholder="请输入合格品数量" />
+                </el-form-item>
+              </el-col>
+            </el-row>        
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="致命缺陷数量" prop="crQuantity">
+                  <el-input v-model="form.crQuantity" placeholder="请输入致命缺陷数量" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="严重缺陷数量" prop="majQuantity">
+                  <el-input v-model="form.majQuantity" placeholder="请输入严重缺陷数量" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="轻微缺陷数量" prop="minQuantity">
+                  <el-input v-model="form.minQuantity" placeholder="请输入轻微缺陷数量" />
+                </el-form-item>
+              </el-col>
             </el-row>
           </el-collapse-item>
         </el-collapse>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="检测数量" prop="quantityCheck">
-              <el-input v-model="form.quantityCheck" placeholder="请输入检测数量" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="不合格数" prop="quantityUnqualified">
-              <el-input v-model="form.quantityUnqualified" placeholder="请输入不合格数" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="合格品数量" prop="quantityQualified">
-              <el-input v-model="form.quantityQualified" placeholder="请输入合格品数量" />
-            </el-form-item>
-          </el-col>
-        </el-row>        
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="致命缺陷数量" prop="crQuantity">
-              <el-input v-model="form.crQuantity" placeholder="请输入致命缺陷数量" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="严重缺陷数量" prop="majQuantity">
-              <el-input v-model="form.majQuantity" placeholder="请输入严重缺陷数量" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="轻微缺陷数量" prop="minQuantity">
-              <el-input v-model="form.minQuantity" placeholder="请输入轻微缺陷数量" />
-            </el-form-item>
-          </el-col>
-        </el-row>
+        
         <el-row>
           <el-col :span="8">
             <el-form-item label="检测日期" prop="inspectDate">
@@ -309,7 +323,14 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="检测结果" prop="checkResult">
-              <el-input v-model="form.checkResult" placeholder="请输入检测结果" />
+              <el-select v-model="form.checkResult" placeholder="请选择检验结果">
+                <el-option
+                  v-for="dict in dict.type.mes_qc_result"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -338,9 +359,11 @@
 <script>
 import { listIpqc, getIpqc, delIpqc, addIpqc, updateIpqc } from "@/api/mes/qc/ipqc";
 import {genCode} from "@/api/system/autocode/rule"
-
+import WorkorderSelect from "@/components/workorderSelect/single.vue"
+import WorkstationSelect from "@/components/workstationSelect/simpletableSingle.vue"
 export default {
   name: "Ipqc",
+  components: {WorkorderSelect,WorkstationSelect},
   dicts: ['mes_ipqc_type','mes_qc_result'],
   data() {
     return {
@@ -408,49 +431,22 @@ export default {
       // 表单校验
       rules: {
         ipqcCode: [
-          { required: true, message: "检验单编号不能为空", trigger: "blur" }
+          { required: true, message: "请输入或生产检验单编号", trigger: "blur" }
         ],
         ipqcType: [
-          { required: true, message: "检验类型不能为空", trigger: "change" }
+          { required: true, message: "请选择检验类型", trigger: "change" }
         ],
-        templateId: [
-          { required: true, message: "检验模板ID不能为空", trigger: "blur" }
-        ],
-        workorderId: [
-          { required: true, message: "工单ID不能为空", trigger: "blur" }
-        ],
+
         workorderCode: [
-          { required: true, message: "工单编码不能为空", trigger: "blur" }
+          { required: true, message: "请选择生产工单", trigger: "blur" }
         ],
-        workorderName: [
-          { required: true, message: "工单名称不能为空", trigger: "blur" }
-        ],
-        taskId: [
-          { required: true, message: "任务ID不能为空", trigger: "blur" }
-        ],
-        taskCode: [
-          { required: true, message: "任务编号不能为空", trigger: "blur" }
-        ],
-        taskName: [
-          { required: true, message: "任务名称不能为空", trigger: "blur" }
-        ],
-        workstationId: [
-          { required: true, message: "工作站ID不能为空", trigger: "blur" }
-        ],
+
         workstationCode: [
-          { required: true, message: "工作站编号不能为空", trigger: "blur" }
+          { required: true, message: "请选择工作站", trigger: "blur" }
         ],
-        workstationName: [
-          { required: true, message: "工作站名称不能为空", trigger: "blur" }
-        ],
-        processId: [
-          { required: true, message: "工序ID不能为空", trigger: "blur" }
-        ],
-        itemId: [
-          { required: true, message: "产品物料ID不能为空", trigger: "blur" }
-        ],
-        quantityQualified: [
-          { required: true, message: "合格品数量不能为空", trigger: "blur" }
+      
+        quantityCheck: [
+          { required: true, message: "检测数量不能为空", trigger: "blur" }
         ],
       }
     };
@@ -603,6 +599,27 @@ export default {
       this.download('qc/ipqc/export', {
         ...this.queryParams
       }, `ipqc_${new Date().getTime()}.xlsx`)
+    },
+     //选择生产工单
+    handleWorkorderSelect(){
+      this.$refs.woSelect.showFlag = true;
+    },
+    onWorkorderSelected(row){
+      if(row != undefined && row != null){
+        this.form.workorderId = row.workorderId;
+        this.form.workorderCode = row.workorderCode;
+        this.form.workorderName = row.workorderName;
+      }
+    },
+    handleWorkstationSelect(){
+      this.$refs.wsSelect.showFlag = true;
+    },
+    onWorkstationSelected(row){
+      if(row != undefined && row != null){
+        this.form.workstationId = row.workstationId;
+        this.form.workstationCode = row.workstationCode;
+        this.form.workstationName = row.workstationName;
+      }
     },
     //自动生成编码
     handleAutoGenChange(autoGenFlag){
