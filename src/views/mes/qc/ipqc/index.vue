@@ -107,26 +107,35 @@
 
     <el-table v-loading="loading" :data="ipqcList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="检验单编号" width="120px" align="center" prop="ipqcCode" />
+      <el-table-column label="检验单编号" width="150px" align="center" prop="ipqcCode" />
       <el-table-column label="检验类型" align="center" prop="ipqcType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.mes_ipqc_type" :value="scope.row.ipqcType"/>
         </template>
       </el-table-column>
-      <el-table-column label="工单编号" align="center" prop="workorderCode" />
+      <el-table-column label="工单编号" width="150px" align="center" prop="workorderCode" />
       <el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" />
       <el-table-column label="产品物料名称" width="150px" align="center" prop="itemName" :show-overflow-tooltip="true"/>
       <el-table-column label="规格型号" align="center" prop="specification" :show-overflow-tooltip="true"/>
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="检测数量" align="center" prop="quantityCheck" />
-      <el-table-column label="检测结果" align="center" prop="checkResult" />
+      <el-table-column label="检测结果" align="center" prop="checkResult" >
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.mes_qc_result" :value="scope.row.checkResult"/>
+        </template>
+      </el-table-column>
+
       <el-table-column label="检测日期" align="center" prop="inspectDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.inspectDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="检测人员" align="center" prop="inspector" />
-      <el-table-column label="单据状态" align="center" prop="status" />
+      <el-table-column label="单据状态" align="center" prop="status">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.mes_order_status" :value="scope.row.status"/>
+        </template>
+      </el-table-column> 
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -364,7 +373,7 @@ import WorkstationSelect from "@/components/workstationSelect/simpletableSingle.
 export default {
   name: "Ipqc",
   components: {WorkorderSelect,WorkstationSelect},
-  dicts: ['mes_ipqc_type','mes_qc_result'],
+  dicts: ['mes_ipqc_type','mes_qc_result','mes_order_status'],
   data() {
     return {
       autoGenFlag:false,
@@ -517,6 +526,7 @@ export default {
         updateBy: null,
         updateTime: null
       };
+      this.autoGenFlag = false;
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -606,9 +616,16 @@ export default {
     },
     onWorkorderSelected(row){
       if(row != undefined && row != null){
+        debugger;
         this.form.workorderId = row.workorderId;
         this.form.workorderCode = row.workorderCode;
         this.form.workorderName = row.workorderName;
+        this.form.itemId = row.productId;
+        this.form.itemCode = row.productCode;
+        this.form.itemName = row.productName;
+        this.form.specification = row.productSpc;
+        this.form.unitOfMeasure = row.unitOfMeasure;
+
       }
     },
     handleWorkstationSelect(){
