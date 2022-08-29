@@ -1,18 +1,10 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="检验单编号" prop="ipqcCode">
         <el-input
           v-model="queryParams.ipqcCode"
           placeholder="请输入检验单编号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="检验单名称" prop="ipqcName">
-        <el-input
-          v-model="queryParams.ipqcName"
-          placeholder="请输入检验单名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -52,12 +44,14 @@
         />
       </el-form-item>
       <el-form-item label="检测结果" prop="checkResult">
-        <el-input
-          v-model="queryParams.checkResult"
-          placeholder="请输入检测结果"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.checkResult" placeholder="请选择检验结果" clearable>
+          <el-option
+            v-for="dict in dict.type.mes_qc_result"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -113,17 +107,16 @@
 
     <el-table v-loading="loading" :data="ipqcList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="检验单编号" align="center" prop="ipqcCode" />
-      <el-table-column label="检验单名称" align="center" prop="ipqcName" />
+      <el-table-column label="检验单编号" width="120px" align="center" prop="ipqcCode" />
       <el-table-column label="检验类型" align="center" prop="ipqcType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.mes_ipqc_type" :value="scope.row.ipqcType"/>
         </template>
       </el-table-column>
-      <el-table-column label="工单编码" align="center" prop="workorderCode" />
-      <el-table-column label="产品物料编码" align="center" prop="itemCode" />
-      <el-table-column label="产品物料名称" align="center" prop="itemName" />
-      <el-table-column label="规格型号" align="center" prop="specification" />
+      <el-table-column label="工单编号" align="center" prop="workorderCode" />
+      <el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" />
+      <el-table-column label="产品物料名称" width="150px" align="center" prop="itemName" :show-overflow-tooltip="true"/>
+      <el-table-column label="规格型号" align="center" prop="specification" :show-overflow-tooltip="true"/>
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="检测数量" align="center" prop="quantityCheck" />
       <el-table-column label="检测结果" align="center" prop="checkResult" />
@@ -164,125 +157,178 @@
     />
 
     <!-- 添加或修改过程检验单对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="检验单编号" prop="ipqcCode">
-          <el-input v-model="form.ipqcCode" placeholder="请输入检验单编号" />
-        </el-form-item>
-        <el-form-item label="检验单名称" prop="ipqcName">
-          <el-input v-model="form.ipqcName" placeholder="请输入检验单名称" />
-        </el-form-item>
-        <el-form-item label="检验类型" prop="ipqcType">
-          <el-select v-model="form.ipqcType" placeholder="请选择检验类型">
-            <el-option
-              v-for="dict in dict.type.mes_ipqc_type"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="检验模板ID" prop="templateId">
-          <el-input v-model="form.templateId" placeholder="请输入检验模板ID" />
-        </el-form-item>
-        <el-form-item label="工单ID" prop="workorderId">
-          <el-input v-model="form.workorderId" placeholder="请输入工单ID" />
-        </el-form-item>
-        <el-form-item label="工单编码" prop="workorderCode">
-          <el-input v-model="form.workorderCode" placeholder="请输入工单编码" />
-        </el-form-item>
-        <el-form-item label="工单名称" prop="workorderName">
-          <el-input v-model="form.workorderName" placeholder="请输入工单名称" />
-        </el-form-item>
-        <el-form-item label="任务ID" prop="taskId">
-          <el-input v-model="form.taskId" placeholder="请输入任务ID" />
-        </el-form-item>
-        <el-form-item label="任务编号" prop="taskCode">
-          <el-input v-model="form.taskCode" placeholder="请输入任务编号" />
-        </el-form-item>
-        <el-form-item label="任务名称" prop="taskName">
-          <el-input v-model="form.taskName" placeholder="请输入任务名称" />
-        </el-form-item>
-        <el-form-item label="工作站ID" prop="workstationId">
-          <el-input v-model="form.workstationId" placeholder="请输入工作站ID" />
-        </el-form-item>
-        <el-form-item label="工作站编号" prop="workstationCode">
-          <el-input v-model="form.workstationCode" placeholder="请输入工作站编号" />
-        </el-form-item>
-        <el-form-item label="工作站名称" prop="workstationName">
-          <el-input v-model="form.workstationName" placeholder="请输入工作站名称" />
-        </el-form-item>
-        <el-form-item label="工序ID" prop="processId">
-          <el-input v-model="form.processId" placeholder="请输入工序ID" />
-        </el-form-item>
-        <el-form-item label="工序编码" prop="processCode">
-          <el-input v-model="form.processCode" placeholder="请输入工序编码" />
-        </el-form-item>
-        <el-form-item label="工序名称" prop="processName">
-          <el-input v-model="form.processName" placeholder="请输入工序名称" />
-        </el-form-item>
-        <el-form-item label="产品物料ID" prop="itemId">
-          <el-input v-model="form.itemId" placeholder="请输入产品物料ID" />
-        </el-form-item>
-        <el-form-item label="产品物料编码" prop="itemCode">
-          <el-input v-model="form.itemCode" placeholder="请输入产品物料编码" />
-        </el-form-item>
-        <el-form-item label="产品物料名称" prop="itemName">
-          <el-input v-model="form.itemName" placeholder="请输入产品物料名称" />
-        </el-form-item>
-        <el-form-item label="规格型号" prop="specification">
-          <el-input v-model="form.specification" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="单位" prop="unitOfMeasure">
-          <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
-        </el-form-item>
-        <el-form-item label="检测数量" prop="quantityCheck">
-          <el-input v-model="form.quantityCheck" placeholder="请输入检测数量" />
-        </el-form-item>
-        <el-form-item label="不合格数" prop="quantityUnqualified">
-          <el-input v-model="form.quantityUnqualified" placeholder="请输入不合格数" />
-        </el-form-item>
-        <el-form-item label="合格品数量" prop="quantityQualified">
-          <el-input v-model="form.quantityQualified" placeholder="请输入合格品数量" />
-        </el-form-item>
-        <el-form-item label="致命缺陷率" prop="crRate">
-          <el-input v-model="form.crRate" placeholder="请输入致命缺陷率" />
-        </el-form-item>
-        <el-form-item label="严重缺陷率" prop="majRate">
-          <el-input v-model="form.majRate" placeholder="请输入严重缺陷率" />
-        </el-form-item>
-        <el-form-item label="轻微缺陷率" prop="minRate">
-          <el-input v-model="form.minRate" placeholder="请输入轻微缺陷率" />
-        </el-form-item>
-        <el-form-item label="致命缺陷数量" prop="crQuantity">
-          <el-input v-model="form.crQuantity" placeholder="请输入致命缺陷数量" />
-        </el-form-item>
-        <el-form-item label="严重缺陷数量" prop="majQuantity">
-          <el-input v-model="form.majQuantity" placeholder="请输入严重缺陷数量" />
-        </el-form-item>
-        <el-form-item label="轻微缺陷数量" prop="minQuantity">
-          <el-input v-model="form.minQuantity" placeholder="请输入轻微缺陷数量" />
-        </el-form-item>
-        <el-form-item label="检测结果" prop="checkResult">
-          <el-input v-model="form.checkResult" placeholder="请输入检测结果" />
-        </el-form-item>
-        <el-form-item label="检测日期" prop="inspectDate">
-          <el-date-picker clearable
-            v-model="form.inspectDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择检测日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="检测人员" prop="inspector">
-          <el-input v-model="form.inspector" placeholder="请输入检测人员" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
+    <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="检验单编号" prop="ipqcCode">
+              <el-input v-model="form.ipqcCode" placeholder="请输入检验单编号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item  label-width="80">
+              <el-switch v-model="autoGenFlag"
+                  active-color="#13ce66"
+                  active-text="自动生成"
+                  @change="handleAutoGenChange(autoGenFlag)" v-if="optType != 'view' && form.status =='PREPARE'">               
+              </el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="检验单名称" prop="ipqcName">
+              <el-input v-model="form.ipqcName" placeholder="请输入检验单名称" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="检验类型" prop="ipqcType">
+              <el-select v-model="form.ipqcType" placeholder="请选择检验类型">
+                <el-option
+                  v-for="dict in dict.type.mes_ipqc_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="工单编码" prop="workorderCode">
+              <el-input v-model="form.workorderCode" placeholder="请输入工单编码" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="工单名称" prop="workorderName">
+              <el-input v-model="form.workorderName" placeholder="请输入工单名称" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="工作站编号" prop="workstationCode">
+              <el-input v-model="form.workstationCode" placeholder="请输入工作站编号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="工作站名称" prop="workstationName">
+              <el-input v-model="form.workstationName" placeholder="请输入工作站名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="任务编号" prop="taskCode">
+              <el-input v-model="form.taskCode" placeholder="请输入任务编号" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-collapse>
+          <el-collapse-item>
+            <template slot="title">
+              更多信息<i class="header-icon el-icon-info"></i>
+            </template>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="产品编码" prop="itemCode">
+                  <el-input v-model="form.itemCode" placeholder="请输入产品编码" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="产品名称" prop="itemName">
+                  <el-input v-model="form.itemName" placeholder="请输入产品名称" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="规格型号" prop="specification">
+                  <el-input v-model="form.specification" type="textarea" placeholder="请输入内容" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="单位" prop="unitOfMeasure">
+                  <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="工序编码" prop="processCode">
+                  <el-input v-model="form.processCode" placeholder="请输入工序编码" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="工序名称" prop="processName">
+                  <el-input v-model="form.processName" placeholder="请输入工序名称" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-collapse-item>
+        </el-collapse>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="检测数量" prop="quantityCheck">
+              <el-input v-model="form.quantityCheck" placeholder="请输入检测数量" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="不合格数" prop="quantityUnqualified">
+              <el-input v-model="form.quantityUnqualified" placeholder="请输入不合格数" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="合格品数量" prop="quantityQualified">
+              <el-input v-model="form.quantityQualified" placeholder="请输入合格品数量" />
+            </el-form-item>
+          </el-col>
+        </el-row>        
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="致命缺陷数量" prop="crQuantity">
+              <el-input v-model="form.crQuantity" placeholder="请输入致命缺陷数量" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="严重缺陷数量" prop="majQuantity">
+              <el-input v-model="form.majQuantity" placeholder="请输入严重缺陷数量" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="轻微缺陷数量" prop="minQuantity">
+              <el-input v-model="form.minQuantity" placeholder="请输入轻微缺陷数量" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="检测日期" prop="inspectDate">
+              <el-date-picker clearable
+                v-model="form.inspectDate"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择检测日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="检测结果" prop="checkResult">
+              <el-input v-model="form.checkResult" placeholder="请输入检测结果" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="检测人员" prop="inspector">
+              <el-input v-model="form.inspector" placeholder="请输入检测人员" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>     
+        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>           
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -291,12 +337,15 @@
 
 <script>
 import { listIpqc, getIpqc, delIpqc, addIpqc, updateIpqc } from "@/api/mes/qc/ipqc";
+import {genCode} from "@/api/system/autocode/rule"
 
 export default {
   name: "Ipqc",
-  dicts: ['mes_ipqc_type'],
+  dicts: ['mes_ipqc_type','mes_qc_result'],
   data() {
     return {
+      autoGenFlag:false,
+      optType: undefined,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -459,9 +508,9 @@ export default {
         majQuantity: null,
         minQuantity: null,
         checkResult: null,
-        inspectDate: null,
+        inspectDate: new Date(),
         inspector: null,
-        status: "0",
+        status: "PREPARE",
         remark: null,
         attr1: null,
         attr2: null,
@@ -495,6 +544,7 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加过程检验单";
+      this.optType = "add";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -504,6 +554,18 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改过程检验单";
+        this.optType = "edit";
+      });
+    },
+    //查看单据
+    handleView(row){
+      this.reset();
+      const ipqcIds = row.ipqcId
+      getIpqc(ipqcIds).then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "查看检验单信息";
+        this.optType = "view";
       });
     },
     /** 提交按钮 */
@@ -541,6 +603,16 @@ export default {
       this.download('qc/ipqc/export', {
         ...this.queryParams
       }, `ipqc_${new Date().getTime()}.xlsx`)
+    },
+    //自动生成编码
+    handleAutoGenChange(autoGenFlag){
+      if(autoGenFlag){
+        genCode('IPQC_CODE').then(response =>{
+          this.form.ipqcCode = response;
+        });
+      }else{
+        this.form.ipqcCode = null;
+      }
     }
   }
 };
