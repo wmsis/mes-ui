@@ -37,7 +37,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <Defectrecord ref="defectDialog" :qcId="defect_qcId" :lineId="defect_qcLineId" :qcType="defect_qcType" :optType="optType"></Defectrecord>
+    <Defectrecord ref="defectDialog" :qcId="defect_qcid" :lineId="defect_qclineid" :qcType="defect_qctype" :optType="optType"></Defectrecord>
   </div>
 </template>
 
@@ -54,9 +54,9 @@ export default {
   components: {Defectrecord},
   data() {
     return {
-      defect_qcId: null,
-      defect_qcLineId: null,
-      defect_qcType: 'IPQC',
+      defect_qcid: null,
+      defect_qclineid: null,
+      defect_qctype: 'IPQC',
       // 遮罩层
       loading: true,
       // 选中数组
@@ -173,9 +173,8 @@ export default {
     },
     //缺陷记录
     handleDefect(row){
-      debugger;
       this.defect_qcid = row.ipqcId;      
-      this.defect_lineid = row.lineId;
+      this.defect_qclineid = row.lineId;
       this.$nextTick(() => {
         this.$refs.defectDialog.showFlag = true;
         this.$refs.defectDialog.getList();

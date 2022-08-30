@@ -230,7 +230,6 @@ export default {
     confirm() {
         if(this.iqcdefectList.length !=0){
             updateIqcdefect(this.iqcdefectList).then(res => {
-              debugger;
             this.$modal.msgSuccess(res.msg);
             if (res.code === 200) {
               this.open = false;
@@ -242,12 +241,10 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(index,row) {
-        debugger;
         const recordIds = row.recordId || this.ids;
         let that = this;
         this.$modal.confirm('是否确认删除缺陷记录？').then(function() {
             that.iqcdefectList.forEach(function(item,i,arr){
-                debugger;
                 if(i == index){
                   if(that.iqcdefectList[index].flag=='add'){
                     //如果是刚新增的则直接删除
