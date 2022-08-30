@@ -88,6 +88,7 @@ import { listDefectrecord, getDefectrecord, delDefectrecord, addDefectrecord, up
 
 export default {
   name: "Defectrecord",
+  dicts: ['mes_defect_level'],
   props: {
     qcId: null,
     qcType: null,
@@ -155,6 +156,7 @@ export default {
 
     /** 新增按钮操作 */
     handleAdd() {
+      debugger;
       var row = {
             recordId: null,
             qcId: this.qcId,

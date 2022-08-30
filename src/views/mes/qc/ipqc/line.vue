@@ -173,7 +173,8 @@ export default {
     },
     //缺陷记录
     handleDefect(row){
-      this.defect_qcid = row.ipqcId;
+      debugger;
+      this.defect_qcid = row.ipqcId;      
       this.defect_lineid = row.lineId;
       this.$nextTick(() => {
         this.$refs.defectDialog.showFlag = true;
