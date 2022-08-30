@@ -1,7 +1,8 @@
 <template>
   <div class="app-container">
-    <el-table v-loading="loading" :data="iqclineList" @selection-change="handleSelectionChange">      
-      <el-table-column label="检测项名称" width="100px" align="center" prop="indexName" />
+    <el-table v-loading="loading" :data="ipqclineList" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="检测项名称" width="120px" align="center" prop="indexName" />
       <el-table-column label="检测项类型" width="100px" align="center" prop="indexType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.mes_index_type" :value="scope.row.indexType"/>
@@ -16,16 +17,15 @@
       <el-table-column label="致命缺陷数量" align="center" prop="crQuantity" />
       <el-table-column label="严重缺陷数量" align="center" prop="majQuantity" />
       <el-table-column label="轻微缺陷数量" align="center" prop="minQuantity" />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="操作" align="center"  class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleDefect(scope.row)"
-            v-hasPermi="['mes:qc:iqcline:edit']"
-          >缺陷记录</el-button>
+            v-hasPermi="['mes:qc:ipqc:edit']"
+          >缺陷记录</el-button>        
         </template>
       </el-table-column>
     </el-table>
@@ -37,25 +37,26 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <Iqcdefect ref="defectDialog" :iqcId="defect_iqcid" :lineId="defect_lineid" :optType="optType"></Iqcdefect>
+    <Defectrecord ref="defectDialog" :qcId="defect_qcId" :lineId="defect_qcLineId" :qcType="defect_qcType" :optType="optType"></Defectrecord>
   </div>
 </template>
 
 <script>
-import { listIqcline, getIqcline, delIqcline, addIqcline, updateIqcline } from "@/api/mes/qc/iqcline";
-import Iqcdefect from "./iqcdefect.vue"
+import { listIpqcline, getIpqcline, delIpqcline, addIpqcline, updateIpqcline } from "@/api/mes/qc/ipqcline";
+import Defectrecord from "../defectrecord/index.vue"
 export default {
-  name: "IqcLine",
+  name: "Ipqcline",
   dicts: ['mes_index_type'],
-  props:{
-      iqcId: null,
-      optType: null,
+  props: {
+    ipqcId: null,
+    optType: undefined
   },
-  components:{Iqcdefect},
+  components: {Defectrecord},
   data() {
     return {
-      defect_iqcid:null,
-      defect_lineid:null,
+      defect_qcId: null,
+      defect_qcLineId: null,
+      defect_qcType: 'IPQC',
       // 遮罩层
       loading: true,
       // 选中数组
@@ -68,8 +69,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 来料检验单行表格数据
-      iqclineList: [],
+      // 过程检验单行表格数据
+      ipqclineList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -78,7 +79,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        iqcId: this.iqcId,
+        ipqcId: this.ipqcId,
         indexId: null,
         indexCode: null,
         indexName: null,
@@ -95,18 +96,26 @@ export default {
       },
       // 表单参数
       form: {},
+      // 表单校验
+      rules: {
+        ipqcId: [
+          { required: true, message: "检验单ID不能为空", trigger: "blur" }
+        ],
+        indexId: [
+          { required: true, message: "检测项ID不能为空", trigger: "blur" }
+        ],
+      }
     };
-  },
+  },  
   created() {
     this.getList();
   },
   methods: {
-    /** 查询来料检验单行列表 */
+    /** 查询过程检验单行列表 */
     getList() {
-      debugger;
       this.loading = true;
-      listIqcline(this.queryParams).then(response => {
-        this.iqclineList = response.rows;
+      listIpqcline(this.queryParams).then(response => {
+        this.ipqclineList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -120,7 +129,7 @@ export default {
     reset() {
       this.form = {
         lineId: null,
-        iqcId: this.iqcId,
+        ipqcId: null,
         indexId: null,
         indexCode: null,
         indexName: null,
@@ -162,15 +171,16 @@ export default {
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
+    //缺陷记录
     handleDefect(row){
-      this.defect_iqcid = row.iqcId;
+      this.defect_qcid = row.ipqcId;
       this.defect_lineid = row.lineId;
       this.$nextTick(() => {
         this.$refs.defectDialog.showFlag = true;
         this.$refs.defectDialog.getList();
       })
-
     }
+
   }
 };
 </script>

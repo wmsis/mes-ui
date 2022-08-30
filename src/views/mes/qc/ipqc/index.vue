@@ -107,7 +107,15 @@
 
     <el-table v-loading="loading" :data="ipqcList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="检验单编号" width="150px" align="center" prop="ipqcCode" />
+      <el-table-column label="检验单编号" width="150px" align="center" prop="ipqcCode" >
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            @click="handleView(scope.row)"
+            v-hasPermi="['mes:qc:ipqc:query']"
+          >{{scope.row.ipqcCode}}</el-button>
+        </template>
+      </el-table-column>      
       <el-table-column label="检验类型" align="center" prop="ipqcType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.mes_ipqc_type" :value="scope.row.ipqcType"/>
@@ -355,6 +363,10 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-divider v-if="form.ipqcId !=null" content-position="center">检测项</el-divider> 
+      <el-card shadow="always" v-if="form.ipqcId !=null" class="box-card">
+          <Ipqcline ref=line :ipqcId="form.ipqcId" :optType="optType"></Ipqcline>
+      </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>     
         <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>           
@@ -369,9 +381,10 @@ import { listIpqc, getIpqc, delIpqc, addIpqc, updateIpqc } from "@/api/mes/qc/ip
 import {genCode} from "@/api/system/autocode/rule"
 import WorkorderSelect from "@/components/workorderSelect/single.vue"
 import WorkstationSelect from "@/components/workstationSelect/simpletableSingle.vue"
+import Ipqcline from "./line.vue"
 export default {
   name: "Ipqc",
-  components: {WorkorderSelect,WorkstationSelect},
+  components: {WorkorderSelect,WorkstationSelect,Ipqcline},
   dicts: ['mes_ipqc_type','mes_qc_result','mes_order_status'],
   data() {
     return {
