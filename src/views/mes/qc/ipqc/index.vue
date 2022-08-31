@@ -151,6 +151,7 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
+            v-if="scope.row.status =='PREPARE'"
             v-hasPermi="['mes:qc:ipqc:edit']"
           >修改</el-button>
           <el-button
@@ -158,6 +159,7 @@
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
+            v-if="scope.row.status =='PREPARE'"
             v-hasPermi="['mes:qc:ipqc:remove']"
           >删除</el-button>
         </template>
@@ -211,8 +213,11 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="工单编码" prop="workorderCode">
-              <el-input v-model="form.workorderCode" placeholder="请选择生产工单" >
+              <el-input v-if="form.ipqcId == null" v-model="form.workorderCode" placeholder="请选择生产工单" >
                 <el-button slot="append" icon="el-icon-search" @click="handleWorkorderSelect"></el-button>
+              </el-input>
+              <!--保存过则不允许修改工单，需要修改则删除重做-->
+              <el-input v-else v-model="form.workorderCode" >              
               </el-input>
             </el-form-item>              
             <WorkorderSelect ref="woSelect" @onSelected="onWorkorderSelected"></WorkorderSelect>
@@ -368,8 +373,9 @@
           <Ipqcline ref=line :ipqcId="form.ipqcId" :optType="optType"></Ipqcline>
       </el-card>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>     
-        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>           
+        <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
+        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>
+        <el-button type="success" @click="handleFinish" v-if="form.status =='PREPARE' && optType !='view'  && form.ipqcId !=null">完成</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -593,19 +599,39 @@ export default {
           if (this.form.ipqcId != null) {
             updateIpqc(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
-              this.open = false;
+              //this.open = false;
               this.getList();
             });
           } else {
             addIpqc(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
-              this.open = false;
+              this.form.ipqcId = response.data; //将返回的ID保存
+              //this.open = false;
               this.getList();
             });
           }
         }
       });
     },
+    //点击完成
+    handleFinish(){
+      let that = this;
+      if(this.form.checkResult == null){
+        this.$modal.msgError("请选择检测结果！");
+        return;
+      }
+
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          this.$modal.confirm('是否完成检验单编制？【完成后将不能更改】').then(function(){
+            that.form.status = 'CONFIRMED';
+            that.submitForm();
+            that.open = false;
+          });
+        }
+        });
+    },
+
     /** 删除按钮操作 */
     handleDelete(row) {
       const ipqcIds = row.ipqcId || this.ids;

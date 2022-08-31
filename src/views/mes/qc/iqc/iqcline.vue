@@ -37,13 +37,13 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <Iqcdefect ref="defectDialog" :iqcId="defect_iqcid" :lineId="defect_lineid" :optType="optType"></Iqcdefect>
+    <Defectrecord ref="defectDialog" :qcId="defect_iqcid" :lineId="defect_lineid" :qcType="defect_qctype" :optType="optType"></Defectrecord>
   </div>
 </template>
 
 <script>
 import { listIqcline, getIqcline, delIqcline, addIqcline, updateIqcline } from "@/api/mes/qc/iqcline";
-import Iqcdefect from "./iqcdefect.vue"
+import Defectrecord from "../defectrecord/index.vue"
 export default {
   name: "IqcLine",
   dicts: ['mes_index_type'],
@@ -51,11 +51,12 @@ export default {
       iqcId: null,
       optType: null,
   },
-  components:{Iqcdefect},
+  components:{Defectrecord},
   data() {
     return {
       defect_iqcid:null,
       defect_lineid:null,
+      defect_qctype: 'IQC',
       // 遮罩层
       loading: true,
       // 选中数组

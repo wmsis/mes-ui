@@ -247,8 +247,11 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="产品物料编码" prop="itemCode">
-              <el-input v-model="form.itemCode" placeholder="请输入产品物料编码" >
+              <el-input v-if="form.iqcId ==null " v-model="form.itemCode" placeholder="请输入产品物料编码" >
                 <el-button slot="append" @click="handleSelectProduct" icon="el-icon-search"></el-button>
+              </el-input>
+              <!--如果已经保存过，则产品不允许再修改，需要修改就删除重做-->
+              <el-input v-else v-model="form.itemCode">                
               </el-input>
             </el-form-item>
             <ItemSelect ref="itemSelect" @onSelected="onItemSelected" > </ItemSelect>
@@ -388,7 +391,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
-        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>
+        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>
         <el-button type="success" @click="handleFinish" v-if="form.status =='PREPARE' && optType !='view'  && form.iqcId !=null">完成</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>

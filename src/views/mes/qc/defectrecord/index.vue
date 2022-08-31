@@ -180,7 +180,7 @@ export default {
         updateDefectrecord(this.defectrecordList).then(res => {
           this.$modal.msgSuccess(res.msg);
           if (res.code === 200) {
-            this.open = false;
+            this.showFlag = false;
             this.getList();
             this.$parent.getList();
           }
