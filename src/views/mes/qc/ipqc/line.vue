@@ -25,6 +25,7 @@
             icon="el-icon-edit"
             @click="handleDefect(scope.row)"
             v-hasPermi="['mes:qc:ipqc:edit']"
+            v-if="optType !='view'"
           >缺陷记录</el-button>        
         </template>
       </el-table-column>

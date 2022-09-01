@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
-      <el-form-item label="出货检验单编号" prop="oqcCode">
+      <el-form-item label="检验单编号" prop="oqcCode">
         <el-input
           v-model="queryParams.oqcCode"
           placeholder="请输入出货检验单编号"
@@ -42,12 +42,14 @@
         />
       </el-form-item>
       <el-form-item label="检测结果" prop="checkResult">
-        <el-input
-          v-model="queryParams.checkResult"
-          placeholder="请输入检测结果"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.checkResult" placeholder="请选择检测结果">
+            <el-option
+              v-for="dict in dict.type.mes_qc_result"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -340,9 +342,12 @@
               </el-col>
             </el-row>
           </el-collapse-item>
-        </el-collapse>
-        
+        </el-collapse>        
       </el-form>
+      <el-divider v-if="form.oqcId !=null" content-position="center">检测项</el-divider> 
+      <el-card shadow="always" v-if="form.oqcId !=null" class="box-card">
+          <Oqcline ref=line :ipqcId="form.oqcId" :optType="optType"></Oqcline>
+      </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
         <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>
@@ -356,11 +361,13 @@
 <script>
 import { listOqc, getOqc, delOqc, addOqc, updateOqc } from "@/api/mes/qc/oqc";
 import ItemSelect  from "@/components/itemSelect/single.vue";
+import {genCode} from "@/api/system/autocode/rule";
+import Oqcline from "./line.vue";
 export default {
   name: "Oqc",
   dicts: ['mes_order_status','mes_qc_result'],
   components: {
-    ItemSelect
+    ItemSelect,Oqcline
   },
   data() {
     return {
@@ -609,7 +616,7 @@ export default {
     //自动生成编码
     handleAutoGenChange(autoGenFlag){
       if(autoGenFlag){
-        genCode('QC_OQC_CODE').then(response =>{
+        genCode('OQC_CODE').then(response =>{
           this.form.oqcCode = response;
         });
       }else{
