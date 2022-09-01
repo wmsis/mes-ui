@@ -129,7 +129,6 @@ export default {
     },
       //设备资源选择回调
     onMachineryAdd(rows){      
-      debugger;
       if(rows !=null && rows.length >0){
          rows.forEach(row => {
             row.planId = this.planId;

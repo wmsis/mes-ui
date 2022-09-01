@@ -386,6 +386,7 @@ export default {
         updateBy: null,
         updateTime: null
       };
+      this.autoGenFlag = false;
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -408,7 +409,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加设备点检计划头";
+      this.title = "添加计划";
       this.optType = "add";
     },
     // 查询明细按钮操作
@@ -429,7 +430,7 @@ export default {
       getCheckplan(planId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改设备点检计划头";
+        this.title = "修改计划";
         this.optType = "edit";
       });
     },
@@ -456,27 +457,31 @@ export default {
     handleFinish(){
       if(this.form.planId != null && this.form.status =='PREPARE'){
         this.form.status='FINISHED';
-        updateCheckplan(this.form).then(response => {
+        updateCheckplan(this.form).then(response => {                
                 this.$modal.msgSuccess("已启用");
                 this.open = false;
                 this.getList();
+        },err =>{
+          this.form.status='PREPARE';
         });
       }
     },
     handleDeFinish(){
       if(this.form.planId != null && this.form.status =='FINISHED'){
         this.form.status='PREPARE';
-        updateCheckplan(this.form).then(response => {
+        updateCheckplan(this.form).then(response => {                
                 this.$modal.msgSuccess("已停用");
                 this.open = false;
                 this.getList();
+        },err =>{
+          this.form.status='FINISHED';
         });
       }
     },
     /** 删除按钮操作 */
     handleDelete(row) {
       const planIds = row.planId || this.ids;
-      this.$modal.confirm('是否确认删除设备点检计划头编号为"' + planIds + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除计划编号为"' + planIds + '"的数据项？').then(function() {
         return delCheckplan(planIds);
       }).then(() => {
         this.getList();
