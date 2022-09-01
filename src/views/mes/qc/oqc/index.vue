@@ -105,13 +105,21 @@
 
     <el-table v-loading="loading" :data="oqcList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />      
-      <el-table-column label="出货检验单编号" width="120px" align="center" prop="oqcCode" />
+      <el-table-column label="出货检验单编号" width="150px" align="center" prop="oqcCode" >
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            @click="handleView(scope.row)"
+            v-hasPermi="['mes:qc:oqc:query']"
+          >{{scope.row.oqcCode}}</el-button>
+        </template>
+      </el-table-column>      
       <el-table-column label="验单名称" width="100px" align="center" prop="oqcName" :show-overflow-tooltip="true"/>
    
       <el-table-column label="客户名称" width="100px" align="center" prop="clientName" :show-overflow-tooltip="true"/>
       <el-table-column label="批次号" align="center" prop="batchCode" />
       
-      <el-table-column label="产品编码" align="center" prop="itemCode" />
+      <el-table-column label="产品编码" width="120px" align="center" prop="itemCode" />
       <el-table-column label="产品名称" align="center" prop="itemName" :show-overflow-tooltip="true"/>
       <el-table-column label="规格型号" align="center" prop="specification" :show-overflow-tooltip="true"/>
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
@@ -120,13 +128,17 @@
       <el-table-column label="检测数量" align="center" prop="quantityCheck" />
       <el-table-column label="不合格数" align="center" prop="quantityUnqualified" />
   
-      <el-table-column label="检测结果" align="center" prop="checkResult" />
-      <el-table-column label="出货日期" align="center" prop="outDate" width="180">
+      <el-table-column label="检测结果" align="center" prop="checkResult" >
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.mes_qc_result" :value="scope.row.checkResult"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="出货日期" align="center" prop="outDate" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.outDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="检测日期" align="center" prop="inspectDate" width="180">
+      <el-table-column label="检测日期" align="center" prop="inspectDate" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.inspectDate, '{y}-{m}-{d}') }}</span>
         </template>
@@ -230,8 +242,11 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="客户编号" prop="clientCode">
-              <el-input v-model="form.clientCode"  placeholder="请选择客户" />
+              <el-input v-model="form.clientCode" placeholder="请输入客户编码" >
+                <el-button slot="append" @click="handleSelectClient" icon="el-icon-search"></el-button>
+              </el-input>
             </el-form-item>
+            <ClientSelect ref="clientSelect" @onSelected="onClientSelected" > </ClientSelect>
           </el-col>
 
           <el-col :span="8">
@@ -346,7 +361,7 @@
       </el-form>
       <el-divider v-if="form.oqcId !=null" content-position="center">检测项</el-divider> 
       <el-card shadow="always" v-if="form.oqcId !=null" class="box-card">
-          <Oqcline ref=line :ipqcId="form.oqcId" :optType="optType"></Oqcline>
+          <Oqcline ref=line :oqcId="form.oqcId" :optType="optType"></Oqcline>
       </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
@@ -361,13 +376,14 @@
 <script>
 import { listOqc, getOqc, delOqc, addOqc, updateOqc } from "@/api/mes/qc/oqc";
 import ItemSelect  from "@/components/itemSelect/single.vue";
+import ClientSelect from "@/components/clientSelect/single.vue";
 import {genCode} from "@/api/system/autocode/rule";
 import Oqcline from "./line.vue";
 export default {
   name: "Oqc",
   dicts: ['mes_order_status','mes_qc_result'],
   components: {
-    ItemSelect,Oqcline
+    ItemSelect,Oqcline,ClientSelect
   },
   data() {
     return {
@@ -444,6 +460,12 @@ export default {
         ],
         quantityCheck: [
           { required: true, message: "本次检测数量不能为空", trigger: "blur" }
+        ],
+        outDate: [
+          { required: true, message: "请选择出货日期", trigger: "blur" }
+        ],
+        inspectDate: [
+          { required: true, message: "请选择检测日期", trigger: "blur" }
         ],
       }
     };
@@ -528,6 +550,17 @@ export default {
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
+    //查看明细
+    handleView(row){
+      this.reset();
+      const oqcId = row.oqcId || this.ids;
+      getOqc(oqcId).then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "查看出货检验单信息";
+        this.optType = "view";
+      });
+    },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
@@ -605,6 +638,17 @@ export default {
           this.form.itemName = obj.itemName;
           this.form.specification = obj.specification;
           this.form.unitOfMeasure = obj.unitOfMeasure;  
+        }
+    },
+    handleSelectClient(){
+      this.$refs.clientSelect.showFlag = true;
+    },
+    //客户选择弹出框
+    onClientSelected(obj){
+        if(obj != undefined && obj != null){
+          this.form.clientId = obj.clientId;
+          this.form.clientCode = obj.clientCode;
+          this.form.clientName = obj.clientName;
         }
     },
     /** 导出按钮操作 */

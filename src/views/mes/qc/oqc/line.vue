@@ -1,16 +1,16 @@
 <template>
   <div class="app-container">
     
-    <el-table v-loading="loading" :data="oqclineList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="oqclineList" >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="检测项名称" align="center" prop="indexName" />
+      <el-table-column label="检测项名称" width="120px" align="center" prop="indexName" />
       <el-table-column label="检测项类型" width="100px" align="center" prop="indexType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.mes_index_type" :value="scope.row.indexType"/>
         </template>
       </el-table-column>
       <el-table-column label="检测工具" align="center" prop="qcTool" />
-      <el-table-column label="检测要求" align="center" prop="checkMethod" />
+      <el-table-column label="检测要求" width="150px" align="center" prop="checkMethod" :show-overflow-tooltip="true"/>
       <el-table-column label="标准值" align="center" prop="standerVal" />
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="误差上限" align="center" prop="thresholdMax" />
@@ -49,6 +49,7 @@ import Defectrecord from "../defectrecord/index.vue"
 export default {
   name: "Oqcline",
   components: {Defectrecord},
+  dicts: ['mes_index_type'],
   props: {
     oqcId: null,
     optType: undefined
@@ -105,6 +106,7 @@ export default {
     getList() {
       this.loading = true;
       listOqcline(this.queryParams).then(response => {
+        debugger;
         this.oqclineList = response.rows;
         this.total = response.total;
         this.loading = false;
