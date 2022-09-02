@@ -1,25 +1,32 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="条码格式" prop="barcodeFormart">
+      <el-form-item label="条码类型" prop="barcodeType">
+        <el-select v-model="queryParams.barcodeType" placeholder="请选择条码类型">
+          <el-option
+            v-for="dict in dict.type.mes_barcode_type"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="业务编码" prop="bussinessCode">
         <el-input
-          v-model="queryParams.barcodeFormart"
-          placeholder="请输入条码格式"
+          v-model="queryParams.bussinessCode"
+          placeholder="请输入业务编码"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
-
-      <el-form-item label="是否生效" prop="enableFlag">
+      <el-form-item label="业务名称" prop="bussinessName">
         <el-input
-          v-model="queryParams.enableFlag"
-          placeholder="请输入是否生效"
+          v-model="queryParams.bussinessName"
+          placeholder="请输入业务名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -44,6 +51,8 @@
         </template>
       </el-table-column>
       <el-table-column label="条码内容" align="center" prop="barcodeContent" />
+      <el-table-column label="业务编码" align="center" prop="bussinessCode" />
+      <el-table-column label="业务名称" align="center" prop="bussinessName" />
       <el-table-column label="是否生效" align="center" prop="enableFlag" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -52,14 +61,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['wm:barcode:edit']"
+            v-hasPermi="['mes:wm:barcode:edit']"
           >查看</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['wm:barcode:remove']"
+            v-hasPermi="['mes:wm:barcode:remove']"
           >打印</el-button>
         </template>
       </el-table-column>
@@ -79,30 +88,28 @@
         <el-form-item label="条码格式" prop="barcodeFormart">
           <el-input v-model="form.barcodeFormart" placeholder="请输入条码格式" />
         </el-form-item>
-        <el-form-item label="产品物料ID">
+        <el-form-item label="条码内容">
           <editor v-model="form.barcodeContent" :min-height="192"/>
         </el-form-item>
+        <el-form-item lable="条码类型">
+          <el-select v-model="form.barcodeType" placeholder="请选择条码类型">
+            <el-option
+              v-for="dict in dict.type.mes_barcode_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="条码地址" prop="url">
-          <el-input v-model="form.url" placeholder="请输入条码地址" />
+          <el-input v-model="form.barcodeUrl" placeholder="请输入条码地址" />
         </el-form-item>
         <el-form-item label="是否生效" prop="enableFlag">
           <el-input v-model="form.enableFlag" placeholder="请输入是否生效" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="预留字段1" prop="attr1">
-          <el-input v-model="form.attr1" placeholder="请输入预留字段1" />
-        </el-form-item>
-        <el-form-item label="预留字段2" prop="attr2">
-          <el-input v-model="form.attr2" placeholder="请输入预留字段2" />
-        </el-form-item>
-        <el-form-item label="预留字段3" prop="attr3">
-          <el-input v-model="form.attr3" placeholder="请输入预留字段3" />
-        </el-form-item>
-        <el-form-item label="预留字段4" prop="attr4">
-          <el-input v-model="form.attr4" placeholder="请输入预留字段4" />
-        </el-form-item>
+        </el-form-item>       
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -117,6 +124,7 @@ import { listBarcode, getBarcode, delBarcode, addBarcode, updateBarcode } from "
 
 export default {
   name: "Barcode",
+  dicts: ['mes_barcode_type'],
   data() {
     return {
       // 遮罩层
@@ -144,12 +152,11 @@ export default {
         barcodeFormart: null,
         barcodeType: null,
         barcodeContent: null,
-        url: null,
-        enableFlag: null,
-        attr1: null,
-        attr2: null,
-        attr3: null,
-        attr4: null,
+        bussinessId: null,
+        bussinessCode: null,
+        bussinessName: null,
+        barcodeUrl: null,
+        enableFlag: null
       },
       // 表单参数
       form: {},
@@ -192,7 +199,10 @@ export default {
         barcodeFormart: null,
         barcodeType: null,
         barcodeContent: null,
-        url: null,
+        bussinessId: null,
+        bussinessCode: null,
+        bussinessName: null,
+        barcodeUrl: null,
         enableFlag: null,
         remark: null,
         attr1: null,
