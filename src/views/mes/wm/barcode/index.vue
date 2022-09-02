@@ -33,11 +33,42 @@
       </el-form-item>
     </el-form>
 
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+          v-hasPermi="['mes:wm:barcode:add']"
+        >新增</el-button>
+      </el-col>
+
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          plain
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+          v-hasPermi="['mes:wm:barcode:remove']"
+        >删除</el-button>
+      </el-col>
+
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+    </el-row>
+
     <el-table v-loading="loading" :data="barcodeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />     
       <el-table-column label="条码" align="center">
         <template slot-scope="scope">
-            <el-image class="barcodeClass" :src="scope.row.url"></el-image>
+            <el-image @click="handleUpdate(scope.row)" class="barcodeClass" fit="scale-down" :src="scope.row.barcodeUrl">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline"></i>
+              </div>
+            </el-image>
         </template>
       </el-table-column> 
       <el-table-column label="条码格式" align="center" prop="barcodeFormart">
@@ -83,33 +114,112 @@
     />
 
     <!-- 添加或修改条码清单对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="条码格式" prop="barcodeFormart">
-          <el-input v-model="form.barcodeFormart" placeholder="请输入条码格式" />
-        </el-form-item>
-        <el-form-item label="条码内容">
-          <editor v-model="form.barcodeContent" :min-height="192"/>
-        </el-form-item>
-        <el-form-item lable="条码类型">
-          <el-select v-model="form.barcodeType" placeholder="请选择条码类型">
-            <el-option
-              v-for="dict in dict.type.mes_barcode_type"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="条码地址" prop="url">
-          <el-input v-model="form.barcodeUrl" placeholder="请输入条码地址" />
-        </el-form-item>
-        <el-form-item label="是否生效" prop="enableFlag">
-          <el-input v-model="form.enableFlag" placeholder="请输入是否生效" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-        </el-form-item>       
+    <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="条码格式" prop="barcodeFormart">          
+              <el-select v-model="form.barcodeFormart" placeholder="请选择条码格式">
+                <el-option
+                  v-for="dict in dict.type.mes_barcode_formart"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="条码类型" prop="barcodeType">
+              <el-select v-model="form.barcodeType" placeholder="请选择条码类型">
+                <el-option
+                  v-for="dict in dict.type.mes_barcode_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否启用">
+              <el-radio-group v-model="form.enableFlag" disabled v-if="optType=='view'">
+                <el-radio
+                  v-for="dict in dict.type.sys_yes_no"
+                  :key="dict.value"
+                  :label="dict.value"
+                >{{dict.label}}</el-radio>
+              </el-radio-group>
+              <el-radio-group v-model="form.enableFlag" v-else>
+                <el-radio
+                  v-for="dict in dict.type.sys_yes_no"
+                  :key="dict.value"
+                  :label="dict.value"
+                >{{dict.label}}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!--根据不同的条码类型展示不同的业务内容选择 start-->
+        <!--物料产品-->
+        <el-row v-if="form.barcodeType=='ITEM'">
+          <el-col :span="12">
+            <el-form-item label="物料编码"  prop="bussinessCode">
+              <el-input v-model="form.bussinessCode" readonly="readonly" placeholder="请选择物料编码" >
+                <el-button slot="append" @click="handleSelectProduct" icon="el-icon-search"></el-button>
+              </el-input>
+            </el-form-item>
+            <ItemSelect ref="itemSelect" @onSelected="onItemSelected" > </ItemSelect>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="物料名称" prop="bussinessName">
+              <el-input v-model="form.bussinessName" readonly="readonly" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!--供应商-->
+        <el-row v-else-if="form.barcodeType=='VENDOR'">
+          <el-col :span="12">
+            <el-form-item label="供应商编号" prop="bussinessCode">
+              <el-input v-model="form.bussinessCode" readonly="readonly" placeholder="请选择供应商" >
+                <el-button slot="append" @click="handleSelectVendor" icon="el-icon-search"></el-button>
+              </el-input>
+              <VendorSelect ref="vendorSelect" @onSelected="onVendorSelected" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="供应商名称" prop="bussinessName">
+              <el-input v-model="form.bussinessName" readonly="readonly" >
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!--根据不同的条码类型展示不同的业务内容选择 end-->
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="条码内容">
+              <el-input v-model="form.barcodeContent" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="条码" prop="url">
+              <el-image class="barcodeClass" :src="form.barcodeUrl">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline"></i>
+                </div>
+              </el-image>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+            </el-form-item>   
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -121,12 +231,18 @@
 
 <script>
 import { listBarcode, getBarcode, delBarcode, addBarcode, updateBarcode } from "@/api/mes/wm/barcode";
+import ItemSelect  from "@/components/itemSelect/single.vue";
+import VendorSelect from "@/components/vendorSelect/single.vue";
 
 export default {
   name: "Barcode",
-  dicts: ['mes_barcode_type'],
+  dicts: ['mes_barcode_type','mes_barcode_formart','sys_yes_no'],
+  components: {
+    ItemSelect,VendorSelect
+  },
   data() {
     return {
+      optType: null,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -203,7 +319,7 @@ export default {
         bussinessCode: null,
         bussinessName: null,
         barcodeUrl: null,
-        enableFlag: null,
+        enableFlag: 'Y',
         remark: null,
         attr1: null,
         attr2: null,
@@ -236,7 +352,8 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加条码清单";
+      this.title = "添加条码";
+      this.optType = "add";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -245,7 +362,8 @@ export default {
       getBarcode(barcodeId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改条码清单";
+        this.title = "修改条码";
+        this.optType = "edit";
       });
     },
     /** 提交按钮 */
@@ -283,7 +401,20 @@ export default {
       this.download('wm/barcode/export', {
         ...this.queryParams
       }, `barcode_${new Date().getTime()}.xlsx`)
-    }
+    },
+    //物料选择
+    handleSelectProduct(){
+      this.$refs.itemSelect.showFlag = true;
+    },
+    //物料选择弹出框
+    onItemSelected(obj){
+        if(obj != undefined && obj != null){
+          this.form.bussinessId = obj.itemId;
+          this.form.bussinessCode = obj.itemCode;
+          this.form.bussinessName = obj.itemName;
+          this.form.barcodeContent= "".concat(this.form.barcodeType,'-',this.form.bussinessCode);
+        }
+    },
   }
 };
 </script>
