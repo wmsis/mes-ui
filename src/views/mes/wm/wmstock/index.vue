@@ -117,7 +117,12 @@
         <el-table-column label="供应商名称" width="120px" align="center" prop="vendorName" :show-overflow-tooltip="true"/>
         <el-table-column label="供应商简称" width="100px" align="center" prop="vendorNick" />
         <el-table-column label="在库数量" align="center" prop="quantityOnhand" />
-        <el-table-column label="库存有效期" align="center" prop="expireDate" width="180">
+        <el-table-column label="入库日期" align="center" prop="recptDate" width="120">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.recptDate, '{y}-{m}-{d}') }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="库存有效期" align="center" prop="expireDate" width="120">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.expireDate, '{y}-{m}-{d}') }}</span>
           </template>
