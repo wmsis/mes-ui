@@ -194,7 +194,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="所属工序" prop="processId">
               <el-select v-model="form.processId" placeholder="请选择工序">
                 <el-option
@@ -206,7 +206,17 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
+            <el-form-item label="线边库">
+              <el-cascader v-model="warehouseInfo"
+                :options="warehouseOptions"
+                :props="warehouseProps"
+                @change="handleWarehouseChanged"
+              >                  
+              </el-cascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="是否启用" prop="enableFlag">
               <el-radio-group v-model="form.enableFlag" disabled v-if="optType=='view'">
                 <el-radio
@@ -288,7 +298,7 @@ import Workstationworker from "./components/worker";
 
 //工装夹具资源选择与保存
 import WorkStationTool from "./components/tool";
-
+import {getTreeList} from "@/api/mes/wm/warehouse"
 import {listAllProcess} from "@/api/mes/pro/process";
 import {genCode} from "@/api/system/autocode/rule";
 import { listAllWorkshop } from "@/api/mes/md/workshop";
@@ -301,6 +311,13 @@ export default {
       //自动生成编码
       autoGenFlag:false,
       optType: undefined,
+      warehouseInfo:[],
+      warehouseOptions:[],
+      warehouseProps:{
+        multiple: false,
+        value: 'pId',
+        label: 'pName',
+      },
       // 遮罩层
       loading: true,
       // 选中数组
@@ -336,6 +353,9 @@ export default {
         processId: null,
         processCode: null,
         processName: null,
+        warehouseId: null,
+        locationId: null,
+        areaId: null,
         enableFlag: null,
       },
       // 表单参数
@@ -358,6 +378,7 @@ export default {
     this.getList();
     this.getWorkshops();
     this.getProcess();
+    this.getWarehouseList();
   },
   methods: {
     /** 查询工作站列表 */
@@ -381,6 +402,32 @@ export default {
         this.processOptions = response.data;
       });
     },
+    //获取仓库
+    getWarehouseList(){
+      getTreeList().then( response =>{        
+        this.warehouseOptions = response.data;
+        this.warehouseOptions.map(w =>{
+          w.children.map(l =>{
+                  let lstr =JSON.stringify(l.children).replace(/locationId/g,'lId').replace(/areaId/g, 'pId').replace(/areaName/g,'pName');                  
+                  l.children = JSON.parse(lstr);
+          });
+            
+          let wstr = JSON.stringify(w.children).replace(/warehouseId/g,'wId').replace(/locationId/g, 'pId').replace(/locationName/g,'pName');  
+          w.children =  JSON.parse(wstr); 
+
+        });
+        let ostr=JSON.stringify(this.warehouseOptions).replace(/warehouseId/g,'pId').replace(/warehouseName/g, 'pName');
+        this.warehouseOptions = JSON.parse(ostr);
+      });
+    },
+        //选择默认的仓库、库区、库位
+    handleWarehouseChanged(obj){
+      if(obj !=null){
+        this.form.warehouseId = obj[0];
+        this.form.locationId = obj[1];
+        this.form.areaId = obj[2];
+      }
+    },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -399,6 +446,9 @@ export default {
         processId: null,
         processCode: null,
         processName: null,
+        warehouseId: null,
+        locationId: null,
+        areaId: null,
         enableFlag: 'Y',
         remark: null,
         createBy: null,
