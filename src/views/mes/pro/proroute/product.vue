@@ -168,6 +168,11 @@
             </el-col>
         </el-row>
       </el-form>
+      <el-tabs type="border-card" v-if="form.recordId != null">
+        <el-tab-pane v-for="(process,index) in processList" :key="index" :label="process.processName">
+          <Routeproductbom :routeId="form.routeId" :productId="form.productId" :processId="process.processId" :optType="optType"></Routeproductbom>
+        </el-tab-pane>
+      </el-tabs>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view'">返回</el-button>
         <el-button type="primary" @click="submitForm" v-else>确 定</el-button>
@@ -179,11 +184,13 @@
 
 <script>
 import { listRouteproduct, getRouteproduct, delRouteproduct, addRouteproduct, updateRouteproduct, moveRouteproduct } from "@/api/mes/pro/routeproduct";
+import { listRouteprocess} from "@/api/mes/pro/routeprocess";
+import Routeproductbom from "./routeproductbom.vue"
 import ItemSelect  from "@/components/itemSelect/single.vue";
 export default {
   name: "Routeproduct",
   dicts: ['mes_time_type'],
-  components: {ItemSelect},
+  components: {ItemSelect,Routeproductbom},
   data() {
     return {
       // 遮罩层
@@ -200,6 +207,8 @@ export default {
       total: 0,
       // 产品制程表格数据
       routeproductList: [],
+      //当前工艺中配置的工序清单
+      processList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -245,6 +254,15 @@ export default {
         this.loading = false;
       });
     },
+    //查询当前配置的工序
+    getProcess(){
+      let param = {
+        routeId: this.form.routeId
+      };
+      listRouteprocess(param).then(response => {
+        this.processList = response.rows;
+      });
+    },
     //物料选择弹出框
     handleSelectProduct(){
       this.$refs.itemSelect.showFlag = true;
@@ -283,6 +301,7 @@ export default {
         updateBy: null,
         updateTime: null
       };
+      this.getProcess();//重新获取一次工序的配置
       this.resetForm("form");
     },
     /** 搜索按钮操作 */

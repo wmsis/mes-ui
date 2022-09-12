@@ -1,13 +1,13 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="10" class="mb8">
+    <el-row :gutter="10" v-if="optType!='view'" class="mb8">
       <el-col :span="1.5">
         <el-button
           type="primary"
           plain
           icon="el-icon-plus"
           size="mini"
-          @click="handleAdd"
+          @click="handleAdd"          
           v-hasPermi="['mes:pro:proroute:add']"
         >新增</el-button>
       </el-col>
@@ -32,7 +32,7 @@
       <el-table-column label="规格型号" align="center" prop="specification" />
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="用料比例" align="center" prop="quantity" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" v-if="optType!='view'" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -112,6 +112,7 @@ export default {
     routeId: null,
     productId: null,
     processId: null,
+    optType: null
   },
   data() {
     return {
