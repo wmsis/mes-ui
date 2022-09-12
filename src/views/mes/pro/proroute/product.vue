@@ -72,7 +72,13 @@
     <el-table v-loading="loading" :data="routeproductList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" >
-
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            @click="handleView(scope.row)"
+            v-hasPermi="['mes:pro:proroute:query']"
+          >{{scope.row.itemCode}}</el-button>
+        </template>
       </el-table-column>
       <el-table-column label="产品物料名称" width="150px" align="center" prop="itemName" :show-overflow-tooltip="true"/>
       <el-table-column label="规格型号" align="center" prop="specification" :show-overflow-tooltip="true"/>
@@ -170,7 +176,7 @@
       </el-form>
       <el-tabs type="border-card" v-if="form.recordId != null">
         <el-tab-pane v-for="(process,index) in processList" :key="index" :label="process.processName">
-          <Routeproductbom :routeId="form.routeId" :productId="form.productId" :processId="process.processId" :optType="optType"></Routeproductbom>
+          <Routeproductbom :routeId="form.routeId" :productId="form.itemId" :processId="process.processId" :optType="optType"></Routeproductbom>
         </el-tab-pane>
       </el-tabs>
       <div slot="footer" class="dialog-footer">
@@ -325,6 +331,16 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加产品制程";
+    },
+    // 查询明细按钮操作
+    handleView(row){
+      this.reset();
+      const recordId = row.recordId || this.ids;
+      getRouteproduct(recordId).then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "查看工艺线路信息";
+      });
     },
     /** 修改按钮操作 */
     handleUpdate(row) {

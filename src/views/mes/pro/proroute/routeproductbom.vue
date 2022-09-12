@@ -62,12 +62,15 @@
 
     <!-- 添加或修改产品制程物料BOM对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-row>
           <el-col :span="12">
             <el-form-item label="产品物料编码" prop="itemCode">
-              <el-input v-model="form.itemCode" placeholder="请输入产品物料编码" />
+              <el-input v-model="form.itemCode" placeholder="请选择此产品当前工序的BOM物料" >
+                <el-button slot="append" @click="handleItemBomSelect" icon="el-icon-search"></el-button>
+              </el-input>
             </el-form-item>
+            <ItemBomSelectSingle ref="itemBom" :itemId="productId" @onSelected="onItemBomSelected"></ItemBomSelectSingle>
           </el-col>
           <el-col :span="12">
             <el-form-item label="产品物料名称" prop="itemName">
@@ -105,9 +108,10 @@
 
 <script>
 import { listRouteproductbom, getRouteproductbom, delRouteproductbom, addRouteproductbom, updateRouteproductbom } from "@/api/mes/pro/routeproductbom";
-
+import ItemBomSelectSingle from "@/components/itemBomSelect/single.vue"
 export default {
   name: "Routeproductbom",
+  components:{ItemBomSelectSingle},
   props:{
     routeId: null,
     productId: null,
@@ -153,26 +157,17 @@ export default {
       // 表单校验
       rules: {
         routeId: [
-          { required: true, message: "工艺路线ID不能为空", trigger: "blur" }
+          { required: true, message: "工艺路线不能为空", trigger: "blur" }
         ],
         processId: [
-          { required: true, message: "工序ID不能为空", trigger: "blur" }
+          { required: true, message: "工序不能为空", trigger: "blur" }
         ],
         productId: [
-          { required: true, message: "产品物料ID不能为空", trigger: "blur" }
+          { required: true, message: "产品物料不能为空", trigger: "blur" }
         ],
         itemId: [
-          { required: true, message: "产品物料ID不能为空", trigger: "blur" }
-        ],
-        itemCode: [
-          { required: true, message: "产品物料编码不能为空", trigger: "blur" }
-        ],
-        itemName: [
-          { required: true, message: "产品物料名称不能为空", trigger: "blur" }
-        ],
-        unitOfMeasure: [
-          { required: true, message: "单位不能为空", trigger: "blur" }
-        ],
+          { required: true, message: "产品BOM物料不能为空", trigger: "blur" }
+        ]      
       }
     };
   },
@@ -182,6 +177,7 @@ export default {
   methods: {
     /** 查询产品制程物料BOM列表 */
     getList() {
+      debugger;
       this.loading = true;
       listRouteproductbom(this.queryParams).then(response => {
         this.routeproductbomList = response.rows;
@@ -286,6 +282,18 @@ export default {
       this.download('pro/routeproductbom/export', {
         ...this.queryParams
       }, `routeproductbom_${new Date().getTime()}.xlsx`)
+    },
+    handleItemBomSelect(){
+      this.$refs.itemBom.showFlag=true;
+      this.$refs.itemBom.getList();
+    },
+    onItemBomSelected(row){
+      this.form.itemId = row.bomItemId;
+      this.form.itemCode = row.bomItemCode;
+      this.form.itemName = row.bomItemName;
+      this.form.specification = row.bomItemSpec;
+      this.form.unitOfMeasure = row.unitOfMeasure;
+      this.form.quantity = row.quantity;
     }
   }
 };
