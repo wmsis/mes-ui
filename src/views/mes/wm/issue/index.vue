@@ -540,6 +540,8 @@ export default {
         this.form.workorderId = row.workorderId;
         this.form.workorderCode = row.workorderCode;
         this.form.workorderName = row.workorderName;
+        this.form.clientCode = row.clientCode;
+        this.form.clientName = row.clientName;
       }
     },
     //自动生成编码
