@@ -218,14 +218,6 @@
         </el-row>        
         <el-row>
           <el-col :span="8">
-            <el-form-item label="工作站" prop="workstationName">
-              <el-input v-model="form.workstationName" placeholder="请选择工作站" >
-                <el-button slot="append" icon="el-icon-search" @click="handleWorkstationSelect"></el-button>
-              </el-input>
-            </el-form-item>
-            <WorkstationSelect ref="wsSelect"  @onSelected="onWorkstationSelected"> </WorkstationSelect>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="生产工单" prop="workorderCode">
               <el-input v-model="form.workorderCode" placeholder="请选择生产工单" >
                 <el-button slot="append" icon="el-icon-search" @click="handleWorkorderSelect"></el-button>
@@ -234,8 +226,15 @@
             <WorkorderSelect ref="woSelect" @onSelected="onWorkorderSelected"></WorkorderSelect>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="生产任务" prop="taskCode">
-              <el-input v-model="form.taskCode" placeholder="请输入生产任务编码" />
+            <el-form-item label="客户编号" >
+              <el-input v-model="form.clientCode" placeholder="请选择生产工单" >               
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="客户名称" >
+              <el-input v-model="form.clientName" placeholder="请选择生产工单" >               
+              </el-input>
             </el-form-item>
           </el-col>
         </el-row>        
