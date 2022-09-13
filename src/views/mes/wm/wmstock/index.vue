@@ -108,6 +108,7 @@
         <el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" />
         <el-table-column label="产品物料名称" width="150px" align="center" prop="itemName" :show-overflow-tooltip="true"/>
         <el-table-column label="规格型号" align="center" prop="specification" :show-overflow-tooltip="true"/>
+        <el-table-column label="在库数量" align="center" prop="quantityOnhand" />
         <el-table-column label="单位" align="center" prop="unitOfMeasure" />
         <el-table-column label="入库批次号" width="100px" align="center" prop="batchCode" :show-overflow-tooltip="true"/>
         <el-table-column label="仓库" align="center" prop="warehouseName" />
@@ -116,7 +117,7 @@
         <el-table-column label="供应商编号" width="100px" align="center" prop="vendorCode" />
         <el-table-column label="供应商名称" width="120px" align="center" prop="vendorName" :show-overflow-tooltip="true"/>
         <el-table-column label="供应商简称" width="100px" align="center" prop="vendorNick" />
-        <el-table-column label="在库数量" align="center" prop="quantityOnhand" />
+        <el-table-column label="生产工单" width="100px" prop="workorderCode" />
         <el-table-column label="入库日期" align="center" prop="recptDate" width="120">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.recptDate, '{y}-{m}-{d}') }}</span>
@@ -196,6 +197,7 @@ export default {
         vendorName: null,
         vendorNick: null,
         quantityOnhand: null,
+        workorderCode: null,
         expireDate: null,
       },
       // 表单参数
