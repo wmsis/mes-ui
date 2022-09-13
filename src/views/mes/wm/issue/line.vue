@@ -348,6 +348,7 @@ export default {
           this.form.itemName = obj.itemName;
           this.form.specification = obj.specification;
           this.form.unitOfMeasure = obj.unitOfMeasure;  
+          this.form.batchCode = obj.batchCode;
           this.form.warehouseId = obj.warehouseId;
           this.form.warehouseCode = obj.warehouseCode;
           this.form.warehouseName = obj.warehouseName;
