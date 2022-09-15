@@ -69,9 +69,9 @@
 
     <el-table v-loading="loading" :data="rtissueList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="退料单编号" align="center" prop="rtCode" />
-      <el-table-column label="退料单名称" align="center" prop="rtName" />
-      <el-table-column label="生产工单编码" align="center" prop="workorderCode" />
+      <el-table-column label="退料单编号" width="140px" align="center" prop="rtCode" />
+      <el-table-column label="退料单名称" align="center" prop="rtName" :show-overflow-tooltip="true"/>
+      <el-table-column label="生产工单" width="140px" align="center" prop="workorderCode" />
       <el-table-column label="仓库名称" align="center" prop="warehouseName" />
       <el-table-column label="库区名称" align="center" prop="locationName" />
       <el-table-column label="库位名称" align="center" prop="areaName" />
@@ -80,7 +80,11 @@
           <span>{{ parseTime(scope.row.rtDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="单据状态" align="center" prop="status" />
+      <el-table-column label="单据状态" align="center" prop="status">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.mes_order_status" :value="scope.row.status"/>
+        </template>
+      </el-table-column>   
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
