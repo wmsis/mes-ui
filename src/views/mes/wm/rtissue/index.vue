@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="90px">
       <el-form-item label="退料单编号" prop="rtCode">
         <el-input
           v-model="queryParams.rtCode"
@@ -9,10 +9,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="生产工单编码" prop="workorderCode">
+      <el-form-item label="生产工单" prop="workorderCode">
         <el-input
           v-model="queryParams.workorderCode"
-          placeholder="请输入生产工单编码"
+          placeholder="请输入生产工单编号"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -111,61 +111,74 @@
     />
 
     <!-- 添加或修改生产退料单头对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="退料单编号" prop="rtCode">
-          <el-input v-model="form.rtCode" placeholder="请输入退料单编号" />
-        </el-form-item>
-        <el-form-item label="退料单名称" prop="rtName">
-          <el-input v-model="form.rtName" placeholder="请输入退料单名称" />
-        </el-form-item>
-        <el-form-item label="生产工单ID" prop="workorderId">
-          <el-input v-model="form.workorderId" placeholder="请输入生产工单ID" />
-        </el-form-item>
-        <el-form-item label="生产工单编码" prop="workorderCode">
-          <el-input v-model="form.workorderCode" placeholder="请输入生产工单编码" />
-        </el-form-item>
-        <el-form-item label="仓库ID" prop="warehouseId">
-          <el-input v-model="form.warehouseId" placeholder="请输入仓库ID" />
-        </el-form-item>
-        <el-form-item label="仓库编码" prop="warehouseCode">
-          <el-input v-model="form.warehouseCode" placeholder="请输入仓库编码" />
-        </el-form-item>
-        <el-form-item label="仓库名称" prop="warehouseName">
-          <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" />
-        </el-form-item>
-        <el-form-item label="库区ID" prop="locationId">
-          <el-input v-model="form.locationId" placeholder="请输入库区ID" />
-        </el-form-item>
-        <el-form-item label="库区编码" prop="locationCode">
-          <el-input v-model="form.locationCode" placeholder="请输入库区编码" />
-        </el-form-item>
-        <el-form-item label="库区名称" prop="locationName">
-          <el-input v-model="form.locationName" placeholder="请输入库区名称" />
-        </el-form-item>
-        <el-form-item label="库位ID" prop="areaId">
-          <el-input v-model="form.areaId" placeholder="请输入库位ID" />
-        </el-form-item>
-        <el-form-item label="库位编码" prop="areaCode">
-          <el-input v-model="form.areaCode" placeholder="请输入库位编码" />
-        </el-form-item>
-        <el-form-item label="库位名称" prop="areaName">
-          <el-input v-model="form.areaName" placeholder="请输入库位名称" />
-        </el-form-item>
-        <el-form-item label="退料日期" prop="rtDate">
-          <el-date-picker clearable
-            v-model="form.rtDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择退料日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
+    <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="退料单编号" prop="rtCode">
+              <el-input v-model="form.rtCode" placeholder="请输入退料单编号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item  label-width="80">
+              <el-switch v-model="autoGenFlag"
+                  active-color="#13ce66"
+                  active-text="自动生成"
+                  @change="handleAutoGenChange(autoGenFlag)" v-if="optType != 'view' && form.status =='PREPARE'">               
+              </el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="退料单名称" prop="rtName">
+              <el-input v-model="form.rtName" placeholder="请输入退料单名称" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="生产工单" prop="workorderCode">
+              <el-input v-model="form.workorderCode" placeholder="请输入生产工单" >
+                <el-button slot="append" icon="el-icon-search" @click="handleWorkorderSelect"></el-button>
+              </el-input>
+            </el-form-item>
+            <WorkorderSelect ref="woSelect" @onSelected="onWorkorderSelected"></WorkorderSelect>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="接收仓库">
+              <el-cascader v-model="warehouseInfo"
+                :options="warehouseOptions"
+                :props="warehouseProps"
+                @change="handleWarehouseChanged"
+              >                  
+              </el-cascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="退料日期" prop="rtDate">
+              <el-date-picker clearable
+                v-model="form.rtDate"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择退料日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>         
+        </el-row>
       </el-form>
+      <el-divider v-if="form.rtId !=null" content-position="center">物料信息</el-divider> 
+      <el-card shadow="always" v-if="form.rtId !=null" class="box-card">
+        <Rtissueline :rtId="form.rtId" :optType="optType"></Rtissueline>
+      </el-card>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>     
+        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>           
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -173,12 +186,28 @@
 </template>
 
 <script>
-import { listRtissue, getRtissue, delRtissue, addRtissue, updateRtissue } from "@/api/mes/wm/rtissue";
-
+import { listRtissue, getRtissue, delRtissue, addRtissue, updateRtissue, execute } from "@/api/mes/wm/rtissue";
+import WorkorderSelect from "@/components/workorderSelect/single.vue"
+import Rtissueline from "./line.vue";
+import {getTreeList} from "@/api/mes/wm/warehouse"
+import {genCode} from "@/api/system/autocode/rule"
 export default {
   name: "Rtissue",
+  dicts: ['mes_order_status'],
+  components: {
+    Rtissueline,WorkorderSelect
+  },
   data() {
     return {
+      autoGenFlag:false,
+      optType: undefined,
+      warehouseInfo:[],
+      warehouseOptions:[],
+      warehouseProps:{
+        multiple: false,
+        value: 'pId',
+        label: 'pName',
+      },
       // 遮罩层
       loading: true,
       // 选中数组
@@ -229,6 +258,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getWarehouseList();
   },
   methods: {
     /** 查询生产退料单头列表 */
@@ -238,6 +268,23 @@ export default {
         this.rtissueList = response.rows;
         this.total = response.total;
         this.loading = false;
+      });
+    },
+    getWarehouseList(){
+      getTreeList().then( response =>{        
+        this.warehouseOptions = response.data;
+        this.warehouseOptions.map(w =>{
+          w.children.map(l =>{
+                  let lstr =JSON.stringify(l.children).replace(/locationId/g,'lId').replace(/areaId/g, 'pId').replace(/areaName/g,'pName');                  
+                  l.children = JSON.parse(lstr);
+          });
+            
+          let wstr = JSON.stringify(w.children).replace(/warehouseId/g,'wId').replace(/locationId/g, 'pId').replace(/locationName/g,'pName');  
+          w.children =  JSON.parse(wstr); 
+
+        });
+        let ostr=JSON.stringify(this.warehouseOptions).replace(/warehouseId/g,'pId').replace(/warehouseName/g, 'pName');
+        this.warehouseOptions = JSON.parse(ostr);
       });
     },
     // 取消按钮
@@ -262,8 +309,8 @@ export default {
         areaId: null,
         areaCode: null,
         areaName: null,
-        rtDate: null,
-        status: "0",
+        rtDate: new Date(),
+        status: "PREPARE",
         remark: null,
         attr1: null,
         attr2: null,
@@ -274,6 +321,7 @@ export default {
         updateBy: null,
         updateTime: null
       };
+      this.autoGenFlag = false;  
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -297,6 +345,7 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加生产退料单头";
+      this.optType = "add";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -304,8 +353,26 @@ export default {
       const rtId = row.rtId || this.ids
       getRtissue(rtId).then(response => {
         this.form = response.data;
+        this.warehouseInfo[0] = response.data.warehouseId;    
+        this.warehouseInfo[1] = response.data.locationId;    
+        this.warehouseInfo[2] = response.data.areaId;  
         this.open = true;
         this.title = "修改生产退料单头";
+        this.optType = "edit";
+      });
+    },
+    // 查询明细按钮操作
+    handleView(row){
+      this.reset();
+      const rtId = row.rtId
+      getRtissue(rtId).then(response => {
+        this.form = response.data;
+        this.warehouseInfo[0] = response.data.warehouseId;    
+        this.warehouseInfo[1] = response.data.locationId;    
+        this.warehouseInfo[2] = response.data.areaId; 
+        this.open = true;
+        this.title = "查看退料单信息";
+        this.optType = "view";
       });
     },
     /** 提交按钮 */
@@ -328,6 +395,16 @@ export default {
         }
       });
     },
+    //执行退库
+    handleExecute(row){
+      const rtIds = row.rtId || this.ids;
+      this.$modal.confirm('确认执行退库？').then(function() {
+        return execute(rtIds)//执行退库
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("退库成功");
+      }).catch(() => {});
+    },
     /** 删除按钮操作 */
     handleDelete(row) {
       const rtIds = row.rtId || this.ids;
@@ -343,6 +420,34 @@ export default {
       this.download('wm/rtissue/export', {
         ...this.queryParams
       }, `rtissue_${new Date().getTime()}.xlsx`)
+    },
+    //选择默认的仓库、库区、库位
+    handleWarehouseChanged(obj){      
+      if(obj !=null){
+        this.form.warehouseId = obj[0];
+        this.form.locationId = obj[1];
+        this.form.areaId = obj[2];
+      }
+    },
+    //选择生产工单
+    handleWorkorderSelect(){
+      this.$refs.woSelect.showFlag = true;
+    },
+    onWorkorderSelected(row){
+      if(row != undefined && row != null){
+        this.form.workorderId = row.workorderId;
+        this.form.workorderCode = row.workorderCode;
+      }
+    },
+    //自动生成编码
+    handleAutoGenChange(autoGenFlag){
+      if(autoGenFlag){
+        genCode('RTISSUE_CODE').then(response =>{
+          this.form.rtCode = response;
+        });
+      }else{
+        this.form.rtCode = null;
+      }
     }
   }
 };

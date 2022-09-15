@@ -35,6 +35,14 @@ export function updateRtissue(data) {
   })
 }
 
+export function execute(rtId){
+  return request({
+    url: '/mes/wm/rtissue/'+rtId,
+    method: 'put',
+    data: data
+  })
+}
+
 // 删除生产退料单头
 export function delRtissue(rtId) {
   return request({
