@@ -1,148 +1,5 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="退料单ID" prop="rtId">
-        <el-input
-          v-model="queryParams.rtId"
-          placeholder="请输入退料单ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库存ID" prop="materialStockId">
-        <el-input
-          v-model="queryParams.materialStockId"
-          placeholder="请输入库存ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品物料ID" prop="itemId">
-        <el-input
-          v-model="queryParams.itemId"
-          placeholder="请输入产品物料ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品物料编码" prop="itemCode">
-        <el-input
-          v-model="queryParams.itemCode"
-          placeholder="请输入产品物料编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品物料名称" prop="itemName">
-        <el-input
-          v-model="queryParams.itemName"
-          placeholder="请输入产品物料名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="单位" prop="unitOfMeasure">
-        <el-input
-          v-model="queryParams.unitOfMeasure"
-          placeholder="请输入单位"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="退料数量" prop="quantityRt">
-        <el-input
-          v-model="queryParams.quantityRt"
-          placeholder="请输入退料数量"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="领料批次号" prop="batchCode">
-        <el-input
-          v-model="queryParams.batchCode"
-          placeholder="请输入领料批次号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="仓库ID" prop="warehouseId">
-        <el-input
-          v-model="queryParams.warehouseId"
-          placeholder="请输入仓库ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="仓库编码" prop="warehouseCode">
-        <el-input
-          v-model="queryParams.warehouseCode"
-          placeholder="请输入仓库编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="仓库名称" prop="warehouseName">
-        <el-input
-          v-model="queryParams.warehouseName"
-          placeholder="请输入仓库名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库区ID" prop="locationId">
-        <el-input
-          v-model="queryParams.locationId"
-          placeholder="请输入库区ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库区编码" prop="locationCode">
-        <el-input
-          v-model="queryParams.locationCode"
-          placeholder="请输入库区编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库区名称" prop="locationName">
-        <el-input
-          v-model="queryParams.locationName"
-          placeholder="请输入库区名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库位ID" prop="areaId">
-        <el-input
-          v-model="queryParams.areaId"
-          placeholder="请输入库位ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库位编码" prop="areaCode">
-        <el-input
-          v-model="queryParams.areaCode"
-          placeholder="请输入库位编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库位名称" prop="areaName">
-        <el-input
-          v-model="queryParams.areaName"
-          placeholder="请输入库位名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -151,7 +8,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['wm:rtissueline:add']"
+          v-hasPermi="['mes:wm:rtissue:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -162,7 +19,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['wm:rtissueline:edit']"
+          v-hasPermi="['mes:wm:rtissue:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -173,44 +30,23 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['wm:rtissueline:remove']"
+          v-hasPermi="['mes:wm:rtissue:remove']"
         >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['wm:rtissueline:export']"
-        >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="rtissuelineList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="行ID" align="center" prop="lineId" />
-      <el-table-column label="退料单ID" align="center" prop="rtId" />
-      <el-table-column label="库存ID" align="center" prop="materialStockId" />
-      <el-table-column label="产品物料ID" align="center" prop="itemId" />
+      <el-table-column type="selection" width="55" align="center" />     
       <el-table-column label="产品物料编码" align="center" prop="itemCode" />
       <el-table-column label="产品物料名称" align="center" prop="itemName" />
       <el-table-column label="规格型号" align="center" prop="specification" />
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="退料数量" align="center" prop="quantityRt" />
       <el-table-column label="领料批次号" align="center" prop="batchCode" />
-      <el-table-column label="仓库ID" align="center" prop="warehouseId" />
-      <el-table-column label="仓库编码" align="center" prop="warehouseCode" />
       <el-table-column label="仓库名称" align="center" prop="warehouseName" />
-      <el-table-column label="库区ID" align="center" prop="locationId" />
-      <el-table-column label="库区编码" align="center" prop="locationCode" />
       <el-table-column label="库区名称" align="center" prop="locationName" />
-      <el-table-column label="库位ID" align="center" prop="areaId" />
-      <el-table-column label="库位编码" align="center" prop="areaCode" />
       <el-table-column label="库位名称" align="center" prop="areaName" />
-      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -218,14 +54,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['wm:rtissueline:edit']"
+            v-hasPermi="['mes:wm:rtissue:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['wm:rtissueline:remove']"
+            v-hasPermi="['mes:wm:rtissue:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -309,7 +145,7 @@
 </template>
 
 <script>
-import { listRtissueline, getRtissueline, delRtissueline, addRtissueline, updateRtissueline } from "@/api/wm/rtissueline";
+import { listRtissueline, getRtissueline, delRtissueline, addRtissueline, updateRtissueline } from "@/api/mes/wm/rtissueline";
 
 export default {
   name: "Rtissueline",
