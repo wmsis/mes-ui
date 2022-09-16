@@ -193,14 +193,14 @@ export default {
         specification: null,
         unitOfMeasure: null,
         batchCode: this.batchCode,
-        warehouseId: null,
-        warehouseCode: null,
+        warehouseId: this.warehouseId,
+        warehouseCode: this.warehouseCode,
         warehouseName: null,
-        locationId: null,
-        locationCode: null,
+        locationId: this.locationId,
+        locationCode: this.locationCode,
         locationName: null,
-        areaId: null,
-        areaCode: null,
+        areaId: this.areaId,
+        areaCode: this.areaCode,
         areaName: null,
         vendorId: this.vendorId,
         vendorCode: null,
@@ -215,7 +215,13 @@ export default {
   },
   props:{
     vendorId: null,
-    batchCode: null
+    batchCode: null,
+    warehouseId: null,
+    warehouseCode: null,
+    locationId: null,
+    locationCode: null,
+    areaId: null,
+    areaCode: null
   },
   created() {
     this.getList();

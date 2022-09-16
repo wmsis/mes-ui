@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="10" class="mb8">
+    <el-row v-if="optType != 'view'" :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
           type="primary"
@@ -18,7 +18,7 @@
           icon="el-icon-edit"
           size="mini"
           :disabled="single"
-          @click="handleUpdate"
+          @click="handleUpdate"          
           v-hasPermi="['mes:wm:rtissue:edit']"
         >修改</el-button>
       </el-col>
@@ -38,22 +38,23 @@
 
     <el-table v-loading="loading" :data="rtissuelineList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />     
-      <el-table-column label="产品物料编码" align="center" prop="itemCode" />
-      <el-table-column label="产品物料名称" align="center" prop="itemName" />
-      <el-table-column label="规格型号" align="center" prop="specification" />
+      <el-table-column label="物料编码" width="120px" align="center" prop="itemCode" />
+      <el-table-column label="物料名称" width="150px" align="center" prop="itemName" />
+      <el-table-column label="规格型号" align="center" prop="specification" :show-overflow-tooltip="true"/>
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="退料数量" align="center" prop="quantityRt" />
-      <el-table-column label="领料批次号" align="center" prop="batchCode" />
-      <el-table-column label="仓库名称" align="center" prop="warehouseName" />
-      <el-table-column label="库区名称" align="center" prop="locationName" />
+      <el-table-column label="领料批次号" width="120px" align="center" prop="batchCode" />
+      <el-table-column label="仓库名称" width="100px" align="center" prop="warehouseName" />
+      <el-table-column label="库区名称" width="100px" align="center" prop="locationName" />
       <el-table-column label="库位名称" align="center" prop="areaName" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" width="100px" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
+            v-if="optType != 'view'"
             v-hasPermi="['mes:wm:rtissue:edit']"
           >修改</el-button>
           <el-button
@@ -61,6 +62,7 @@
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
+            v-if="optType != 'view'"
             v-hasPermi="['mes:wm:rtissue:remove']"
           >删除</el-button>
         </template>
@@ -80,42 +82,50 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="产品物料编码" prop="itemCode">
-              <el-input v-model="form.itemCode" placeholder="请输入产品物料编码" />
+            <el-form-item label="物料编码" prop="itemCode">
+              <el-input v-model="form.itemCode" placeholder="请选择退料物料" >
+                <el-button slot="append" @click="handleSelectStock" icon="el-icon-search"></el-button>
+              </el-input>
             </el-form-item>
+            <StockSelect ref="stockSelect" :warehouseCode="warehouseCode" @onSelected="onStockSelected"></StockSelect>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="产品物料名称" prop="itemName">
-              <el-input v-model="form.itemName" placeholder="请输入产品物料名称" />
+            <el-form-item label="物料名称" prop="itemName">
+              <el-input v-model="form.itemName" readonly="readonly" placeholder="请选择退料物料" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="单位" prop="unitOfMeasure">
-              <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
+              <el-input v-model="form.unitOfMeasure" readonly="readonly" placeholder="请输入单位" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="规格型号" prop="specification">
-              <el-input v-model="form.specification" type="textarea" placeholder="请输入内容" />
+              <el-input v-model="form.specification" readonly="readonly" type="textarea" placeholder="请输入内容" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="退料数量" prop="quantityRt">
-              <el-input v-model="form.quantityRt" placeholder="请输入退料数量" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="批次号" prop="batchCode">
-              <el-input v-model="form.batchCode" placeholder="请输入批次号" />
+              <el-input v-model="form.batchCode" readonly="readonly" placeholder="请输入批次号" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="接收仓库" prop="warehouseName">
-              <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" />
+            <el-form-item label="退料数量" prop="quantityRt">
+              <el-input v-model="form.quantityRt" :max="form.quantityMax" placeholder="请输入退料数量" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="接收仓库">
+              <el-cascader v-model="warehouseInfo"
+                :options="warehouseOptions"
+                :props="warehouseProps"
+                @change="handleWarehouseChanged"
+              >                  
+              </el-cascader>
             </el-form-item>
           </el-col>
         </el-row>
@@ -130,15 +140,25 @@
 
 <script>
 import { listRtissueline, getRtissueline, delRtissueline, addRtissueline, updateRtissueline } from "@/api/mes/wm/rtissueline";
-
+import StockSelect from "@/components/stockSelect/single.vue"
+import {getTreeList} from "@/api/mes/wm/warehouse"
 export default {
   name: "Rtissueline",
+  components: {StockSelect},
   props: {
     rtId: null,
     optType: null
   },
   data() {
     return {
+      warehouseCode: 'XBK_VIRTUAL', //线边库
+      warehouseInfo:[],
+      warehouseOptions:[],
+      warehouseProps:{
+        multiple: false,
+        value: 'pId',
+        label: 'pName',
+      },
       // 遮罩层
       loading: true,
       // 选中数组
@@ -184,17 +204,21 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        itemId: [
-          { required: true, message: "产品物料ID不能为空", trigger: "blur" }
+        itemCode: [
+          { required: true, message: "物料不能为空", trigger: "blur" }
         ],
         quantityRt: [
           { required: true, message: "退料数量不能为空", trigger: "blur" }
         ],
+        warehouseName: [
+          { required: true, message: "接收仓库不能为空", trigger: "blur" }
+        ]
       }
     };
   },
   created() {
     this.getList();
+    this.getWarehouseList();
   },
   methods: {
     /** 查询生产退料单行列表 */
@@ -204,6 +228,23 @@ export default {
         this.rtissuelineList = response.rows;
         this.total = response.total;
         this.loading = false;
+      });
+    },
+    getWarehouseList(){
+      getTreeList().then( response =>{        
+        this.warehouseOptions = response.data;
+        this.warehouseOptions.map(w =>{
+          w.children.map(l =>{
+                  let lstr =JSON.stringify(l.children).replace(/locationId/g,'lId').replace(/areaId/g, 'pId').replace(/areaName/g,'pName');                  
+                  l.children = JSON.parse(lstr);
+          });
+            
+          let wstr = JSON.stringify(w.children).replace(/warehouseId/g,'wId').replace(/locationId/g, 'pId').replace(/locationName/g,'pName');  
+          w.children =  JSON.parse(wstr); 
+
+        });
+        let ostr=JSON.stringify(this.warehouseOptions).replace(/warehouseId/g,'pId').replace(/warehouseName/g, 'pName');
+        this.warehouseOptions = JSON.parse(ostr);
       });
     },
     // 取消按钮
@@ -223,6 +264,7 @@ export default {
         specification: null,
         unitOfMeasure: null,
         quantityRt: null,
+        quantityMax: null,
         batchCode: null,
         warehouseId: null,
         warehouseCode: null,
@@ -273,6 +315,9 @@ export default {
       const lineId = row.lineId || this.ids
       getRtissueline(lineId).then(response => {
         this.form = response.data;
+        this.warehouseInfo[0] = response.data.warehouseId;    
+        this.warehouseInfo[1] = response.data.locationId;    
+        this.warehouseInfo[2] = response.data.areaId;  
         this.open = true;
         this.title = "修改生产退料单行";
       });
@@ -312,7 +357,33 @@ export default {
       this.download('wm/rtissueline/export', {
         ...this.queryParams
       }, `rtissueline_${new Date().getTime()}.xlsx`)
-    }
+    },
+    handleSelectStock(){
+      this.$refs.stockSelect.showFlag = true;
+      this.$refs.stockSelect.getList();
+    },
+    //物料选择弹出框
+    onStockSelected(obj){
+        if(obj != undefined && obj != null){
+          this.form.materialStockId = obj.materialStockId;
+          this.form.itemId = obj.itemId;
+          this.form.itemCode = obj.itemCode;
+          this.form.itemName = obj.itemName;
+          this.form.specification = obj.specification;
+          this.form.unitOfMeasure = obj.unitOfMeasure;  
+          this.form.batchCode = obj.batchCode;        
+          this.form.quantityRt = obj.quantityOnhand;
+          this.form.quantityMax = obj.quantityOnhand;
+        }
+    },
+    //选择默认的仓库、库区、库位
+    handleWarehouseChanged(obj){      
+      if(obj !=null){
+        this.form.warehouseId = obj[0];
+        this.form.locationId = obj[1];
+        this.form.areaId = obj[2];
+      }
+    },
   }
 };
 </script>

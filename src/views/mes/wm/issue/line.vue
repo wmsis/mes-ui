@@ -141,7 +141,7 @@
         <el-row>
             <el-col :span="24">
               <el-form-item label="备注" prop="remark">
-                <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+                <el-input v-model="form.remark" type="textarea" />
               </el-form-item>
             </el-col>
         </el-row>
@@ -301,6 +301,9 @@ export default {
       const lineId = row.lineId || this.ids
       getIssueline(lineId).then(response => {
         this.form = response.data;
+        this.warehouseInfo[0] = response.data.warehouseId;    
+        this.warehouseInfo[1] = response.data.locationId;    
+        this.warehouseInfo[2] = response.data.areaId;  
         this.open = true;
         this.title = "修改生产领料单行";
       });
