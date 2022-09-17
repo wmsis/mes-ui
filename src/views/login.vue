@@ -55,8 +55,8 @@
       </el-form-item>
     </el-form>
     <!--  底部  -->
-    <div class="el-login-footer">
-      <span>Copyright © 2018-2022 ruoyi.vip All Rights Reserved.</span>
+    <div class="el-login-footer">      
+      <span @click="toIPC">陕ICP备2022002135号-1</span>
     </div>
   </div>
 </template>
@@ -108,6 +108,9 @@ export default {
     this.getCookie();
   },
   methods: {
+    toIPC(){
+      window.open("https://beian.miit.gov.cn/","_blank");
+    },
     getCode() {
       getCodeImg().then(res => {
         this.captchaOnOff = res.captchaOnOff === undefined ? true : res.captchaOnOff;
