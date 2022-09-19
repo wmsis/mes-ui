@@ -292,6 +292,7 @@
 <script>
 import { listItemconsume, getItemconsume, delItemconsume, addItemconsume, updateItemconsume } from "@/api/mes/wm/itemconsume";
 
+
 export default {
   name: "Itemconsume",
   dicts: ['mes_order_status'],
