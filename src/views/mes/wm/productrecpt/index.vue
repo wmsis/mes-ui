@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="入库单编号" prop="recptCode">
         <el-input
           v-model="queryParams.recptCode"
@@ -17,15 +17,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="生产工单ID" prop="workorderId">
-        <el-input
-          v-model="queryParams.workorderId"
-          placeholder="请输入生产工单ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="生产工单编码" prop="workorderCode">
+      <el-form-item label="生产工单" prop="workorderCode">
         <el-input
           v-model="queryParams.workorderCode"
           placeholder="请输入生产工单编码"
@@ -33,103 +25,13 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="生产工单名称" prop="workorderName">
-        <el-input
-          v-model="queryParams.workorderName"
-          placeholder="请输入生产工单名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="仓库ID" prop="warehouseId">
-        <el-input
-          v-model="queryParams.warehouseId"
-          placeholder="请输入仓库ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="仓库编码" prop="warehouseCode">
-        <el-input
-          v-model="queryParams.warehouseCode"
-          placeholder="请输入仓库编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="仓库名称" prop="warehouseName">
+      <el-form-item label="仓库" prop="warehouseName">
         <el-input
           v-model="queryParams.warehouseName"
           placeholder="请输入仓库名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="库区ID" prop="locationId">
-        <el-input
-          v-model="queryParams.locationId"
-          placeholder="请输入库区ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库区编码" prop="locationCode">
-        <el-input
-          v-model="queryParams.locationCode"
-          placeholder="请输入库区编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库区名称" prop="locationName">
-        <el-input
-          v-model="queryParams.locationName"
-          placeholder="请输入库区名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库位ID" prop="areaId">
-        <el-input
-          v-model="queryParams.areaId"
-          placeholder="请输入库位ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库位编码" prop="areaCode">
-        <el-input
-          v-model="queryParams.areaCode"
-          placeholder="请输入库位编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库位名称" prop="areaName">
-        <el-input
-          v-model="queryParams.areaName"
-          placeholder="请输入库位名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="入库日期" prop="recptDate">
-        <el-date-picker clearable
-          v-model="queryParams.recptDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择入库日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="单据状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择单据状态" clearable>
-          <el-option
-            v-for="dict in dict.type.mes_order_status"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -185,22 +87,13 @@
 
     <el-table v-loading="loading" :data="productrecptList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="入库单ID" align="center" prop="recptId" />
-      <el-table-column label="入库单编号" align="center" prop="recptCode" />
-      <el-table-column label="入库单名称" align="center" prop="recptName" />
-      <el-table-column label="生产工单ID" align="center" prop="workorderId" />
-      <el-table-column label="生产工单编码" align="center" prop="workorderCode" />
-      <el-table-column label="生产工单名称" align="center" prop="workorderName" />
-      <el-table-column label="仓库ID" align="center" prop="warehouseId" />
-      <el-table-column label="仓库编码" align="center" prop="warehouseCode" />
+      <el-table-column label="入库单编号" width="120px" align="center" prop="recptCode" />
+      <el-table-column label="入库单名称" width="150px" align="center" prop="recptName" />
+      <el-table-column label="生产工单编码" width="120px" align="center" prop="workorderCode" />
       <el-table-column label="仓库名称" align="center" prop="warehouseName" />
-      <el-table-column label="库区ID" align="center" prop="locationId" />
-      <el-table-column label="库区编码" align="center" prop="locationCode" />
       <el-table-column label="库区名称" align="center" prop="locationName" />
-      <el-table-column label="库位ID" align="center" prop="areaId" />
-      <el-table-column label="库位编码" align="center" prop="areaCode" />
       <el-table-column label="库位名称" align="center" prop="areaName" />
-      <el-table-column label="入库日期" align="center" prop="recptDate" width="180">
+      <el-table-column label="入库日期" align="center" prop="recptDate" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.recptDate, '{y}-{m}-{d}') }}</span>
         </template>
@@ -210,7 +103,6 @@
           <dict-tag :options="dict.type.mes_order_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -218,6 +110,7 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
+            v-if="scope.row.status =='PREPARE'"
             v-hasPermi="['wm:productrecpt:edit']"
           >修改</el-button>
           <el-button
@@ -225,6 +118,7 @@
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
+            v-if="scope.row.status =='PREPARE'"
             v-hasPermi="['wm:productrecpt:remove']"
           >删除</el-button>
         </template>
@@ -240,73 +134,95 @@
     />
 
     <!-- 添加或修改产品入库录对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="入库单编号" prop="recptCode">
-          <el-input v-model="form.recptCode" placeholder="请输入入库单编号" />
-        </el-form-item>
-        <el-form-item label="入库单名称" prop="recptName">
-          <el-input v-model="form.recptName" placeholder="请输入入库单名称" />
-        </el-form-item>
-        <el-form-item label="生产工单ID" prop="workorderId">
-          <el-input v-model="form.workorderId" placeholder="请输入生产工单ID" />
-        </el-form-item>
-        <el-form-item label="生产工单编码" prop="workorderCode">
-          <el-input v-model="form.workorderCode" placeholder="请输入生产工单编码" />
-        </el-form-item>
-        <el-form-item label="生产工单名称" prop="workorderName">
-          <el-input v-model="form.workorderName" placeholder="请输入生产工单名称" />
-        </el-form-item>
-        <el-form-item label="仓库ID" prop="warehouseId">
-          <el-input v-model="form.warehouseId" placeholder="请输入仓库ID" />
-        </el-form-item>
-        <el-form-item label="仓库编码" prop="warehouseCode">
-          <el-input v-model="form.warehouseCode" placeholder="请输入仓库编码" />
-        </el-form-item>
-        <el-form-item label="仓库名称" prop="warehouseName">
-          <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" />
-        </el-form-item>
-        <el-form-item label="库区ID" prop="locationId">
-          <el-input v-model="form.locationId" placeholder="请输入库区ID" />
-        </el-form-item>
-        <el-form-item label="库区编码" prop="locationCode">
-          <el-input v-model="form.locationCode" placeholder="请输入库区编码" />
-        </el-form-item>
-        <el-form-item label="库区名称" prop="locationName">
-          <el-input v-model="form.locationName" placeholder="请输入库区名称" />
-        </el-form-item>
-        <el-form-item label="库位ID" prop="areaId">
-          <el-input v-model="form.areaId" placeholder="请输入库位ID" />
-        </el-form-item>
-        <el-form-item label="库位编码" prop="areaCode">
-          <el-input v-model="form.areaCode" placeholder="请输入库位编码" />
-        </el-form-item>
-        <el-form-item label="库位名称" prop="areaName">
-          <el-input v-model="form.areaName" placeholder="请输入库位名称" />
-        </el-form-item>
-        <el-form-item label="入库日期" prop="recptDate">
-          <el-date-picker clearable
-            v-model="form.recptDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择入库日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="单据状态">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in dict.type.mes_order_status"
-              :key="dict.value"
-:label="dict.value"
-            >{{dict.label}}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
+    <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="入库单编号" prop="recptCode">
+              <el-input v-model="form.recptCode" placeholder="请输入入库单编号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item  label-width="80">
+              <el-switch v-model="autoGenFlag"
+                  active-color="#13ce66"
+                  active-text="自动生成"
+                  @change="handleAutoGenChange(autoGenFlag)" v-if="optType != 'view' && form.status =='PREPARE'">               
+              </el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="入库单名称" prop="recptName">
+              <el-input v-model="form.recptName" placeholder="请输入入库单名称" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="生产工单编码" prop="workorderCode">
+              <el-input v-model="form.workorderCode" placeholder="请输入生产工单编码" >
+                <el-button slot="append" icon="el-icon-search" @click="handleWorkorderSelect"></el-button>
+              </el-input>
+              <WorkorderSelect ref="woSelect" @onSelected="onWorkorderSelected"></WorkorderSelect>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="生产工单名称" prop="workorderName">
+              <el-input v-model="form.workorderName" readonly="readonly" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="产品编码" prop="itemCode">
+              <el-input v-model="form.itemCode" readonly="readonly"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="产品名称" prop="itemName">
+              <el-input v-model="form.itemCode" readonly="readonly"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="单位" prop="unitOfMeasure">
+              <el-input v-model="form.unitOfMeasure" readonly="readonly"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="客户编号" prop="clientCode">
+              <el-input v-model="form.clientCode" readonly="readonly"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="客户名称" prop="clientName">
+              <el-input v-model="form.clientName" readonly="readonly"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="入库日期" prop="recptDate">
+              <el-date-picker clearable
+                v-model="form.recptDate"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择入库日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
+        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>
+        <el-button type="success" @click="doconfirm" v-if="form.status =='PREPARE' && optType !='view' && form.recptId !=null">完成</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -315,12 +231,23 @@
 
 <script>
 import { listProductrecpt, getProductrecpt, delProductrecpt, addProductrecpt, updateProductrecpt } from "@/api/mes/wm/productrecpt";
-
+import WorkorderSelect from "@/components/workorderSelect/single.vue"
 export default {
   name: "Productrecpt",
   dicts: ['mes_order_status'],
+  components:{WorkorderSelect},
   data() {
     return {
+      //自动生成编码
+      autoGenFlag:false,
+      optType: undefined,
+      warehouseInfo:[],
+      warehouseOptions:[],
+      warehouseProps:{
+        multiple: false,
+        value: 'pId',
+        label: 'pName',
+      },
       // 遮罩层
       loading: true,
       // 选中数组
@@ -367,6 +294,9 @@ export default {
         recptCode: [
           { required: true, message: "入库单编号不能为空", trigger: "blur" }
         ],
+        recptDate: [
+          { required: true, message: "请选择入库日期", trigger: "blur" }
+        ],
       }
     };
   },
@@ -406,8 +336,8 @@ export default {
         areaId: null,
         areaCode: null,
         areaName: null,
-        recptDate: null,
-        status: "0",
+        recptDate: new Date(),
+        status: "PREPARE",
         remark: null,
         attr1: null,
         attr2: null,
@@ -418,6 +348,7 @@ export default {
         updateBy: null,
         updateTime: null
       };
+      this.autoGenFlag = false;
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -487,6 +418,32 @@ export default {
       this.download('wm/productrecpt/export', {
         ...this.queryParams
       }, `productrecpt_${new Date().getTime()}.xlsx`)
+    },
+    //选择生产工单
+    handleWorkorderSelect(){
+      this.$refs.woSelect.showFlag = true;
+    },
+    onWorkorderSelected(row){
+      if(row != undefined && row != null){
+        this.form.workorderId = row.workorderId;
+        this.form.workorderCode = row.workorderCode;
+        this.form.workorderName = row.workorderName;
+        this.form.itemCode = row.productCode;
+        this.form.itemName = row.productName;
+        this.form.unitOfMeasure = row.unitOfMeasure;
+        this.form.clientCode = row.clientCode;
+        this.form.clientName = row.clientName;
+      }
+    },
+    //自动生成编码
+    handleAutoGenChange(autoGenFlag){
+      if(autoGenFlag){
+        genCode('PRODUCTRECPT_CODE').then(response =>{
+          this.form.recptCode = response;
+        });
+      }else{
+        this.form.recptCode = null;
+      }
     }
   }
 };
