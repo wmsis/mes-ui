@@ -206,6 +206,7 @@ export default {
         vendorCode: null,
         vendorName: null,
         vendorNick: null,
+        workorderId: this.workorderId,
         quantityOnhand: null,
         expireDate: null,
       },
@@ -221,7 +222,8 @@ export default {
     locationId: null,
     locationCode: null,
     areaId: null,
-    areaCode: null
+    areaCode: null,
+    workorderId: null,
   },
   created() {
     this.getList();

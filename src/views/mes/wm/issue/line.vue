@@ -55,6 +55,7 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
+            v-if="optType != 'view'"
             v-hasPermi="['mes:wm:issueheader:edit']"
           >修改</el-button>
           <el-button
@@ -62,6 +63,7 @@
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
+            v-if="optType != 'view'"
             v-hasPermi="['mes:wm:issueheader:remove']"
           >删除</el-button>
         </template>

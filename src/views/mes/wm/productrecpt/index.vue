@@ -87,9 +87,9 @@
 
     <el-table v-loading="loading" :data="productrecptList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="入库单编号" width="120px" align="center" prop="recptCode" />
-      <el-table-column label="入库单名称" width="150px" align="center" prop="recptName" />
-      <el-table-column label="生产工单编码" width="120px" align="center" prop="workorderCode" />
+      <el-table-column label="入库单编号" width="130px" align="center" prop="recptCode" />
+      <el-table-column label="入库单名称" width="150px" align="center" prop="recptName" :show-overflow-tooltip="true"/>
+      <el-table-column label="生产工单编码" width="150px" align="center" prop="workorderCode" />
       <el-table-column label="仓库名称" align="center" prop="warehouseName" />
       <el-table-column label="库区名称" align="center" prop="locationName" />
       <el-table-column label="库位名称" align="center" prop="areaName" />
@@ -158,7 +158,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="生产工单编码" prop="workorderCode">
               <el-input v-model="form.workorderCode" placeholder="请输入生产工单编码" >
                 <el-button slot="append" icon="el-icon-search" @click="handleWorkorderSelect"></el-button>
@@ -166,9 +166,19 @@
               <WorkorderSelect ref="woSelect" @onSelected="onWorkorderSelected"></WorkorderSelect>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="生产工单名称" prop="workorderName">
               <el-input v-model="form.workorderName" readonly="readonly" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="入库仓库">
+              <el-cascader v-model="warehouseInfo"
+                :options="warehouseOptions"
+                :props="warehouseProps"
+                @change="handleWarehouseChanged"
+              >                  
+              </el-cascader>
             </el-form-item>
           </el-col>
         </el-row>
@@ -219,6 +229,10 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-divider v-if="form.recptId !=null" content-position="center">物料信息</el-divider> 
+      <el-card shadow="always" v-if="form.recptId !=null" class="box-card">
+        <Productrecptline :recptId="form.recptId" :optType="optType" :workorderId="form.workorderId"></Productrecptline>
+      </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
         <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>
@@ -232,10 +246,13 @@
 <script>
 import { listProductrecpt, getProductrecpt, delProductrecpt, addProductrecpt, updateProductrecpt } from "@/api/mes/wm/productrecpt";
 import WorkorderSelect from "@/components/workorderSelect/single.vue"
+import Productrecptline from "./line.vue"
+import {getTreeList} from "@/api/mes/wm/warehouse"
+import {genCode} from "@/api/system/autocode/rule"
 export default {
   name: "Productrecpt",
   dicts: ['mes_order_status'],
-  components:{WorkorderSelect},
+  components:{WorkorderSelect,Productrecptline},
   data() {
     return {
       //自动生成编码
@@ -302,6 +319,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getWarehouseList();
   },
   methods: {
     /** 查询产品入库录列表 */
@@ -311,6 +329,23 @@ export default {
         this.productrecptList = response.rows;
         this.total = response.total;
         this.loading = false;
+      });
+    },
+    getWarehouseList(){
+      getTreeList().then( response =>{        
+        this.warehouseOptions = response.data;
+        this.warehouseOptions.map(w =>{
+          w.children.map(l =>{
+                  let lstr =JSON.stringify(l.children).replace(/locationId/g,'lId').replace(/areaId/g, 'pId').replace(/areaName/g,'pName');                  
+                  l.children = JSON.parse(lstr);
+          });
+            
+          let wstr = JSON.stringify(w.children).replace(/warehouseId/g,'wId').replace(/locationId/g, 'pId').replace(/locationName/g,'pName');  
+          w.children =  JSON.parse(wstr); 
+
+        });
+        let ostr=JSON.stringify(this.warehouseOptions).replace(/warehouseId/g,'pId').replace(/warehouseName/g, 'pName');
+        this.warehouseOptions = JSON.parse(ostr);
       });
     },
     // 取消按钮
@@ -433,6 +468,14 @@ export default {
         this.form.unitOfMeasure = row.unitOfMeasure;
         this.form.clientCode = row.clientCode;
         this.form.clientName = row.clientName;
+      }
+    },
+    //选择默认的仓库、库区、库位
+    handleWarehouseChanged(obj){      
+      if(obj !=null){
+        this.form.warehouseId = obj[0];
+        this.form.locationId = obj[1];
+        this.form.areaId = obj[2];
       }
     },
     //自动生成编码
