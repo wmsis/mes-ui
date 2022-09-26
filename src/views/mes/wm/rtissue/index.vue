@@ -69,7 +69,15 @@
 
     <el-table v-loading="loading" :data="rtissueList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="退料单编号" width="140px" align="center" prop="rtCode" />
+      <el-table-column label="退料单编号" width="140px" align="center" prop="rtCode" >
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            @click="handleView(scope.row)"
+            v-hasPermi="['mes:wm:rtissue:query']"
+          >{{scope.row.rtCode}}</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="退料单名称" width="120px" align="center" prop="rtName" :show-overflow-tooltip="true"/>
       <el-table-column label="生产工单" width="140px" align="center" prop="workorderCode" />
       <el-table-column label="仓库名称" align="center" prop="warehouseName" />
@@ -87,6 +95,14 @@
       </el-table-column>   
       <el-table-column label="操作" width="100px" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            v-if="scope.row.status =='PREPARE'"
+            @click="handleExecute(scope.row)"
+            v-hasPermi="['mes:wm:rtissue:edit']"
+          >执行入库</el-button>
           <el-button
             size="mini"
             type="text"
@@ -350,6 +366,20 @@ export default {
       this.title = "添加生产退料单头";
       this.optType = "add";
     },
+    // 查询明细按钮操作
+    handleView(row){
+      this.reset();
+      const rtIds = row.rtId
+      getItemrecpt(rtIds).then(response => {
+        this.form = response.data;
+        this.warehouseInfo[0] = response.data.warehouseId;    
+        this.warehouseInfo[1] = response.data.locationId;    
+        this.warehouseInfo[2] = response.data.areaId; 
+        this.open = true;
+        this.title = "查看生产退料单信息";
+        this.optType = "view";
+      });
+    },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
@@ -398,14 +428,14 @@ export default {
         }
       });
     },
-    //执行退库
+    //执行退料
     handleExecute(row){
       const rtIds = row.rtId || this.ids;
-      this.$modal.confirm('确认执行退库？').then(function() {
-        return execute(rtIds)//执行退库
+      this.$modal.confirm('确认执行退料？').then(function() {
+        return execute(rtIds)//执行退料
       }).then(() => {
         this.getList();
-        this.$modal.msgSuccess("退库成功");
+        this.$modal.msgSuccess("退料成功");
       }).catch(() => {});
     },
     /** 删除按钮操作 */
