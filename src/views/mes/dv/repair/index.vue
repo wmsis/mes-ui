@@ -283,7 +283,7 @@
 <script>
 import { listRepair, getRepair, delRepair, addRepair, updateRepair } from "@/api/mes/dv/repair";
 import Repairline from './line.vue'
-
+import {genCode} from "@/api/system/autocode/rule"
 export default {
   name: "Repair",
   dicts: ['mes_repair_result', 'mes_order_status'],
@@ -399,6 +399,7 @@ export default {
         updateBy: null,
         updateTime: null
       };
+      this.autoGenFlag= false;
       this.resetForm("form");
     },
     /** 搜索按钮操作 */

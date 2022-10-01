@@ -93,7 +93,7 @@
           <dict-tag :options="dict.type.mes_order_status" :value="scope.row.status"/>
         </template>
       </el-table-column>   
-      <el-table-column label="操作" width="100px" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" width="150px" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
