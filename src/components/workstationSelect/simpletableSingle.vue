@@ -6,30 +6,32 @@
     width="80%"
     center
   >
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="90px">
       <el-row>
-        <el-col :span="8">
-          <el-form-item label="工作站编码" prop="workstationCode">
+        <el-col :span="7">
+          <el-form-item label="工作站编号" prop="workstationCode">
             <el-input
               v-model="queryParams.workstationCode"
-              placeholder="请输入工作站编码"
+              placeholder="请输入工作站编号"
               clearable
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="工作站名称" prop="workstationName">
-            <el-input
-              v-model="queryParams.workstationName"
-              placeholder="请输入工作站名称"
-              clearable
-              @keyup.enter.native="handleQuery"
-            />
+        <el-col :span="7">
+          <el-form-item label="所属工序" prop="processName">
+            <el-select v-model="queryParams.processId" placeholder="请选择工序">
+                <el-option
+                  v-for="item in processOptions"
+                  :key="item.processId"
+                  :label="item.processName"
+                  :value="item.processId"
+                ></el-option>
+              </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="所在车间名称" prop="workshopName">
+        <el-col :span="7">
+          <el-form-item label="所在车间" prop="workshopName">
             <el-select v-model="queryParams.workshopId" placeholder="请选择车间">
               <el-option
                 v-for="item in workshopOptions"
@@ -40,13 +42,16 @@
             </el-select>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
+        <el-col :span="3">
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
           </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+
         </el-col>
       </el-row>
     </el-form>
