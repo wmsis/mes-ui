@@ -161,8 +161,11 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="出货检验单" prop="oqcCode">
-              <el-input v-model="form.oqcCode" placeholder="请输入出货检验单" />
+              <el-input v-model="form.oqcCode" placeholder="请输入出货检验单" >
+                <el-button slot="append" @click="handleSelectOqc" icon="el-icon-search"></el-button>
+              </el-input>
             </el-form-item>
+            <OqcSelectSingle ref="oqcSelect" @onSelected="onOqcSelected"></OqcSelectSingle>
           </el-col>
           <el-col :span="8">
             <el-form-item label="销售订单编号" prop="soCode">
@@ -197,14 +200,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="单据状态">
-              <el-radio-group v-model="form.status">
-                <el-radio
+            <el-form-item label="单据状态" prop="status">
+              <el-select v-model="form.status" disabled placeholder="请选择单据状态">
+                <el-option
                   v-for="dict in dict.type.mes_order_status"
                   :key="dict.value"
-                  :label="dict.value"
-                >{{dict.label}}</el-radio>
-              </el-radio-group>
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -228,11 +232,13 @@
 
 <script>
 import { listProductsalse, getProductsalse, delProductsalse, addProductsalse, updateProductsalse } from "@/api/mes/wm/productsalse";
+import OqcSelectSingle from "@/components/oqcSelect/single.vue"
 import {getTreeList} from "@/api/mes/wm/warehouse"
 import {genCode} from "@/api/system/autocode/rule"
 export default {
   name: "Productsalse",
   dicts: ['mes_order_status'],
+  components: {OqcSelectSingle},
   data() {
     return {
       //自动生成编码
@@ -444,6 +450,21 @@ export default {
       this.download('wm/productsalse/export', {
         ...this.queryParams
       }, `productsalse_${new Date().getTime()}.xlsx`)
+    },
+    //OQC检验单选择
+    handleSelectOqc(){
+      this.$refs.oqcSelect.showFlag = true;
+    },
+    //OQC检验单选择弹出框
+    onOqcSelected(obj){
+        if(obj != undefined && obj != null){
+          this.form.oqcId = obj.oqcId;
+          this.form.oqcCode = obj.oqcCode;
+          this.form.clientId = obj.clientId;
+          this.form.clientCode = obj.clientCode;
+          this.form.clientName = obj.clientName;
+          this.form.clientNick = obj.clientNick;
+        }
     },
     //自动生成编码
     handleAutoGenChange(autoGenFlag){
