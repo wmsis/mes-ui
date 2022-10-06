@@ -1,14 +1,15 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
-      <el-form-item label="出库单编号" prop="salseCode">
+      <el-form-item label="退货单编号" prop="rtCode">
         <el-input
-          v-model="queryParams.salseCode"
-          placeholder="请输入出库单编号"
+          v-model="queryParams.rtCode"
+          placeholder="请输入退货单编号"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+
       <el-form-item label="销售订单编号" prop="soCode">
         <el-input
           v-model="queryParams.soCode"
@@ -17,6 +18,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+
       <el-form-item label="客户名称" prop="clientName">
         <el-input
           v-model="queryParams.clientName"
@@ -25,14 +27,16 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="出库日期" prop="salseDate">
-        <el-date-picker clearable
-          v-model="queryParams.salseDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择出库日期">
-        </el-date-picker>
+
+      <el-form-item label="仓库名称" prop="warehouseName">
+        <el-input
+          v-model="queryParams.warehouseName"
+          placeholder="请输入仓库名称"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
+
       <el-form-item label="单据状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择单据状态" clearable>
           <el-option
@@ -43,6 +47,7 @@
           />
         </el-select>
       </el-form-item>
+     
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -57,7 +62,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['mes:wm:productsalse:add']"
+          v-hasPermi="['mes:wm:rtsalse:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -68,7 +73,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['mes:wm:productsalse:edit']"
+          v-hasPermi="['mes:wm:rtsalse:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -79,34 +84,24 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['mes:wm:productsalse:remove']"
+          v-hasPermi="['mes:wm:rtsalse:remove']"
         >删除</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="productsalseList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="rtsalseList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="出库单编号" width="150px" align="center" prop="salseCode" >
-        <template slot-scope="scope">
-          <el-button
-            type="text"
-            @click="handleView(scope.row)"
-            v-hasPermi="['mes:wm:productsalse:query']"
-          >{{scope.row.salseCode}}</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column label="出库单名称" width="150px" align="center" prop="salseName" />
-      <el-table-column label="出货检验单" width="150px" align="center" prop="oqcCode" />
-      <el-table-column label="销售订单编号" width="120px" align="center" prop="soCode" />
-      <el-table-column label="客户编码" align="center" prop="clientCode" />
+      <el-table-column label="退货单编号" align="center" prop="rtCode" />
+      <el-table-column label="退货单名称" align="center" prop="rtName" />
+      <el-table-column label="销售订单编号" align="center" prop="soCode" />
       <el-table-column label="客户名称" align="center" prop="clientName" />
-      <el-table-column label="仓库名称" align="center" prop="warehouseName" />
-      <el-table-column label="库区名称" align="center" prop="locationName" />
-      <el-table-column label="库位名称" align="center" prop="areaName" />
-      <el-table-column label="出库日期" align="center" prop="salseDate" width="180">
+      <el-table-column label="仓库" align="center" prop="warehouseName" />
+      <el-table-column label="库区" align="center" prop="locationName" />
+      <el-table-column label="库位" align="center" prop="areaName" />
+      <el-table-column label="退货日期" align="center" prop="rtDate" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.salseDate, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.rtDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="单据状态" align="center" prop="status">
@@ -114,33 +109,22 @@
           <dict-tag :options="dict.type.mes_order_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="120px" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-if="scope.row.status == 'PREPARE'"
-            v-hasPermi="['mes:wm:productsalse:edit']"
+            v-hasPermi="['mes:wm:rtsalse:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-if="scope.row.status == 'PREPARE'"
-            v-hasPermi="['mes:wm:productsalse:remove']"
+            v-hasPermi="['mes:wm:rtsalse:remove']"
           >删除</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-video-play"
-            @click="handleExecute(scope.row)"
-            v-if="scope.row.status == 'PREPARE'"
-            v-hasPermi="['mes:wm:productsalse:edit']"
-          >执行入库</el-button>
-          
         </template>
       </el-table-column>
     </el-table>
@@ -153,13 +137,13 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改销售出库单对话框 -->
+    <!-- 添加或修改产品销售退货单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="出库单编号" prop="salseCode">
-              <el-input v-model="form.salseCode" placeholder="请输入出库单编号" />
+            <el-form-item label="退货单编号" prop="rtCode">
+              <el-input v-model="form.rtCode" placeholder="请输入退货单编号" />
             </el-form-item>
           </el-col>
           <el-col :span="4">
@@ -172,49 +156,39 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="出库单名称" prop="salseName">
-              <el-input v-model="form.salseName" placeholder="请输入出库单名称" />
+            <el-form-item label="退货单名称" prop="rtName">
+              <el-input v-model="form.rtName" placeholder="请输入退货单名称" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
-            <el-form-item label="出货检验单" prop="oqcCode">
-              <el-input v-model="form.oqcCode" placeholder="请输入出货检验单" >
-                <el-button slot="append" @click="handleSelectOqc" icon="el-icon-search"></el-button>
-              </el-input>
-            </el-form-item>
-            <OqcSelectSingle ref="oqcSelect" @onSelected="onOqcSelected"></OqcSelectSingle>
-          </el-col>
           <el-col :span="8">
             <el-form-item label="销售订单编号" prop="soCode">
               <el-input v-model="form.soCode" placeholder="请输入销售订单编号" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="客户编号" prop="clientCode">
+              <el-input v-model="form.clientCode" readonly="readonly" placeholder="请输入客户编码" >
+                <el-button slot="append" @click="handleSelectClient" icon="el-icon-search"></el-button>
+              </el-input>
+            </el-form-item>
+            <ClientSelectSingle ref="clientSelect" @onSelected="handleClientSelect"></ClientSelectSingle>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="客户名称" prop="clientName">
-              <el-input v-model="form.clientName" placeholder="请输入客户名称" />
+              <el-input v-model="form.clientName" readonly="readonly" placeholder="请输入客户名称" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="出库仓库">
-              <el-cascader v-model="warehouseInfo"
-                :options="warehouseOptions"
-                :props="warehouseProps"
-                @change="handleWarehouseChanged"
-              >                  
-              </el-cascader>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="出库日期" prop="salseDate">
+            <el-form-item label="退货日期" prop="rtDate">
               <el-date-picker clearable
-                v-model="form.salseDate"
+                v-model="form.rtDate"
                 type="date"
                 value-format="yyyy-MM-dd"
-                placeholder="请选择出库日期">
+                placeholder="请选择退货日期">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -233,19 +207,22 @@
         </el-row>
         <el-row>
           <el-col :span="24">
+            <el-form-item label="退货原因" prop="rtReason">
+              <el-input v-model="form.rtReason" type="textarea" placeholder="请输入退货原因" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
             <el-form-item label="备注" prop="remark">
               <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
             </el-form-item>
-          </el-col>      
+          </el-col>
         </el-row>
       </el-form>
-      <el-divider v-if="form.salseId !=null" content-position="center">物料信息</el-divider> 
-        <el-card shadow="always" v-if="form.salseId !=null" class="box-card">
-          <Productsalseline ref="line" :salseId="form.salseId" :warehouseId="form.warehouseId" :locationId="form.locationId" :areaId="form.areaId" :optType="optType"></Productsalseline>
-        </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
-        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>
+        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>        
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -253,15 +230,16 @@
 </template>
 
 <script>
-import { listProductsalse, getProductsalse, delProductsalse, addProductsalse, updateProductsalse,execute } from "@/api/mes/wm/productsalse";
-import Productsalseline from "./line.vue"
-import OqcSelectSingle from "@/components/oqcSelect/single.vue"
+import { listRtsalse, getRtsalse, delRtsalse, addRtsalse, updateRtsalse } from "@/api/mes/wm/rtsalse";
+import ClientSelectSingle from "@/components/clientSelect/single.vue"
 import {getTreeList} from "@/api/mes/wm/warehouse"
 import {genCode} from "@/api/system/autocode/rule"
 export default {
-  name: "Productsalse",
+  name: "Rtsalse",
   dicts: ['mes_order_status'],
-  components: {OqcSelectSingle,Productsalseline},
+  components: {
+    ClientSelectSingle
+  },
   data() {
     return {
       //自动生成编码
@@ -286,8 +264,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 销售出库单表格数据
-      productsalseList: [],
+      // 产品销售退货单表格数据
+      rtsalseList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -296,10 +274,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        salseCode: null,
-        salseName: null,
-        oqcId: null,
-        oqcCode: null,
+        rtCode: null,
+        rtName: null,
         soCode: null,
         clientId: null,
         clientCode: null,
@@ -314,19 +290,33 @@ export default {
         areaId: null,
         areaCode: null,
         areaName: null,
-        salseDate: null,
+        rtDate: null,
+        rtReason: null,
         status: null,
+        attr1: null,
+        attr2: null,
+        attr3: null,
+        attr4: null,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        salseCode: [
-          { required: true, message: "出库单编号不能为空", trigger: "blur" }
+        rtCode: [
+          { required: true, message: "退货单编号不能为空", trigger: "blur" }
         ],
-        salseName: [
-          { required: true, message: "出库单名称不能为空", trigger: "blur" }
+        rtName: [
+          { required: true, message: "退货单名称不能为空", trigger: "blur" }
         ],
+        rtDate: [
+          { required: true, message: "请选择退货日期", trigger: "blur" }
+        ],
+        clientName: [
+          { required: true, message: "请选择客户", trigger: "blur" }
+        ],
+        rtReason: [
+          { required: true, message: "请填写退货原因", trigger: "blur" }
+        ]
       }
     };
   },
@@ -335,16 +325,15 @@ export default {
     this.getWarehouseList();
   },
   methods: {
-    /** 查询销售出库单列表 */
+    /** 查询产品销售退货单列表 */
     getList() {
       this.loading = true;
-      listProductsalse(this.queryParams).then(response => {
-        this.productsalseList = response.rows;
+      listRtsalse(this.queryParams).then(response => {
+        this.rtsalseList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
     },
-    //获取仓库信息
     getWarehouseList(){
       getTreeList().then( response =>{        
         this.warehouseOptions = response.data;
@@ -363,7 +352,7 @@ export default {
       });
     },
     //选择默认的仓库、库区、库位
-    handleWarehouseChanged(obj){      
+    handleWarehouseChanged(obj){
       if(obj !=null){
         this.form.warehouseId = obj[0];
         this.form.locationId = obj[1];
@@ -378,11 +367,9 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        salseId: null,
-        salseCode: null,
-        salseName: null,
-        oqcId: null,
-        oqcCode: null,
+        rtId: null,
+        rtCode: null,
+        rtName: null,
         soCode: null,
         clientId: null,
         clientCode: null,
@@ -397,7 +384,8 @@ export default {
         areaId: null,
         areaCode: null,
         areaName: null,
-        salseDate: new Date(),
+        rtDate: null,
+        rtReason: null,
         status: "PREPARE",
         remark: null,
         attr1: null,
@@ -424,54 +412,52 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.salseId)
+      this.ids = selection.map(item => item.rtId)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
-    // 查询明细按钮操作
-    handleView(row){
-      this.reset();
-      const salseId = row.salseId
-      getProductsalse(salseId).then(response => {
-        this.form = response.data;
-        this.warehouseInfo[0] = response.data.warehouseId;    
-        this.warehouseInfo[1] = response.data.locationId;    
-        this.warehouseInfo[2] = response.data.areaId; 
-        this.open = true;
-        this.title = "查看出库单信息";
-        this.optType = "view";
-      });
+    //客户选择事件
+    handleSelectClient(){
+      this.$refs.clientSelect.showFlag = true;
+    },
+    //客户选择
+    handleClientSelect(obj){
+      if(obj != undefined && obj != null){
+          this.form.clientId = obj.clientId;
+          this.form.clientCode = obj.clientCode;
+          this.form.clientName = obj.clientName;
+      }
     },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加销售出库单";
+      this.title = "添加产品销售退货单";
       this.optType = "add";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const salseId = row.salseId || this.ids
-      getProductsalse(salseId).then(response => {
+      const rtId = row.rtId || this.ids
+      getRtsalse(rtId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改销售出库单";
-        this.optType = "edit";
+        this.title = "修改产品销售退货单";
+        this.optType = "add";
       });
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.salseId != null) {
-            updateProductsalse(this.form).then(response => {
+          if (this.form.rtId != null) {
+            updateRtsalse(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addProductsalse(this.form).then(response => {
+            addRtsalse(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -482,9 +468,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const salseIds = row.salseId || this.ids;
-      this.$modal.confirm('是否确认删除销售出库单编号为"' + salseIds + '"的数据项？').then(function() {
-        return delProductsalse(salseIds);
+      const rtIds = row.rtId || this.ids;
+      this.$modal.confirm('是否确认删除产品销售退货单编号为"' + rtIds + '"的数据项？').then(function() {
+        return delRtsalse(rtIds);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -492,44 +478,18 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('wm/productsalse/export', {
+      this.download('wm/rtsalse/export', {
         ...this.queryParams
-      }, `productsalse_${new Date().getTime()}.xlsx`)
+      }, `rtsalse_${new Date().getTime()}.xlsx`)
     },
-    //执行出库
-    handleExecute(row){
-      const salseIds = row.salseId || this.ids;
-      this.$modal.confirm('确认执行出库？').then(function() {
-        return execute(salseIds)//执行入库
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("出库成功");
-      }).catch(() => {});
-    },
-    //OQC检验单选择
-    handleSelectOqc(){
-      this.$refs.oqcSelect.showFlag = true;
-    },
-    //OQC检验单选择弹出框
-    onOqcSelected(obj){
-        if(obj != undefined && obj != null){
-          this.form.oqcId = obj.oqcId;
-          this.form.oqcCode = obj.oqcCode;
-          this.form.clientId = obj.clientId;
-          this.form.clientCode = obj.clientCode;
-          this.form.clientName = obj.clientName;
-          this.form.clientNick = obj.clientNick;
-        }
-    },
-
     //自动生成编码
     handleAutoGenChange(autoGenFlag){
       if(autoGenFlag){
-        genCode('PRODUCTSALSE_CODE').then(response =>{
-          this.form.salseCode = response;
+        genCode('RTSALSE_CODE').then(response =>{
+          this.form.rtCode = response;
         });
       }else{
-        this.form.salseCode = null;
+        this.form.rtCode = null;
       }
     }
   }
