@@ -87,9 +87,17 @@
 
     <el-table v-loading="loading" :data="productsalseList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="出库单编号" width="120px" align="center" prop="salseCode" />
+      <el-table-column label="出库单编号" width="150px" align="center" prop="salseCode" >
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            @click="handleView(scope.row)"
+            v-hasPermi="['mes:wm:productsalse:query']"
+          >{{scope.row.salseCode}}</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="出库单名称" width="150px" align="center" prop="salseName" />
-      <el-table-column label="出货检验单编号" width="150px" align="center" prop="oqcCode" />
+      <el-table-column label="出货检验单" width="150px" align="center" prop="oqcCode" />
       <el-table-column label="销售订单编号" width="120px" align="center" prop="soCode" />
       <el-table-column label="客户编码" align="center" prop="clientCode" />
       <el-table-column label="客户名称" align="center" prop="clientName" />
@@ -220,10 +228,13 @@
           </el-col>      
         </el-row>
       </el-form>
+      <el-divider v-if="form.salseId !=null" content-position="center">物料信息</el-divider> 
+        <el-card shadow="always" v-if="form.salseId !=null" class="box-card">
+          <Productsalseline ref="line" :salseId="form.salseId" :warehouseId="form.warehouseId" :locationId="form.locationId" :areaId="form.areaId" :optType="optType"></Productsalseline>
+        </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
         <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>
-        <el-button type="success" @click="doconfirm" v-if="form.status =='PREPARE' && optType !='view' && form.recptId !=null">完成</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -232,13 +243,14 @@
 
 <script>
 import { listProductsalse, getProductsalse, delProductsalse, addProductsalse, updateProductsalse } from "@/api/mes/wm/productsalse";
+import Productsalseline from "./line.vue"
 import OqcSelectSingle from "@/components/oqcSelect/single.vue"
 import {getTreeList} from "@/api/mes/wm/warehouse"
 import {genCode} from "@/api/system/autocode/rule"
 export default {
   name: "Productsalse",
   dicts: ['mes_order_status'],
-  components: {OqcSelectSingle},
+  components: {OqcSelectSingle,Productsalseline},
   data() {
     return {
       //自动生成编码
@@ -339,6 +351,14 @@ export default {
         this.warehouseOptions = JSON.parse(ostr);
       });
     },
+    //选择默认的仓库、库区、库位
+    handleWarehouseChanged(obj){      
+      if(obj !=null){
+        this.form.warehouseId = obj[0];
+        this.form.locationId = obj[1];
+        this.form.areaId = obj[2];
+      }
+    },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -396,6 +416,20 @@ export default {
       this.ids = selection.map(item => item.salseId)
       this.single = selection.length!==1
       this.multiple = !selection.length
+    },
+    // 查询明细按钮操作
+    handleView(row){
+      this.reset();
+      const salseId = row.salseId
+      getProductsalse(salseId).then(response => {
+        this.form = response.data;
+        this.warehouseInfo[0] = response.data.warehouseId;    
+        this.warehouseInfo[1] = response.data.locationId;    
+        this.warehouseInfo[2] = response.data.areaId; 
+        this.open = true;
+        this.title = "查看出库单信息";
+        this.optType = "view";
+      });
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -466,6 +500,7 @@ export default {
           this.form.clientNick = obj.clientNick;
         }
     },
+
     //自动生成编码
     handleAutoGenChange(autoGenFlag){
       if(autoGenFlag){

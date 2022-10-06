@@ -1,149 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="出库记录ID" prop="salseId">
-        <el-input
-          v-model="queryParams.salseId"
-          placeholder="请输入出库记录ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库存记录ID" prop="materialStockId">
-        <el-input
-          v-model="queryParams.materialStockId"
-          placeholder="请输入库存记录ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品物料ID" prop="itemId">
-        <el-input
-          v-model="queryParams.itemId"
-          placeholder="请输入产品物料ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品物料编码" prop="itemCode">
-        <el-input
-          v-model="queryParams.itemCode"
-          placeholder="请输入产品物料编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品物料名称" prop="itemName">
-        <el-input
-          v-model="queryParams.itemName"
-          placeholder="请输入产品物料名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="单位" prop="unitOfMeasure">
-        <el-input
-          v-model="queryParams.unitOfMeasure"
-          placeholder="请输入单位"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="出库数量" prop="quantitySalse">
-        <el-input
-          v-model="queryParams.quantitySalse"
-          placeholder="请输入出库数量"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="批次号" prop="batchCode">
-        <el-input
-          v-model="queryParams.batchCode"
-          placeholder="请输入批次号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="仓库ID" prop="warehouseId">
-        <el-input
-          v-model="queryParams.warehouseId"
-          placeholder="请输入仓库ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="仓库编码" prop="warehouseCode">
-        <el-input
-          v-model="queryParams.warehouseCode"
-          placeholder="请输入仓库编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="仓库名称" prop="warehouseName">
-        <el-input
-          v-model="queryParams.warehouseName"
-          placeholder="请输入仓库名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库区ID" prop="locationId">
-        <el-input
-          v-model="queryParams.locationId"
-          placeholder="请输入库区ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库区编码" prop="locationCode">
-        <el-input
-          v-model="queryParams.locationCode"
-          placeholder="请输入库区编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库区名称" prop="locationName">
-        <el-input
-          v-model="queryParams.locationName"
-          placeholder="请输入库区名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库位ID" prop="areaId">
-        <el-input
-          v-model="queryParams.areaId"
-          placeholder="请输入库位ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库位编码" prop="areaCode">
-        <el-input
-          v-model="queryParams.areaCode"
-          placeholder="请输入库位编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库位名称" prop="areaName">
-        <el-input
-          v-model="queryParams.areaName"
-          placeholder="请输入库位名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-row :gutter="10" class="mb8">
+    <el-row v-if="optType != 'view'" :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
           type="primary"
@@ -151,7 +8,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['wm:productsalseline:add']"
+          v-hasPermi="['mes:wm:productsalseline:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -162,7 +19,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['wm:productsalseline:edit']"
+          v-hasPermi="['mes:wm:productsalseline:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -173,42 +30,22 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['wm:productsalseline:remove']"
+          v-hasPermi="['mes:wm:productsalseline:remove']"
         >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['wm:productsalseline:export']"
-        >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="productsalselineList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="行ID" align="center" prop="lineId" />
-      <el-table-column label="出库记录ID" align="center" prop="salseId" />
-      <el-table-column label="库存记录ID" align="center" prop="materialStockId" />
-      <el-table-column label="产品物料ID" align="center" prop="itemId" />
-      <el-table-column label="产品物料编码" align="center" prop="itemCode" />
-      <el-table-column label="产品物料名称" align="center" prop="itemName" />
+      <el-table-column label="产品编码" align="center" prop="itemCode" />
+      <el-table-column label="产品名称" align="center" prop="itemName" />
       <el-table-column label="规格型号" align="center" prop="specification" />
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="出库数量" align="center" prop="quantitySalse" />
       <el-table-column label="批次号" align="center" prop="batchCode" />
-      <el-table-column label="仓库ID" align="center" prop="warehouseId" />
-      <el-table-column label="仓库编码" align="center" prop="warehouseCode" />
       <el-table-column label="仓库名称" align="center" prop="warehouseName" />
-      <el-table-column label="库区ID" align="center" prop="locationId" />
-      <el-table-column label="库区编码" align="center" prop="locationCode" />
       <el-table-column label="库区名称" align="center" prop="locationName" />
-      <el-table-column label="库位ID" align="center" prop="areaId" />
-      <el-table-column label="库位编码" align="center" prop="areaCode" />
       <el-table-column label="库位名称" align="center" prop="areaName" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -216,16 +53,10 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['wm:productsalseline:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['wm:productsalseline:remove']"
+            v-if="optType != 'view'"
+            v-hasPermi="['mes:wm:productsalseline:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -240,65 +71,76 @@
     />
 
     <!-- 添加或修改产品销售出库行对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="出库记录ID" prop="salseId">
-          <el-input v-model="form.salseId" placeholder="请输入出库记录ID" />
-        </el-form-item>
-        <el-form-item label="库存记录ID" prop="materialStockId">
-          <el-input v-model="form.materialStockId" placeholder="请输入库存记录ID" />
-        </el-form-item>
-        <el-form-item label="产品物料ID" prop="itemId">
-          <el-input v-model="form.itemId" placeholder="请输入产品物料ID" />
-        </el-form-item>
-        <el-form-item label="产品物料编码" prop="itemCode">
-          <el-input v-model="form.itemCode" placeholder="请输入产品物料编码" />
-        </el-form-item>
-        <el-form-item label="产品物料名称" prop="itemName">
-          <el-input v-model="form.itemName" placeholder="请输入产品物料名称" />
-        </el-form-item>
-        <el-form-item label="规格型号" prop="specification">
-          <el-input v-model="form.specification" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="单位" prop="unitOfMeasure">
-          <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
-        </el-form-item>
-        <el-form-item label="出库数量" prop="quantitySalse">
-          <el-input v-model="form.quantitySalse" placeholder="请输入出库数量" />
-        </el-form-item>
-        <el-form-item label="批次号" prop="batchCode">
-          <el-input v-model="form.batchCode" placeholder="请输入批次号" />
-        </el-form-item>
-        <el-form-item label="仓库ID" prop="warehouseId">
-          <el-input v-model="form.warehouseId" placeholder="请输入仓库ID" />
-        </el-form-item>
-        <el-form-item label="仓库编码" prop="warehouseCode">
-          <el-input v-model="form.warehouseCode" placeholder="请输入仓库编码" />
-        </el-form-item>
-        <el-form-item label="仓库名称" prop="warehouseName">
-          <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" />
-        </el-form-item>
-        <el-form-item label="库区ID" prop="locationId">
-          <el-input v-model="form.locationId" placeholder="请输入库区ID" />
-        </el-form-item>
-        <el-form-item label="库区编码" prop="locationCode">
-          <el-input v-model="form.locationCode" placeholder="请输入库区编码" />
-        </el-form-item>
-        <el-form-item label="库区名称" prop="locationName">
-          <el-input v-model="form.locationName" placeholder="请输入库区名称" />
-        </el-form-item>
-        <el-form-item label="库位ID" prop="areaId">
-          <el-input v-model="form.areaId" placeholder="请输入库位ID" />
-        </el-form-item>
-        <el-form-item label="库位编码" prop="areaCode">
-          <el-input v-model="form.areaCode" placeholder="请输入库位编码" />
-        </el-form-item>
-        <el-form-item label="库位名称" prop="areaName">
-          <el-input v-model="form.areaName" placeholder="请输入库位名称" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
+    <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="产品编码" prop="itemCode">
+              <el-input v-model="form.itemCode" placeholder="请选择库存物资" >
+                <el-button slot="append" @click="handleSelectStock" icon="el-icon-search"></el-button>
+              </el-input>
+            </el-form-item>
+            <StockSelect ref="stockSelect"  @onSelected="onStockSelected"></StockSelect>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="产品名称" prop="itemName">
+              <el-input v-model="form.itemName" placeholder="请输入产品物料名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="单位" prop="unitOfMeasure">
+              <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="规格型号" prop="specification">
+              <el-input v-model="form.specification" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>          
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="仓库" prop="warehouseName">
+              <el-input v-model="form.warehouseName" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="库区" prop="locationName">
+              <el-input v-model="form.locationName" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="库位" prop="areaName">
+              <el-input v-model="form.areaName" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="批次号" prop="batchCode">
+              <el-input v-model="form.batchCode"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="生产工单" prop="workorderCode">
+              <el-input v-model="form.workorderCode"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="出库数量" prop="quantitySalse">
+              <el-input :max="form.quantityMax" :min="0" v-model="form.quantitySalse" placeholder="请输入出库数量" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -310,13 +152,28 @@
 
 <script>
 import { listProductsalseline, getProductsalseline, delProductsalseline, addProductsalseline, updateProductsalseline } from "@/api/mes/wm/productsalseline";
-
+import StockSelect from "@/components/stockSelect/single.vue"
 export default {
   name: "Productsalseline",
+  components: {StockSelect},
+  props: {
+    salseId: null,
+    optType: null,
+    warehouseId: null,
+    locationId: null,
+    areaId: null
+  },
   data() {
     return {
       // 遮罩层
       loading: true,
+      warehouseInfo:[],
+      warehouseOptions:[],
+      warehouseProps:{
+        multiple: false,
+        value: 'pId',
+        label: 'pName',
+      },
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -337,7 +194,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        salseId: null,
+        salseId: this.salseId,
         materialStockId: null,
         itemId: null,
         itemCode: null,
@@ -360,8 +217,11 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        itemId: [
-          { required: true, message: "产品物料ID不能为空", trigger: "blur" }
+        itemCode: [
+          { required: true, message: "出库物资不能为空", trigger: "blur" }
+        ],
+        warehouseInfo: [
+          { required: true, message: "仓库不能为空", trigger: "blur" }
         ],
         quantitySalse: [
           { required: true, message: "出库数量不能为空", trigger: "blur" }
@@ -391,7 +251,7 @@ export default {
     reset() {
       this.form = {
         lineId: null,
-        salseId: null,
+        salseId: this.salseId,
         materialStockId: null,
         itemId: null,
         itemCode: null,
@@ -400,13 +260,15 @@ export default {
         unitOfMeasure: null,
         quantitySalse: null,
         batchCode: null,
-        warehouseId: null,
+        workorderId: null,
+        workorderCode: null,
+        warehouseId: this.warehouseId,
         warehouseCode: null,
         warehouseName: null,
-        locationId: null,
+        locationId: this.locationId,
         locationCode: null,
         locationName: null,
-        areaId: null,
+        areaId: this.areaId,
         areaCode: null,
         areaName: null,
         remark: null,
@@ -488,7 +350,37 @@ export default {
       this.download('wm/productsalseline/export', {
         ...this.queryParams
       }, `productsalseline_${new Date().getTime()}.xlsx`)
-    }
+    },
+    handleSelectStock(){
+      this.$refs.stockSelect.showFlag = true;
+      this.$refs.stockSelect.getList();
+    },
+    //物料选择弹出框
+    onStockSelected(obj){
+        if(obj != undefined && obj != null){
+          debugger;
+          this.form.materialStockId = obj.materialStockId;
+          this.form.itemId = obj.itemId;
+          this.form.itemCode = obj.itemCode;
+          this.form.itemName = obj.itemName;
+          this.form.specification = obj.specification;
+          this.form.unitOfMeasure = obj.unitOfMeasure;  
+          this.form.batchCode = obj.batchCode;
+          this.form.workorderId = obj.workorderId;
+          this.form.workorderCode = obj.workorderCode;
+          this.form.warehouseId = obj.warehouseId;
+          this.form.warehouseCode = obj.warehouseCode;
+          this.form.warehouseName = obj.warehouseName;
+          this.form.locationId = obj.locationId;
+          this.form.locationCode = obj.locationCode;
+          this.form.locationName = obj.locationName;
+          this.form.areaId = obj.areaId;
+          this.form.areaCode = obj.areaCode;
+          this.form.areaName = obj.areaName;
+          this.form.quantitySalse = obj.quantityOnhand;
+          this.form.quantityMax = obj.quantityOnhand;
+        }
+    },
   }
 };
 </script>

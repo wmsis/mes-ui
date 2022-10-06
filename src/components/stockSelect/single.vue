@@ -32,63 +32,71 @@
       </el-col>
       <el-col :span="20" :xs="24">
 
-      <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
-        <el-form-item label="产品物料编码" prop="itemCode">
-          <el-input
-            v-model="queryParams.itemCode"
-            placeholder="请输入产品物料编码"
-            clearable
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="产品物料名称" prop="itemName">
-          <el-input
-            v-model="queryParams.itemName"
-            placeholder="请输入产品物料名称"
-            clearable
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="入库批次号" prop="batchCode">
-          <el-input
-            v-model="queryParams.batchCode"
-            placeholder="请输入入库批次号"
-            clearable
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="仓库名称" prop="warehouseName">
-          <el-input
-            v-model="queryParams.warehouseName"
-            placeholder="请输入仓库名称"
-            clearable
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="供应商编号" prop="vendorCode">
-          <el-input
-            v-model="queryParams.vendorCode"
-            placeholder="请输入供应商编号"
-            clearable
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="供应商名称" prop="vendorName">
-          <el-input
-            v-model="queryParams.vendorName"
-            placeholder="请输入供应商名称"
-            clearable
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="库存有效期" prop="expireDate">
-          <el-date-picker clearable
-            v-model="queryParams.expireDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择库存有效期">
-          </el-date-picker>
-        </el-form-item>
+      <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="90px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="物资编码" prop="itemCode">
+              <el-input
+                v-model="queryParams.itemCode"
+                placeholder="请输入产品物料编码"
+                clearable
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="物资名称" prop="itemName">
+              <el-input
+                v-model="queryParams.itemName"
+                placeholder="请输入产品物料名称"
+                clearable
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="批次号" prop="batchCode">
+              <el-input
+                v-model="queryParams.batchCode"
+                placeholder="请输入批次号"
+                clearable
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="仓库名称" prop="warehouseName">
+              <el-input
+                v-model="queryParams.warehouseName"
+                placeholder="请输入仓库名称"
+                clearable
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="供应商编号" prop="vendorCode">
+              <el-input
+                v-model="queryParams.vendorCode"
+                placeholder="请输入供应商编号"
+                clearable
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="供应商名称" prop="vendorName">
+              <el-input
+                v-model="queryParams.vendorName"
+                placeholder="请输入供应商名称"
+                clearable
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item> 
+          </el-col>
+        </el-row>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -96,16 +104,6 @@
       </el-form>
 
       <el-row :gutter="10" class="mb8">    
-        <el-col :span="1.5">
-          <el-button
-            type="warning"
-            plain
-            icon="el-icon-download"
-            size="mini"
-            @click="handleExport"
-            v-hasPermi="['wm:wmstock:export']"
-          >导出</el-button>
-        </el-col>
         <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
       </el-row>
 
@@ -126,6 +124,7 @@
         <el-table-column label="供应商编号" width="100px" align="center" prop="vendorCode" />
         <el-table-column label="供应商名称" width="120px" align="center" prop="vendorName" :show-overflow-tooltip="true"/>
         <el-table-column label="供应商简称" width="100px" align="center" prop="vendorNick" />
+        <el-table-column label="生产工单号" width="150px" align="center" prop="workorderCode" />
         <el-table-column label="在库数量" align="center" prop="quantityOnhand" />
         <el-table-column label="库存有效期" align="center" prop="expireDate" width="180">
           <template slot-scope="scope">
@@ -172,6 +171,7 @@ export default {
       multiple: true,
       // 显示搜索条件
       showSearch: true,
+      itemTypeName: undefined,
       // 总条数
       total: 0,
       //物料产品分类树
@@ -182,11 +182,16 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      defaultProps: {
+        children: "children",
+        label: "label"
+      },
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         itemTypeId: null,
+        itemTypeName: null,
         itemId: null,
         itemCode: null,
         itemName: null,
@@ -206,6 +211,9 @@ export default {
         vendorCode: null,
         vendorName: null,
         vendorNick: null,
+        clientId: null,
+        clientCode: null,
+        clientName: null,
         workorderId: this.workorderId,
         quantityOnhand: null,
         expireDate: null,
