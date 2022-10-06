@@ -92,14 +92,14 @@
 
     <el-table v-loading="loading" :data="rtsalseList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="退货单编号" align="center" prop="rtCode" />
-      <el-table-column label="退货单名称" align="center" prop="rtName" />
-      <el-table-column label="销售订单编号" align="center" prop="soCode" />
-      <el-table-column label="客户名称" align="center" prop="clientName" />
+      <el-table-column label="退货单编号" width="140px" align="center" prop="rtCode" />
+      <el-table-column label="退货单名称" width="150px" align="center" prop="rtName" :show-overflow-tooltip="true"/>
+      <el-table-column label="销售订单编号" width="120px" align="center" prop="soCode" />
+      <el-table-column label="客户名称" width="150px" align="center" prop="clientName" :show-overflow-tooltip="true"/>
       <el-table-column label="仓库" align="center" prop="warehouseName" />
       <el-table-column label="库区" align="center" prop="locationName" />
       <el-table-column label="库位" align="center" prop="areaName" />
-      <el-table-column label="退货日期" align="center" prop="rtDate" width="180">
+      <el-table-column label="退货日期"  align="center" prop="rtDate" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.rtDate, '{y}-{m}-{d}') }}</span>
         </template>
@@ -109,13 +109,14 @@
           <dict-tag :options="dict.type.mes_order_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="120px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
+            v-if="scope.row.status == 'PREPARE'"
             v-hasPermi="['mes:wm:rtsalse:edit']"
           >修改</el-button>
           <el-button
@@ -123,8 +124,17 @@
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
+            v-if="scope.row.status == 'PREPARE'"
             v-hasPermi="['mes:wm:rtsalse:remove']"
           >删除</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-video-play"
+            @click="handleExecute(scope.row)"
+            v-if="scope.row.status == 'PREPARE'"
+            v-hasPermi="['mes:wm:productsalse:edit']"
+          >执行入库</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -190,6 +200,16 @@
                 value-format="yyyy-MM-dd"
                 placeholder="请选择退货日期">
               </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="退货仓库">
+              <el-cascader v-model="warehouseInfo"
+                :options="warehouseOptions"
+                :props="warehouseProps"
+                @change="handleWarehouseChanged"
+              >                  
+              </el-cascader>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -384,7 +404,7 @@ export default {
         areaId: null,
         areaCode: null,
         areaName: null,
-        rtDate: null,
+        rtDate: new Date(),
         rtReason: null,
         status: "PREPARE",
         remark: null,
@@ -441,6 +461,9 @@ export default {
       const rtId = row.rtId || this.ids
       getRtsalse(rtId).then(response => {
         this.form = response.data;
+        this.warehouseInfo[0] = response.data.warehouseId;    
+        this.warehouseInfo[1] = response.data.locationId;    
+        this.warehouseInfo[2] = response.data.areaId;    
         this.open = true;
         this.title = "修改产品销售退货单";
         this.optType = "add";
