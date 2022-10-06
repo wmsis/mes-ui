@@ -38,12 +38,12 @@
 
     <el-table v-loading="loading" :data="productsalselineList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="产品编码" align="center" prop="itemCode" />
-      <el-table-column label="产品名称" align="center" prop="itemName" />
-      <el-table-column label="规格型号" align="center" prop="specification" />
+      <el-table-column label="产品编码" width="120px" align="center" prop="itemCode" />
+      <el-table-column label="产品名称" width="150px" align="center" prop="itemName" :show-overflow-tooltip="true"/>
+      <el-table-column label="规格型号" align="center" prop="specification" :show-overflow-tooltip="true"/>
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="出库数量" align="center" prop="quantitySalse" />
-      <el-table-column label="批次号" align="center" prop="batchCode" />
+      <el-table-column label="批次号" width="120px" align="center" prop="batchCode" />
       <el-table-column label="仓库名称" align="center" prop="warehouseName" />
       <el-table-column label="库区名称" align="center" prop="locationName" />
       <el-table-column label="库位名称" align="center" prop="areaName" />

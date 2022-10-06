@@ -42,3 +42,11 @@ export function delProductsalse(salseId) {
     method: 'delete'
   })
 }
+
+//执行出库
+export function execute(salseId) {
+  return request({
+    url: '/mes/wm/productsalse/' + salseId,
+    method: 'put'
+  })
+}

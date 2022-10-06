@@ -114,13 +114,14 @@
           <dict-tag :options="dict.type.mes_order_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" width="120px" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
+            v-if="scope.row.status == 'PREPARE'"
             v-hasPermi="['mes:wm:productsalse:edit']"
           >修改</el-button>
           <el-button
@@ -128,8 +129,18 @@
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
+            v-if="scope.row.status == 'PREPARE'"
             v-hasPermi="['mes:wm:productsalse:remove']"
           >删除</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-video-play"
+            @click="handleExecute(scope.row)"
+            v-if="scope.row.status == 'PREPARE'"
+            v-hasPermi="['mes:wm:productsalse:edit']"
+          >执行入库</el-button>
+          
         </template>
       </el-table-column>
     </el-table>
