@@ -47,9 +47,9 @@
           <dict-tag :options="dict.type.mes_link_type" :value="scope.row.linkType"/>
         </template>
       </el-table-column>
-      <el-table-column label="关键工序" width="100px" align="center" prop="updateFlag">
+      <el-table-column label="关键工序" width="100px" align="center" prop="keyFlag">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.updateFlag"/>
+          <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.keyFlag"/>
         </template>
       </el-table-column>
       <el-table-column label="准备时间" align="center" prop="defaultPreTime" />
@@ -141,13 +141,13 @@
         </el-row>
         <el-row>
             <el-col :span="8">
-              <el-form-item label="是否关键工序" prop="updateFlag">
+              <el-form-item label="是否关键工序" prop="keyFlag">
                     <el-tooltip effect="dark" placement="right">
                     <div slot="content">
                         是：整个工单的生产进度将根据当前工序的生产报工数量进行更新</br>
                         每个工艺流程只能有一个关键工序                        
                     </div>
-                    <el-select v-model="form.updateFlag">
+                    <el-select v-model="form.keyFlag">
                         <el-option
                         v-for="dict in dict.type.sys_yes_no"
                         :key="dict.value"
@@ -246,7 +246,7 @@ export default {
         nextProcessId: [
           { required: true, message: "工序ID不能为空", trigger: "blur" }
         ],
-        updateFlag: [
+        keyFlag: [
         { required: true, message: "请指定当前工序是否关键工序", trigger: "blur" }
         ]
       }
