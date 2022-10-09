@@ -41,11 +41,15 @@
       <el-table-column label="序号" align="center" fixed prop="orderNum" />
       <el-table-column label="工序编码" width="120px" fixed align="center" prop="processCode" />
       <el-table-column label="工序名称" width="150px" fixed align="center" prop="processName" />
-
       <el-table-column label="下一道工序" width="150px"  align="center" prop="nextProcessName" />
       <el-table-column label="与下一道工序关系" width="150px" align="center" prop="linkType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.mes_link_type" :value="scope.row.linkType"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="关键工序" width="100px" align="center" prop="updateFlag">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.updateFlag"/>
         </template>
       </el-table-column>
       <el-table-column label="准备时间" align="center" prop="defaultPreTime" />
@@ -136,14 +140,32 @@
             </el-col>
         </el-row>
         <el-row>
-            <el-col :span="12">
+            <el-col :span="8">
+              <el-form-item label="是否关键工序" prop="updateFlag">
+                    <el-tooltip effect="dark" placement="right">
+                    <div slot="content">
+                        是：整个工单的生产进度将根据当前工序的生产报工数量进行更新</br>
+                        每个工艺流程只能有一个关键工序                        
+                    </div>
+                    <el-select v-model="form.updateFlag">
+                        <el-option
+                        v-for="dict in dict.type.sys_yes_no"
+                        :key="dict.value"
+                        :label="dict.label"
+                        :value="dict.value"
+                        ></el-option>
+                    </el-select>
+                    </el-tooltip>
+                </el-form-item>
+            </el-col>
+            <el-col :span="8">
                 <el-form-item label="准备时间" prop="defaultPreTime">
                     <el-tooltip effect="dark" content="当前系统支持的最小时间粒度为1小时" placement="right">
                         <el-input-number :min="0" :step="1" v-model="form.defaultPreTime" placeholder="请输入准备时间" />
                     </el-tooltip>
                 </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="8">
                 <el-form-item label="等待时间" prop="defaultSufTime">
                     <el-input-number :min="0" :step="1" v-model="form.defaultSufTime" placeholder="请输入等待时间" />
                 </el-form-item>
@@ -171,7 +193,7 @@ import { listRouteprocess, getRouteprocess, delRouteprocess, addRouteprocess, up
 import {listAllProcess} from "@/api/mes/pro/process";
 export default {
   name: "Routeprocess",
-  dicts: ['mes_link_type'],
+  dicts: ['mes_link_type','sys_yes_no'],
   data() {
     return {
       // 遮罩层
@@ -224,6 +246,9 @@ export default {
         nextProcessId: [
           { required: true, message: "工序ID不能为空", trigger: "blur" }
         ],
+        updateFlag: [
+        { required: true, message: "请指定当前工序是否关键工序", trigger: "blur" }
+        ]
       }
     };
   },
