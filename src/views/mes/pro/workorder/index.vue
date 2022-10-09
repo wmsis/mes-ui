@@ -309,7 +309,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="客户名称" prop="clientName">
-              <el-input v-model="form.clientName" placeholder="请输入客户名称" />
+              <el-input v-model="form.clientName" readonly="readonly" placeholder="请输入客户名称" />
             </el-form-item>
           </el-col>
           <el-col></el-col>
