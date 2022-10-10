@@ -139,6 +139,14 @@
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-delete"
+            v-if="scope.row.status =='PREPARE'"
+            @click="handleExecute(scope.row)"
+            v-hasPermi="['mes:wm:feedback:edit']"
+          >执行入库</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['mes:pro:feedback:edit']"
@@ -285,7 +293,7 @@
 </template>
 
 <script>
-import { listFeedback, getFeedback, delFeedback, addFeedback, updateFeedback } from "@/api/mes/pro/feedback";
+import { listFeedback, getFeedback, delFeedback, addFeedback, updateFeedback, execute } from "@/api/mes/pro/feedback";
 import WorkorderSelect from "@/components/workorderSelect/single.vue"
 import WorkstationSelect from "@/components/workstationSelect/simpletableSingle.vue"
 import UserSingleSelect from "@/components/userSelect/single.vue"
@@ -498,6 +506,16 @@ export default {
           }
         }
       });
+    },
+    //执行
+    handleExecute(row){
+      const recordIds = row.recordId || this.ids;
+      this.$modal.confirm('确认执行报工？').then(function() {
+        return execute(recordIds)//执行报工
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("执行成功");
+      }).catch(() => {});
     },
     /** 删除按钮操作 */
     handleDelete(row) {

@@ -42,3 +42,10 @@ export function delFeedback(recordId) {
     method: 'delete'
   })
 }
+
+export function execute(recordId){
+  return request({
+    url: '/mes/pro/feedback/'+recordId,
+    method: 'put'
+  })
+}
