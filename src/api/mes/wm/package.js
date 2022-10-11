@@ -42,3 +42,12 @@ export function delPackage(packageId) {
     method: 'delete'
   })
 }
+
+//添加子箱
+export function addSubPackage(data){
+  return request({
+    url: '/mes/wm/package/addsub',
+    method: 'put',
+    data: data
+  })
+}

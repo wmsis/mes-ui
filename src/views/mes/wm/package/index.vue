@@ -59,34 +59,24 @@
           v-hasPermi="['mes:wm:package:add']"
         >新增</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['mes:wm:package:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['mes:wm:package:remove']"
-        >删除</el-button>
-      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="packageList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="装箱单编号" width="100px" align="center" prop="packageCode" />
+    <el-table v-loading="loading" :data="packageList" 
+      row-key="packageId"
+      default-expand-all
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      @selection-change="handleSelectionChange">
+      <el-table-column label="装箱单编号" width="180px" align="center" prop="packageCode" >
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            size="mini"
+            @click="handleView(scope.row)"
+            v-hasPermi="['mes:wm:package:query']"
+          >{{scope.row.packageCode}}</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="装箱日期" align="center" prop="packageDate" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.packageDate, '{y}-{m}-{d}') }}</span>
@@ -95,7 +85,7 @@
       <el-table-column label="销售订单编号" width="100px" align="center" prop="soCode" />
       <el-table-column label="发票编号" align="center" prop="invoiceCode" />
       <el-table-column label="客户编码" align="center" prop="clientCode" />
-      <el-table-column label="客户名称" align="center" prop="clientName" />
+      <el-table-column label="客户名称" width="120px" align="center" prop="clientName" :show-overflow-tooltip="true"/>
       <el-table-column label="箱长度" align="center" prop="packageLength" />
       <el-table-column label="箱宽度" align="center" prop="packageWidth" />
       <el-table-column label="箱高度" align="center" prop="packageHeight" />
@@ -104,9 +94,9 @@
       <el-table-column label="毛重" align="center" prop="crossWeight" />
       <el-table-column label="重量单位" align="center" prop="weightUnit" />
       <el-table-column label="检查员" align="center" prop="inspectorName" />
-      <el-table-column label="是否启用" align="center" prop="enableFlag">
+      <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.enableFlag"/>
+          <dict-tag :options="dict.type.mes_order_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -117,6 +107,7 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['mes:wm:package:edit']"
+            v-if="scope.row.status =='PREPARE'"
           >修改</el-button>
           <el-button
             size="mini"
@@ -124,6 +115,7 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['mes:wm:package:remove']"
+            v-if="scope.row.status =='PREPARE'"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -262,8 +254,18 @@
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
+      <el-tabs type="border-card" v-if="form.packageId !=null">
+        <el-tab-pane label="子箱">
+          <SubPackage ref="subPackge" :parentId="form.packageId" :optType="optType"></SubPackage>
+        </el-tab-pane>
+        <el-tab-pane label="装箱清单">
+          <Packageline ref="packageLine" :packageId="form.packageId" :optType="optType"></Packageline>
+        </el-tab-pane>
+      </el-tabs>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
+        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>
+        <el-button type="success" @click="doconfirm" v-if="form.status =='PREPARE' && optType !='view' && form.packageId !=null">完成</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -273,13 +275,17 @@
 <script>
 import { listPackage, getPackage, delPackage, addPackage, updatePackage } from "@/api/mes/wm/package";
 import ClientSelect from "@/components/clientSelect/single.vue";
+import Packageline from "./line.vue";
+import SubPackage from "./subpackge.vue";
 import { listAllUnitmeasure} from "@/api/mes/md/unitmeasure";
 import {genCode} from "@/api/system/autocode/rule"
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
   name: "Package",
-  dicts: ['sys_yes_no'],
+  dicts: ['mes_order_status'],
   components: {
-    ClientSelect
+    ClientSelect,Packageline,SubPackage,Treeselect
   },
   data() {
     return {
@@ -359,10 +365,21 @@ export default {
     getList() {
       this.loading = true;
       listPackage(this.queryParams).then(response => {
-        this.packageList = response.rows;
+        this.packageList =this.handleTree(response.rows, "packageId", "parentId");
         this.total = response.total;
         this.loading = false;
       });
+    },
+    /** 转换生产工单数据结构 */
+    normalizer(node) {
+      if (node.children && !node.children.length) {
+        delete node.children;
+      }
+      return {
+        id: node.packageId,
+        label: node.packageCode,
+        children: node.children
+      };
     },
     //获取单位
     getUnits(){
@@ -385,7 +402,7 @@ export default {
         barcodeId: null,
         barcodeContent: null,
         barcodeUrl: null,
-        packageDate: null,
+        packageDate: new Date(),
         soCode: null,
         invoiceCode: null,
         clientId: null,
@@ -451,6 +468,17 @@ export default {
       this.title = "添加装箱单";
       this.optType="add";
     },
+    // 查询明细按钮操作
+    handleView(row){
+      this.reset();
+      const packageIds = row.packageId
+      getPackage(packageIds).then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "查看装箱单信息";
+        this.optType = "view";
+      });
+    },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
@@ -480,6 +508,14 @@ export default {
             });
           }
         }
+      });
+    },
+    //完成
+    doconfirm(){
+      let that = this;
+      this.$modal.confirm('是否完成装箱单编制？【完成后将不能更改】').then(function(){
+        that.form.status = 'FINISHED';
+        that.submitForm();
       });
     },
     /** 删除按钮操作 */

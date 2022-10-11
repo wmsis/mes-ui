@@ -438,6 +438,14 @@ export default {
         }
       });
     },
+    //完成单据
+    doconfirm(){
+      let that = this;
+      this.$modal.confirm('是否完成入库单编制？【完成后将不能更改】').then(function(){
+        that.form.status = 'CONFIRMED';
+        that.submitForm();
+      });
+    },
     /** 删除按钮操作 */
     handleDelete(row) {
       const recptIds = row.recptId || this.ids;
