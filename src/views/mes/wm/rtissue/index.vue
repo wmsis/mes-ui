@@ -102,11 +102,12 @@
             v-if="scope.row.status =='PREPARE'"
             @click="handleExecute(scope.row)"
             v-hasPermi="['mes:wm:rtissue:edit']"
-          >执行入库</el-button>
+          >执行退料</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
+            v-if="scope.row.status =='PREPARE'"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['mes:wm:rtissue:edit']"
           >修改</el-button>
@@ -114,6 +115,7 @@
             size="mini"
             type="text"
             icon="el-icon-delete"
+            v-if="scope.row.status =='PREPARE'"
             @click="handleDelete(scope.row)"
             v-hasPermi="['mes:wm:rtissue:remove']"
           >删除</el-button>
@@ -197,7 +199,7 @@
       </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>     
-        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>           
+        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>           
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>

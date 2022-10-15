@@ -38,8 +38,7 @@ export function updateRtissue(data) {
 export function execute(rtId){
   return request({
     url: '/mes/wm/rtissue/'+rtId,
-    method: 'put',
-    data: data
+    method: 'put'
   })
 }
 

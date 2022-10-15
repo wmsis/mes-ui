@@ -263,7 +263,7 @@ export default {
     reset() {
       this.form = {
         lineId: null,
-        recptId: null,
+        recptId: this.recptId,
         materialStockId: null,
         itemId: null,
         itemCode: null,

@@ -119,7 +119,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="接收仓库">
+            <el-form-item label="接收仓库" prop="warehouseId">
               <el-cascader v-model="warehouseInfo"
                 :options="warehouseOptions"
                 :props="warehouseProps"
@@ -181,7 +181,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        rtId: null,
+        rtId: this.rtId,
         materialStockId: null,
         itemId: null,
         itemCode: null,
@@ -210,7 +210,7 @@ export default {
         quantityRt: [
           { required: true, message: "退料数量不能为空", trigger: "blur" }
         ],
-        warehouseName: [
+        warehouseId: [
           { required: true, message: "接收仓库不能为空", trigger: "blur" }
         ]
       }
@@ -256,7 +256,7 @@ export default {
     reset() {
       this.form = {
         lineId: null,
-        rtId: null,
+        rtId: this.rtId,
         materialStockId: null,
         itemId: null,
         itemCode: null,
@@ -372,6 +372,9 @@ export default {
           this.form.specification = obj.specification;
           this.form.unitOfMeasure = obj.unitOfMeasure;  
           this.form.batchCode = obj.batchCode;        
+          this.form.warehouseId = obj.warehouseId;
+          this.form.locationId = obj.locationId;
+          this.form.areaId = obj.areaId;
           this.form.quantityRt = obj.quantityOnhand;
           this.form.quantityMax = obj.quantityOnhand;
         }
@@ -379,9 +382,10 @@ export default {
     //选择默认的仓库、库区、库位
     handleWarehouseChanged(obj){      
       if(obj !=null){
+        debugger;
         this.form.warehouseId = obj[0];
         this.form.locationId = obj[1];
-        this.form.areaId = obj[2];
+        this.form.areaId = obj[2]; 
       }
     },
   }

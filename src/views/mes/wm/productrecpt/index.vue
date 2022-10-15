@@ -108,10 +108,18 @@
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-delete"
+            v-if="scope.row.status =='PREPARE'"
+            @click="handleExecute(scope.row)"
+            v-hasPermi="['mes:wm:productrecpt:edit']"
+          >执行入库</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-if="scope.row.status =='PREPARE'"
-            v-hasPermi="['wm:productrecpt:edit']"
+            v-hasPermi="['mes:wm:productrecpt:edit']"
           >修改</el-button>
           <el-button
             size="mini"
@@ -119,7 +127,7 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-if="scope.row.status =='PREPARE'"
-            v-hasPermi="['wm:productrecpt:remove']"
+            v-hasPermi="['mes:wm:productrecpt:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -159,8 +167,8 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="生产工单编码" prop="workorderCode">
-              <el-input v-model="form.workorderCode" placeholder="请输入生产工单编码" >
+            <el-form-item label="生产工单编号" prop="workorderCode">
+              <el-input v-model="form.workorderCode" placeholder="请输入生产工单编号" >
                 <el-button slot="append" icon="el-icon-search" @click="handleWorkorderSelect"></el-button>
               </el-input>
               <WorkorderSelect ref="woSelect" @onSelected="onWorkorderSelected"></WorkorderSelect>
@@ -235,8 +243,7 @@
       </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
-        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>
-        <el-button type="success" @click="doconfirm" v-if="form.status =='PREPARE' && optType !='view' && form.recptId !=null">完成</el-button>
+        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>        
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -313,6 +320,9 @@ export default {
         ],
         recptDate: [
           { required: true, message: "请选择入库日期", trigger: "blur" }
+        ],
+        workorderCode: [
+          { required: true, message: "请选择生产工单", trigger: "blur" }
         ],
       }
     };
@@ -406,7 +416,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加产品入库录";
+      this.title = "添加产品入库单";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -415,7 +425,7 @@ export default {
       getProductrecpt(recptId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改产品入库录";
+        this.title = "修改产品入库单";
       });
     },
     /** 提交按钮 */
@@ -438,18 +448,10 @@ export default {
         }
       });
     },
-    //完成单据
-    doconfirm(){
-      let that = this;
-      this.$modal.confirm('是否完成入库单编制？【完成后将不能更改】').then(function(){
-        that.form.status = 'CONFIRMED';
-        that.submitForm();
-      });
-    },
     /** 删除按钮操作 */
     handleDelete(row) {
       const recptIds = row.recptId || this.ids;
-      this.$modal.confirm('是否确认删除产品入库录编号为"' + recptIds + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除产品入库单编号为"' + recptIds + '"的数据项？').then(function() {
         return delProductrecpt(recptIds);
       }).then(() => {
         this.getList();
