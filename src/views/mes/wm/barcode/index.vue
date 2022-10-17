@@ -74,7 +74,7 @@
       <el-table-column type="selection" width="55" align="center" />     
       <el-table-column label="条码" align="center">
         <template slot-scope="scope">
-            <el-image @click="handleUpdate(scope.row)" class="barcodeClass" fit="scale-down" :src="scope.row.barcodeUrl">
+            <el-image @click="handleView(scope.row)" class="barcodeClass" fit="scale-down" :src="scope.row.barcodeUrl">
               <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline"></i>
               </div>
@@ -107,7 +107,7 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['mes:wm:barcode:edit']"
-          >查看</el-button>
+          >编辑</el-button>
           <el-button
             size="mini"
             type="text"
@@ -191,6 +191,22 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <!--箱条码-->
+        <el-row v-if="form.barcodeType=='BOX'">
+          <el-col :span="12">
+            <el-form-item label="装箱单号"  prop="packageCode">
+              <el-input v-model="form.bussinessCode" readonly="readonly" placeholder="请选择装箱单" >
+                <el-button slot="append" @click="handleSelectPackage" icon="el-icon-search"></el-button>
+              </el-input>
+            </el-form-item>
+            <PackageSelectSingle ref="packageSelect" :status="'FINISHED'" @onSelected="onPackageSelected"></PackageSelectSingle>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="客户名称" prop="bussinessName">
+              <el-input v-model="form.bussinessName" readonly="readonly" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <!--供应商-->
         <el-row v-else-if="form.barcodeType=='VENDOR'">
           <el-col :span="12">
@@ -219,7 +235,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="条码" prop="url">
-              <el-image class="barcodeClass" :src="form.barcodeUrl">
+              <el-image class="barcodeFormClass" :src="form.barcodeUrl">
                 <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline"></i>
                 </div>
@@ -236,7 +252,8 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="cancel" v-if="optType =='view'">返回</el-button>
+        <el-button type="primary" @click="submitForm" v-if="optType !='view' ">保 存</el-button>        
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -247,12 +264,12 @@
 import { listBarcode, getBarcode, delBarcode, addBarcode, updateBarcode } from "@/api/mes/wm/barcode";
 import ItemSelect  from "@/components/itemSelect/single.vue";
 import VendorSelect from "@/components/vendorSelect/single.vue";
-
+import PackageSelectSingle from "@/components/package/single.vue";
 export default {
   name: "Barcode",
   dicts: ['mes_barcode_type','mes_barcode_formart','sys_yes_no'],
   components: {
-    ItemSelect,VendorSelect
+    ItemSelect,VendorSelect,PackageSelectSingle
   },
   data() {
     return {
@@ -369,6 +386,16 @@ export default {
       this.title = "添加条码";
       this.optType = "add";
     },
+    handleView(row){
+      this.reset();
+      const barcodeId = row.barcodeId
+      getBarcode(barcodeId).then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "查看条码";
+        this.optType = "view";
+      });
+    },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
@@ -429,12 +456,29 @@ export default {
           this.form.barcodeContent= "".concat(this.form.barcodeType,'-',this.form.bussinessCode);
         }
     },
+    //装箱单选择
+    handleSelectPackage(){
+      this.$refs.packageSelect.showFlag=true;
+    },
+    /**选择装箱单返回 */
+    onPackageSelected(obj){
+      if(obj != undefined && obj != null){
+          this.form.bussinessId = obj.packageId;
+          this.form.bussinessCode = obj.packageCode;
+          this.form.bussinessName = obj.clientName;
+          this.form.barcodeContent= "".concat(this.form.barcodeType,'-',this.form.bussinessCode);
+        }
+    },
   }
 };
 </script>
 <style scoped>
   .barcodeClass {
-    width: 300px;
+    width: 100px;
+    height: 200px;
+  }
+  .barcodeFormClass {
+    width: 200px;
     height: 200px;
   }
 
