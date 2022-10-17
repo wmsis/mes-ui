@@ -40,7 +40,15 @@ module.exports = {
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
-      }
+      },
+      '/ureport': {
+        target: 'http://localhost:8080',
+        ws:false,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/ureport': '/ureport'
+        }
+      },
     },
     disableHostCheck: true
   },
