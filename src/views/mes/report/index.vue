@@ -81,14 +81,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handlePreview(scope.row.name)"
-            v-hasPermi="['ureport:edit']"
+            v-hasPermi="['mes:report:edit']"
           >预览</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['ureport:remove']"
+            v-hasPermi="['mes:report:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
