@@ -66,7 +66,7 @@
           v-hasPermi="['mes:wm:barcode:edit']"
         >条码设置</el-button>
       </el-col>
-
+      <Barcodeconfig ref="barcodeconf"></Barcodeconfig>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -265,11 +265,12 @@ import { listBarcode, getBarcode, delBarcode, addBarcode, updateBarcode } from "
 import ItemSelect  from "@/components/itemSelect/single.vue";
 import VendorSelect from "@/components/vendorSelect/single.vue";
 import PackageSelectSingle from "@/components/package/single.vue";
+import Barcodeconfig from "./config.vue"
 export default {
   name: "Barcode",
   dicts: ['mes_barcode_type','mes_barcode_formart','sys_yes_no'],
   components: {
-    ItemSelect,VendorSelect,PackageSelectSingle
+    ItemSelect,VendorSelect,PackageSelectSingle,Barcodeconfig
   },
   data() {
     return {
@@ -469,6 +470,9 @@ export default {
           this.form.barcodeContent= "".concat(this.form.barcodeType,'-',this.form.bussinessCode);
         }
     },
+    handleConfig(){
+      this.$refs.barcodeconf.showFlag = true;
+    }
   }
 };
 </script>
