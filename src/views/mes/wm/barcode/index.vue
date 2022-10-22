@@ -66,7 +66,7 @@
           v-hasPermi="['mes:wm:barcode:edit']"
         >条码设置</el-button>
       </el-col>
-      <Barcodeconfig ref="barcodeconf"></Barcodeconfig>
+      <Barcodeconfig ref="barcodeconfig"></Barcodeconfig>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -471,7 +471,7 @@ export default {
         }
     },
     handleConfig(){
-      this.$refs.barcodeconf.showFlag = true;
+      this.$refs.barcodeconfig.showFlag = true;
     }
   }
 };
