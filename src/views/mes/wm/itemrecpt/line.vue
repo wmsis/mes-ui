@@ -116,7 +116,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="入库仓库">
+            <el-form-item label="入库仓库" prop="warehouseId">
               <el-cascader v-model="warehouseInfo"
                 :options="warehouseOptions"
                 :props="warehouseProps"
