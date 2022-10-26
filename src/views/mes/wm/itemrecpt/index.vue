@@ -337,6 +337,9 @@ export default {
         ],
         recptDate: [
           { required: true, message: "入库时间不能为空", trigger: "blur"}
+        ],
+        vendorName: [
+          { required: true, message: "请选择对应的供应商", trigger: "blur"}
         ]
       }
     };
