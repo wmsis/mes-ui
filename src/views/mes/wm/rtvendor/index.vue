@@ -116,7 +116,7 @@
             size="mini"
             type="text"
             icon="el-icon-delete"
-            v-if="scope.row.status =='CONFIRMED'"
+            v-if="scope.row.status =='PREPARE'"
             @click="handleExecute(scope.row)"
             v-hasPermi="['mes:wm:rtvendor:edit']"
           >执行退货</el-button>
@@ -230,8 +230,7 @@
       </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
-        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>
-        <el-button type="success" @click="doconfirm" v-if="form.status =='PREPARE' && optType !='view' && form.rtId !=null">完成</el-button>
+        <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>        
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -297,6 +296,9 @@ export default {
         vendorName: [
           { required: true, message: "供应商不能为空", trigger: "blur" }
         ],
+        rtDate: [
+          { required: true, message: "退货日期不能为空", trigger: "blur" }
+        ]
       }
     };
   },
