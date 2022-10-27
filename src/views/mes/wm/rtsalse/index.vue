@@ -240,6 +240,10 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-divider v-if="form.rtId !=null" content-position="center">产品信息</el-divider> 
+      <el-card shadow="always" v-if="form.rtId !=null" class="box-card">
+        <Rtsalseline :rtId="form.rtId" :optType="optType"></Rtsalseline>
+      </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
         <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>        
@@ -251,6 +255,7 @@
 
 <script>
 import { listRtsalse, getRtsalse, delRtsalse, addRtsalse, updateRtsalse } from "@/api/mes/wm/rtsalse";
+import Rtsalseline from "./line.vue";
 import ClientSelectSingle from "@/components/clientSelect/single.vue"
 import {getTreeList} from "@/api/mes/wm/warehouse"
 import {genCode} from "@/api/system/autocode/rule"
@@ -258,7 +263,7 @@ export default {
   name: "Rtsalse",
   dicts: ['mes_order_status'],
   components: {
-    ClientSelectSingle
+    ClientSelectSingle,Rtsalseline
   },
   data() {
     return {

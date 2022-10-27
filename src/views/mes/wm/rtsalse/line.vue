@@ -1,149 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="退货单ID" prop="rtId">
-        <el-input
-          v-model="queryParams.rtId"
-          placeholder="请输入退货单ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品物料ID" prop="itemId">
-        <el-input
-          v-model="queryParams.itemId"
-          placeholder="请输入产品物料ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品物料编码" prop="itemCode">
-        <el-input
-          v-model="queryParams.itemCode"
-          placeholder="请输入产品物料编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品物料名称" prop="itemName">
-        <el-input
-          v-model="queryParams.itemName"
-          placeholder="请输入产品物料名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="单位" prop="unitOfMeasure">
-        <el-input
-          v-model="queryParams.unitOfMeasure"
-          placeholder="请输入单位"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="退货数量" prop="quantityRted">
-        <el-input
-          v-model="queryParams.quantityRted"
-          placeholder="请输入退货数量"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="批次号" prop="batchCode">
-        <el-input
-          v-model="queryParams.batchCode"
-          placeholder="请输入批次号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="仓库ID" prop="warehouseId">
-        <el-input
-          v-model="queryParams.warehouseId"
-          placeholder="请输入仓库ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="仓库编码" prop="warehouseCode">
-        <el-input
-          v-model="queryParams.warehouseCode"
-          placeholder="请输入仓库编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="仓库名称" prop="warehouseName">
-        <el-input
-          v-model="queryParams.warehouseName"
-          placeholder="请输入仓库名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库区ID" prop="locationId">
-        <el-input
-          v-model="queryParams.locationId"
-          placeholder="请输入库区ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库区编码" prop="locationCode">
-        <el-input
-          v-model="queryParams.locationCode"
-          placeholder="请输入库区编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库区名称" prop="locationName">
-        <el-input
-          v-model="queryParams.locationName"
-          placeholder="请输入库区名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库位ID" prop="areaId">
-        <el-input
-          v-model="queryParams.areaId"
-          placeholder="请输入库位ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库位编码" prop="areaCode">
-        <el-input
-          v-model="queryParams.areaCode"
-          placeholder="请输入库位编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库位名称" prop="areaName">
-        <el-input
-          v-model="queryParams.areaName"
-          placeholder="请输入库位名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="有效期" prop="expireDate">
-        <el-date-picker clearable
-          v-model="queryParams.expireDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择有效期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-row :gutter="10" class="mb8">
+    <el-row v-if="optType != 'view'" :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
           type="primary"
@@ -151,19 +8,8 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['wm:rtsalseline:add']"
+          v-hasPermi="['mes:wm:rtsalse:add']"
         >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['wm:rtsalseline:edit']"
-        >修改</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -173,63 +19,44 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['wm:rtsalseline:remove']"
+          v-hasPermi="['mes:wm:rtsalse:remove']"
         >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['wm:rtsalseline:export']"
-        >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="rtsalselineList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="行ID" align="center" prop="lineId" />
-      <el-table-column label="退货单ID" align="center" prop="rtId" />
-      <el-table-column label="产品物料ID" align="center" prop="itemId" />
-      <el-table-column label="产品物料编码" align="center" prop="itemCode" />
-      <el-table-column label="产品物料名称" align="center" prop="itemName" />
+      <el-table-column type="selection" width="55" align="center" />   
+      <el-table-column label="产品编码" align="center" prop="itemCode" />
+      <el-table-column label="产品名称" align="center" prop="itemName" />
       <el-table-column label="规格型号" align="center" prop="specification" />
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="退货数量" align="center" prop="quantityRted" />
       <el-table-column label="批次号" align="center" prop="batchCode" />
-      <el-table-column label="仓库ID" align="center" prop="warehouseId" />
-      <el-table-column label="仓库编码" align="center" prop="warehouseCode" />
-      <el-table-column label="仓库名称" align="center" prop="warehouseName" />
-      <el-table-column label="库区ID" align="center" prop="locationId" />
-      <el-table-column label="库区编码" align="center" prop="locationCode" />
-      <el-table-column label="库区名称" align="center" prop="locationName" />
-      <el-table-column label="库位ID" align="center" prop="areaId" />
-      <el-table-column label="库位编码" align="center" prop="areaCode" />
-      <el-table-column label="库位名称" align="center" prop="areaName" />
+      <el-table-column label="仓库" align="center" prop="warehouseName" />
+      <el-table-column label="库区" align="center" prop="locationName" />
+      <el-table-column label="库位" align="center" prop="areaName" />
       <el-table-column label="有效期" align="center" prop="expireDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.expireDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" v-if="optType != 'view'" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['wm:rtsalseline:edit']"
+            v-hasPermi="['mes:wm:rtsalse:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['wm:rtsalseline:remove']"
+            v-hasPermi="['mes:wm:rtsalse:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -244,70 +71,54 @@
     />
 
     <!-- 添加或修改产品销售退货行对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="退货单ID" prop="rtId">
-          <el-input v-model="form.rtId" placeholder="请输入退货单ID" />
-        </el-form-item>
-        <el-form-item label="产品物料ID" prop="itemId">
-          <el-input v-model="form.itemId" placeholder="请输入产品物料ID" />
-        </el-form-item>
-        <el-form-item label="产品物料编码" prop="itemCode">
-          <el-input v-model="form.itemCode" placeholder="请输入产品物料编码" />
-        </el-form-item>
-        <el-form-item label="产品物料名称" prop="itemName">
-          <el-input v-model="form.itemName" placeholder="请输入产品物料名称" />
-        </el-form-item>
-        <el-form-item label="规格型号" prop="specification">
-          <el-input v-model="form.specification" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="单位" prop="unitOfMeasure">
-          <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
-        </el-form-item>
-        <el-form-item label="退货数量" prop="quantityRted">
-          <el-input v-model="form.quantityRted" placeholder="请输入退货数量" />
-        </el-form-item>
-        <el-form-item label="批次号" prop="batchCode">
-          <el-input v-model="form.batchCode" placeholder="请输入批次号" />
-        </el-form-item>
-        <el-form-item label="仓库ID" prop="warehouseId">
-          <el-input v-model="form.warehouseId" placeholder="请输入仓库ID" />
-        </el-form-item>
-        <el-form-item label="仓库编码" prop="warehouseCode">
-          <el-input v-model="form.warehouseCode" placeholder="请输入仓库编码" />
-        </el-form-item>
-        <el-form-item label="仓库名称" prop="warehouseName">
-          <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" />
-        </el-form-item>
-        <el-form-item label="库区ID" prop="locationId">
-          <el-input v-model="form.locationId" placeholder="请输入库区ID" />
-        </el-form-item>
-        <el-form-item label="库区编码" prop="locationCode">
-          <el-input v-model="form.locationCode" placeholder="请输入库区编码" />
-        </el-form-item>
-        <el-form-item label="库区名称" prop="locationName">
-          <el-input v-model="form.locationName" placeholder="请输入库区名称" />
-        </el-form-item>
-        <el-form-item label="库位ID" prop="areaId">
-          <el-input v-model="form.areaId" placeholder="请输入库位ID" />
-        </el-form-item>
-        <el-form-item label="库位编码" prop="areaCode">
-          <el-input v-model="form.areaCode" placeholder="请输入库位编码" />
-        </el-form-item>
-        <el-form-item label="库位名称" prop="areaName">
-          <el-input v-model="form.areaName" placeholder="请输入库位名称" />
-        </el-form-item>
-        <el-form-item label="有效期" prop="expireDate">
-          <el-date-picker clearable
-            v-model="form.expireDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择有效期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
+    <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">    
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="产品编码" prop="itemCode">
+              <el-input v-model="form.itemCode" placeholder="请输入产品物料编码" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="产品名称" prop="itemName">
+              <el-input v-model="form.itemName" placeholder="请输入产品物料名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="单位" prop="unitOfMeasure">
+              <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
+            </el-form-item>
+          </el-col>
+        </el-row>   
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="规格型号" prop="specification">
+              <el-input v-model="form.specification" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="退货数量" prop="quantityRted">
+              <el-input v-model="form.quantityRted" placeholder="请输入退货数量" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="批次号" prop="batchCode">
+              <el-input v-model="form.batchCode" placeholder="请输入批次号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="入库仓库">
+              <el-cascader v-model="warehouseInfo"
+                :options="warehouseOptions"
+                :props="warehouseProps"
+                @change="handleWarehouseChanged"
+              >                  
+              </el-cascader>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -319,7 +130,7 @@
 
 <script>
 import { listRtsalseline, getRtsalseline, delRtsalseline, addRtsalseline, updateRtsalseline } from "@/api/mes/wm/rtsalseline";
-
+import {getTreeList} from "@/api/mes/wm/warehouse"
 export default {
   name: "Rtsalseline",
   props: {
@@ -328,6 +139,13 @@ export default {
   },
   data() {
     return {
+      warehouseInfo:[],
+      warehouseOptions:[],
+      warehouseProps:{
+        multiple: false,
+        value: 'pId',
+        label: 'pName',
+      },
       // 遮罩层
       loading: true,
       // 选中数组
@@ -374,7 +192,7 @@ export default {
       // 表单校验
       rules: {
         itemId: [
-          { required: true, message: "产品物料ID不能为空", trigger: "blur" }
+          { required: true, message: "产品不能为空", trigger: "blur" }
         ],
         quantityRted: [
           { required: true, message: "退货数量不能为空", trigger: "blur" }
@@ -384,6 +202,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getWarehouseList();
   },
   methods: {
     /** 查询产品销售退货行列表 */
@@ -394,6 +213,31 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
+    },
+    getWarehouseList(){
+      getTreeList().then( response =>{        
+        this.warehouseOptions = response.data;
+        this.warehouseOptions.map(w =>{
+          w.children.map(l =>{
+                  let lstr =JSON.stringify(l.children).replace(/locationId/g,'lId').replace(/areaId/g, 'pId').replace(/areaName/g,'pName');                  
+                  l.children = JSON.parse(lstr);
+          });
+            
+          let wstr = JSON.stringify(w.children).replace(/warehouseId/g,'wId').replace(/locationId/g, 'pId').replace(/locationName/g,'pName');  
+          w.children =  JSON.parse(wstr); 
+
+        });
+        let ostr=JSON.stringify(this.warehouseOptions).replace(/warehouseId/g,'pId').replace(/warehouseName/g, 'pName');
+        this.warehouseOptions = JSON.parse(ostr);
+      });
+    },
+    //选择默认的仓库、库区、库位
+    handleWarehouseChanged(obj){      
+      if(obj !=null){
+        this.form.warehouseId = obj[0];
+        this.form.locationId = obj[1];
+        this.form.areaId = obj[2];
+      }
     },
     // 取消按钮
     cancel() {

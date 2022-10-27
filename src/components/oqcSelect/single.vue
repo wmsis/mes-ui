@@ -217,6 +217,11 @@
                 this.selectedRow = row;
             }
         },
+        handleCurrent(row){
+            if(row){
+                this.selectedRow = row;
+            }
+        },
         //确定选中
         confirmSelect(){
             if(this.selectedId ==null || this.selectedId==0){

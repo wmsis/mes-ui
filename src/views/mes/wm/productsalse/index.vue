@@ -100,10 +100,7 @@
       <el-table-column label="出货检验单" width="150px" align="center" prop="oqcCode" />
       <el-table-column label="销售订单编号" width="120px" align="center" prop="soCode" />
       <el-table-column label="客户编码" align="center" prop="clientCode" />
-      <el-table-column label="客户名称" align="center" prop="clientName" />
-      <el-table-column label="仓库名称" align="center" prop="warehouseName" />
-      <el-table-column label="库区名称" align="center" prop="locationName" />
-      <el-table-column label="库位名称" align="center" prop="areaName" />
+      <el-table-column label="客户名称" align="center" prop="clientName" />   
       <el-table-column label="出库日期" align="center" prop="salseDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.salseDate, '{y}-{m}-{d}') }}</span>
@@ -192,20 +189,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="客户名称" prop="clientName">
-              <el-input v-model="form.clientName" placeholder="请输入客户名称" />
+            <el-form-item label="客户编码" prop="clientCode">
+              <el-input v-model="form.clientCode" placeholder="请输入客户编码" >
+                <el-button slot="append" @click="handleSelectClient" icon="el-icon-search"></el-button>
+              </el-input>
+              <ClientSelect ref="clientSelect" @onSelected="onClientSelected" > </ClientSelect>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="出库仓库">
-              <el-cascader v-model="warehouseInfo"
-                :options="warehouseOptions"
-                :props="warehouseProps"
-                @change="handleWarehouseChanged"
-              >                  
-              </el-cascader>
+            <el-form-item label="客户名称" prop="clientName">
+              <el-input v-model="form.clientName" readonly="readonly"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -256,12 +251,13 @@
 import { listProductsalse, getProductsalse, delProductsalse, addProductsalse, updateProductsalse,execute } from "@/api/mes/wm/productsalse";
 import Productsalseline from "./line.vue"
 import OqcSelectSingle from "@/components/oqcSelect/single.vue"
+import ClientSelect from "@/components/clientSelect/single.vue";
 import {getTreeList} from "@/api/mes/wm/warehouse"
 import {genCode} from "@/api/system/autocode/rule"
 export default {
   name: "Productsalse",
   dicts: ['mes_order_status'],
-  components: {OqcSelectSingle,Productsalseline},
+  components: {OqcSelectSingle,Productsalseline,ClientSelect},
   data() {
     return {
       //自动生成编码
@@ -327,6 +323,9 @@ export default {
         salseName: [
           { required: true, message: "出库单名称不能为空", trigger: "blur" }
         ],
+        clientCode: [
+          { required: true, message: "请指定客户", trigger: "blur" }
+        ]
       }
     };
   },
@@ -521,7 +520,17 @@ export default {
           this.form.clientNick = obj.clientNick;
         }
     },
-
+    handleSelectClient(){
+      this.$refs.clientSelect.showFlag = true;
+    },
+    //客户选择弹出框
+    onClientSelected(obj){
+        if(obj != undefined && obj != null){
+          this.form.clientId = obj.clientId;
+          this.form.clientCode = obj.clientCode;
+          this.form.clientName = obj.clientName;
+        }
+    },
     //自动生成编码
     handleAutoGenChange(autoGenFlag){
       if(autoGenFlag){
