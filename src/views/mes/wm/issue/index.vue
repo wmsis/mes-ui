@@ -335,6 +335,9 @@ export default {
         ],
         issueDate: [
           { required: true, message: "请指定领出日期", trigger: "blur" }
+        ],
+        workorderCode: [
+        { required: true, message: "请指定生产工单", trigger: "blur" }
         ]
       }
     };

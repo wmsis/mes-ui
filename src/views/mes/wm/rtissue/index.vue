@@ -274,6 +274,9 @@ export default {
         rtCode: [
           { required: true, message: "退料单编号不能为空", trigger: "blur" }
         ],
+        workorderCode: [
+          { required: true, message: "请选择要退料的生产工单", trigger: "blur" }
+        ]
       }
     };
   },

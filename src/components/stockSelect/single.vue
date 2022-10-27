@@ -192,8 +192,8 @@ export default {
         pageSize: 10,
         itemTypeId: null,
         itemTypeName: null,
-        itemId: null,
-        itemCode: null,
+        itemId: this.itemId,
+        itemCode: this.itemCode,
         itemName: null,
         specification: null,
         unitOfMeasure: null,
@@ -232,6 +232,8 @@ export default {
     areaId: null,
     areaCode: null,
     workorderId: null,
+    itemId: null,
+    itemCode: null
   },
   created() {
     this.getList();

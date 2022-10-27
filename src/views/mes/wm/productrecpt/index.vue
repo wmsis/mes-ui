@@ -90,9 +90,8 @@
       <el-table-column label="入库单编号" width="130px" align="center" prop="recptCode" />
       <el-table-column label="入库单名称" width="150px" align="center" prop="recptName" :show-overflow-tooltip="true"/>
       <el-table-column label="生产工单编码" width="150px" align="center" prop="workorderCode" />
-      <el-table-column label="仓库名称" align="center" prop="warehouseName" />
-      <el-table-column label="库区名称" align="center" prop="locationName" />
-      <el-table-column label="库位名称" align="center" prop="areaName" />
+      <el-table-column label="产品编码" align="center" prop="itemCode" />
+      <el-table-column label="产品名称" align="center" prop="itemName" />
       <el-table-column label="入库日期" align="center" prop="recptDate" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.recptDate, '{y}-{m}-{d}') }}</span>
@@ -167,8 +166,8 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="生产工单编号" prop="workorderCode">
-              <el-input v-model="form.workorderCode" placeholder="请输入生产工单编号" >
+            <el-form-item label="生产工单" prop="workorderCode">
+              <el-input v-model="form.workorderCode" placeholder="请选择生产工单" >
                 <el-button slot="append" icon="el-icon-search" @click="handleWorkorderSelect"></el-button>
               </el-input>
               <WorkorderSelect ref="woSelect" @onSelected="onWorkorderSelected"></WorkorderSelect>
@@ -177,45 +176,6 @@
           <el-col :span="8">
             <el-form-item label="生产工单名称" prop="workorderName">
               <el-input v-model="form.workorderName" readonly="readonly" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="入库仓库">
-              <el-cascader v-model="warehouseInfo"
-                :options="warehouseOptions"
-                :props="warehouseProps"
-                @change="handleWarehouseChanged"
-              >                  
-              </el-cascader>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="产品编码" prop="itemCode">
-              <el-input v-model="form.itemCode" readonly="readonly"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="产品名称" prop="itemName">
-              <el-input v-model="form.itemCode" readonly="readonly"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="单位" prop="unitOfMeasure">
-              <el-input v-model="form.unitOfMeasure" readonly="readonly"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="客户编号" prop="clientCode">
-              <el-input v-model="form.clientCode" readonly="readonly"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="客户名称" prop="clientName">
-              <el-input v-model="form.clientName" readonly="readonly"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -228,7 +188,7 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row>       
         <el-row>
           <el-col :span="24">
             <el-form-item label="备注" prop="remark">
@@ -239,7 +199,7 @@
       </el-form>
       <el-divider v-if="form.recptId !=null" content-position="center">物料信息</el-divider> 
       <el-card shadow="always" v-if="form.recptId !=null" class="box-card">
-        <Productrecptline :recptId="form.recptId" :optType="optType" :workorderId="form.workorderId"></Productrecptline>
+        <Productrecptline :recptId="form.recptId" :optType="optType" :workorderId="form.workorderId" :itemId="form.itemId"></Productrecptline>
       </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
@@ -378,6 +338,12 @@ export default {
         locationId: null,
         locationCode: null,
         locationName: null,
+        itemId: null,
+        itemCode: null,
+        itemName: null,
+        unitOfMeasure: null,
+        clientCode: null,
+        clientName: null,
         areaId: null,
         areaCode: null,
         areaName: null,
@@ -470,9 +436,11 @@ export default {
     },
     onWorkorderSelected(row){
       if(row != undefined && row != null){
+        debugger;
         this.form.workorderId = row.workorderId;
         this.form.workorderCode = row.workorderCode;
         this.form.workorderName = row.workorderName;
+        this.form.itemId = row.productId;
         this.form.itemCode = row.productCode;
         this.form.itemName = row.productName;
         this.form.unitOfMeasure = row.unitOfMeasure;

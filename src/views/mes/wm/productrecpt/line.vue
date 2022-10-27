@@ -88,7 +88,7 @@
               <el-input v-model="form.itemCode" placeholder="请输入产品物料编码" >
                 <el-button slot="append" @click="handleSelectStock" icon="el-icon-search"></el-button>
               </el-input>
-              <StockSelect ref="stockSelect" :workorderId="workorderId" :warehouseCode="XBK_VIRTUAL" @onSelected="onStockSelected"></StockSelect>
+              <StockSelect ref="stockSelect" :workorderId="workorderId" :itemId="itemId" warehouseCode="XBK_VIRTUAL" @onSelected="onStockSelected"></StockSelect>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -150,6 +150,7 @@
 <script>
 import { listProductrecptline, getProductrecptline, delProductrecptline, addProductrecptline, updateProductrecptline } from "@/api/mes/wm/productrecptline";
 import StockSelect from "@/components/stockSelect/single.vue"
+import {getTreeList} from "@/api/mes/wm/warehouse"
 export default {
   name: "Productrecptline",
   components:{
@@ -158,7 +159,8 @@ export default {
   props: {
     recptId: null,
     optType: null,
-    workorderId:null
+    workorderId:null,
+    itemId: null
   },
   data() {
     return {
@@ -378,6 +380,14 @@ export default {
           this.form.quantityRecpt = obj.quantityOnhand;
           this.form.quantityMax = obj.quantityOnhand;
         }
+    },
+    //选择默认的仓库、库区、库位
+    handleWarehouseChanged(obj){      
+      if(obj !=null){
+        this.form.warehouseId = obj[0];
+        this.form.locationId = obj[1];
+        this.form.areaId = obj[2];
+      }
     },
   }
 };
