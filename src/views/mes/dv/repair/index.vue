@@ -184,12 +184,15 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="设备编号" prop="machineryCode">
-              <el-input v-model="form.machineryCode" placeholder="请输入设备编号" />
+              <el-input v-model="form.machineryCode" placeholder="请输入设备编号" >
+                <el-button slot="append" @click="handleMachineryAdd" icon="el-icon-search"></el-button>
+              </el-input>
             </el-form-item>
+            <MachinerySelectSingle ref="machinerySelect" @onSelected="onMachineryAdd"></MachinerySelectSingle>
           </el-col>
           <el-col :span="8">
             <el-form-item label="设备名称" prop="machineryName">
-              <el-input v-model="form.machineryName" placeholder="请输入设备名称" />
+              <el-input v-model="form.machineryName" placeholder="请选择设备" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -282,12 +285,13 @@
 
 <script>
 import { listRepair, getRepair, delRepair, addRepair, updateRepair } from "@/api/mes/dv/repair";
+import MachinerySelectSingle from "@/components/machinerySelect/single.vue";
 import Repairline from './line.vue'
 import {genCode} from "@/api/system/autocode/rule"
 export default {
   name: "Repair",
   dicts: ['mes_repair_result', 'mes_order_status'],
-  components: {Repairline},
+  components: {Repairline,MachinerySelectSingle},
   data() {
     return {
       autoGenFlag:false,
@@ -346,8 +350,8 @@ export default {
         machineryName: [
           { required: true, message: "设备名称不能为空", trigger: "blur" }
         ],
-        machineryTypeId: [
-          { required: true, message: "设备类型ID不能为空", trigger: "blur" }
+        requireDate: [
+          { required: true, message: "请选择报修日期", trigger: "blur" }
         ],
       }
     };
@@ -469,6 +473,18 @@ export default {
       this.download('dv/repair/export', {
         ...this.queryParams
       }, `repair_${new Date().getTime()}.xlsx`)
+    },
+    //设备资源选择弹出
+    handleMachineryAdd(){
+      this.$refs.machinerySelect.showFlag = true;
+    },
+    //设备资源选择回调
+    onMachineryAdd(row){
+      this.form.machineryId = row.machineryId;
+      this.form.machineryTypeId = row.machineryTypeId;
+      this.form.machineryCode = row.machineryCode;
+      this.form.machineryName = row.machineryName;
+      this.form.machineryBrand = row.machineryBrand;
     },
         //自动生成编码
     handleAutoGenChange(autoGenFlag){      
