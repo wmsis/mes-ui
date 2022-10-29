@@ -547,3 +547,10 @@ export default {
   }
 };
 </script>
+<style scoped>
+  .barcodeClass {
+    width: 200px;
+    height: 200px;
+  }
+
+</style>
