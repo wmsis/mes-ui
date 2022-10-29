@@ -27,9 +27,9 @@
 
     <el-table v-loading="loading" :data="rtsalselineList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />   
-      <el-table-column label="产品编码" align="center" prop="itemCode" />
-      <el-table-column label="产品名称" align="center" prop="itemName" />
-      <el-table-column label="规格型号" align="center" prop="specification" />
+      <el-table-column label="产品编码" width="120" align="center" prop="itemCode" />
+      <el-table-column label="产品名称" width="150" align="center" prop="itemName" />
+      <el-table-column label="规格型号" width="150" align="center" prop="specification" :show-overflow-tooltip="true"/>
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="退货数量" align="center" prop="quantityRted" />
       <el-table-column label="批次号" align="center" prop="batchCode" />
@@ -75,9 +75,12 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">    
         <el-row>
           <el-col :span="8">
-            <el-form-item label="产品编码" prop="itemCode">
-              <el-input v-model="form.itemCode" placeholder="请输入产品物料编码" />
+            <el-form-item label="产品编码"  prop="itemCode">
+              <el-input v-model="form.itemCode" readonly="readonly" placeholder="请选择产品" >
+                <el-button slot="append" @click="handleSelectProduct" icon="el-icon-search"></el-button>
+              </el-input>
             </el-form-item>
+            <ItemSelect ref="itemSelect" @onSelected="onItemSelected" > </ItemSelect>
           </el-col>
           <el-col :span="8">
             <el-form-item label="产品名称" prop="itemName">
@@ -109,7 +112,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="入库仓库">
+            <el-form-item label="入库仓库" prop="warehouseId">
               <el-cascader v-model="warehouseInfo"
                 :options="warehouseOptions"
                 :props="warehouseProps"
@@ -130,9 +133,11 @@
 
 <script>
 import { listRtsalseline, getRtsalseline, delRtsalseline, addRtsalseline, updateRtsalseline } from "@/api/mes/wm/rtsalseline";
+import ItemSelect  from "@/components/itemSelect/single.vue";
 import {getTreeList} from "@/api/mes/wm/warehouse"
 export default {
   name: "Rtsalseline",
+  components: {ItemSelect},
   props: {
     rtId: null,
     optType: null,
@@ -194,6 +199,9 @@ export default {
         itemId: [
           { required: true, message: "产品不能为空", trigger: "blur" }
         ],
+        warehouseId: [
+          { required: true, message: "请选择入库仓库", trigger: "blur" }
+        ],
         quantityRted: [
           { required: true, message: "退货数量不能为空", trigger: "blur" }
         ],
@@ -239,6 +247,20 @@ export default {
         this.form.areaId = obj[2];
       }
     },
+    handleSelectProduct(){
+      this.$refs.itemSelect.showFlag = true;
+    },
+    //物料选择弹出框
+    onItemSelected(obj){
+        debugger;
+        if(obj != undefined && obj != null){
+          this.form.itemId = obj.itemId;
+          this.form.itemCode = obj.itemCode;
+          this.form.itemName = obj.itemName;
+          this.form.specification = obj.specification;
+          this.form.unitOfMeasure = obj.unitOfMeasure;  
+        }
+    },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -248,7 +270,7 @@ export default {
     reset() {
       this.form = {
         lineId: null,
-        rtId: null,
+        rtId: this.rtId,
         itemId: null,
         itemCode: null,
         itemName: null,

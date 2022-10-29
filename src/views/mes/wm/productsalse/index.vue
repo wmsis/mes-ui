@@ -136,7 +136,7 @@
             @click="handleExecute(scope.row)"
             v-if="scope.row.status == 'PREPARE'"
             v-hasPermi="['mes:wm:productsalse:edit']"
-          >执行入库</el-button>
+          >执行出库</el-button>
           
         </template>
       </el-table-column>
@@ -325,6 +325,9 @@ export default {
         ],
         clientCode: [
           { required: true, message: "请指定客户", trigger: "blur" }
+        ],
+        salseDate: [
+          { required: true, message: "请选择出库日期", trigger: "blur" }
         ]
       }
     };

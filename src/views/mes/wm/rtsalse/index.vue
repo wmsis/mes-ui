@@ -134,7 +134,7 @@
             @click="handleExecute(scope.row)"
             v-if="scope.row.status == 'PREPARE'"
             v-hasPermi="['mes:wm:productsalse:edit']"
-          >执行入库</el-button>
+          >执行退货</el-button>
         </template>
       </el-table-column>
     </el-table>
