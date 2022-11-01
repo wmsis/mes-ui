@@ -139,6 +139,13 @@
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-query"
+            @click="handleView(scope.row)"
+            v-hasPermi="['mes:pro:feedback:query']"
+          >查看</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['mes:pro:feedback:edit']"
@@ -189,7 +196,7 @@
             <WorkorderSelect ref="woSelect" @onSelected="onWorkorderSelected"></WorkorderSelect>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="生产任务" prop="taskName">
+            <el-form-item label="生产任务" prop="taskCode">
               <el-input v-model="form.taskCode" placeholder="请选择生产任务" >
                 <el-button slot="append" icon="el-icon-search" @click="handleTaskSelect"></el-button>
               </el-input>
@@ -277,7 +284,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
         <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>
-        <el-button type="success" @click="handleExecute" v-if="form.status =='PREPARE' && optType !='view'  && form.workorderId !=null">审 批</el-button>
+        <el-button type="success" @click="handleExecute" v-if="form.status =='PREPARE' && optType !='view'  && form.feedbackId !=null">审 批</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -352,8 +359,8 @@ export default {
         feedbackType: [
           { required: true, message: "报工类型不能为空", trigger: "change" }
         ],
-        workstationName: [
-          { required: true, message: "工作站不能为空", trigger: "blur" }
+        taskCode: [
+          { required: true, message: "请选择生产任务", trigger: "blur" }
         ],
         workorderCode: [
           { required: true, message: "生产工单不能为空", trigger: "blur" }
@@ -458,6 +465,7 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加生产报工记录";
+      this.optType = "add";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -467,6 +475,18 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改生产报工记录";
+        this.optType = "edit";
+      });
+    },
+    // 查询明细按钮操作
+    handleView(row){
+      this.reset();
+      const recordId = row.recordId || this.ids;
+      getFeedback(recordId).then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "查看生产报工单信息";
+        this.optType = "view";
       });
     },
     /** 提交按钮 */
@@ -476,13 +496,11 @@ export default {
           if (this.form.recordId != null) {
             updateFeedback(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
-              this.open = false;
               this.getList();
             });
           } else {
             addFeedback(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
-              this.open = false;
               this.getList();
             });
           }
@@ -511,6 +529,7 @@ export default {
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("执行成功");
+        this.open = false;
       }).catch(() => {});
     },
     /** 删除按钮操作 */
