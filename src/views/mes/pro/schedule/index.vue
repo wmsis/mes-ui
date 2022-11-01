@@ -111,7 +111,6 @@
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="工单数量" align="center" prop="quantity" />                 
       <el-table-column label="调整数量" align="center" prop="quantityChanged" />
-      <el-table-column label="已排产数量" align="center" width="100px" prop="quantityScheduled" />
       <el-table-column label="已生产数量" align="center" width="100px" prop="quantityProduced" /> 
       <el-table-column label="客户编码" align="center" prop="clientCode" />
       <el-table-column label="客户名称" align="center" prop="clientName" :show-overflow-tooltip="true"/>

@@ -98,7 +98,7 @@
 
     <el-table v-loading="loading" :data="repairList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="维修单编号" width="100px" align="center" prop="repairCode" />
+      <el-table-column label="维修单编号" width="120px" align="center" prop="repairCode" />
       <el-table-column label="维修单名称" width="150px" align="center" prop="repairName" :show-overflow-tooltip="true"/>
       <el-table-column label="设备编码" align="center" prop="machineryCode" />
       <el-table-column label="设备名称" align="center" prop="machineryName" />

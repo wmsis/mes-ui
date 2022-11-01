@@ -37,13 +37,15 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="工序名称" prop="processName">
-            <el-input
-              v-model="queryParams.processName"
-              placeholder="请输入工序名称"
-              clearable
-              @keyup.enter.native="handleQuery"
-            />
+          <el-form-item label="所属工序" prop="processName">
+            <el-select v-model="queryParams.processId" placeholder="请选择工序">
+                <el-option
+                  v-for="item in processOptions"
+                  :key="item.processId"
+                  :label="item.processName"
+                  :value="item.processId"
+                ></el-option>
+              </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -371,6 +373,12 @@ export default {
         enableFlag: [
           { required: true, message: "是否启用不能为空", trigger: "blur" }
         ],
+        workshopId: [
+          { required: true, message: "请选择所属车间", trigger: "blur" }
+        ],
+        processId: [
+          { required: true, message: "请选择所属工序", trigger: "blur" }
+        ]        
       }
     };
   },
@@ -466,6 +474,23 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryParams ={
+        pageNum: 1,
+        pageSize: 10,
+        workstationCode: null,
+        workstationName: null,
+        workstationAddress: null,
+        workshopId: null,
+        workshopCode: null,
+        workshopName: null,
+        processId: null,
+        processCode: null,
+        processName: null,
+        warehouseId: null,
+        locationId: null,
+        areaId: null,
+        enableFlag: null,
+      };
       this.resetForm("queryForm");
       this.handleQuery();
     },
