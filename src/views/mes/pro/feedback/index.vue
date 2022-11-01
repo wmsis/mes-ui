@@ -139,14 +139,6 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-delete"
-            v-if="scope.row.status =='PREPARE'"
-            @click="handleExecute(scope.row)"
-            v-hasPermi="['mes:wm:feedback:edit']"
-          >执行入库</el-button>
-          <el-button
-            size="mini"
-            type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['mes:pro:feedback:edit']"
@@ -197,12 +189,12 @@
             <WorkorderSelect ref="woSelect" @onSelected="onWorkorderSelected"></WorkorderSelect>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="工作站名称" prop="workstationName">
-              <el-input v-model="form.workstationName" placeholder="请输入工作站名称" >
-                <el-button slot="append" icon="el-icon-search" @click="handleWorkstationSelect"></el-button>
+            <el-form-item label="生产任务" prop="taskName">
+              <el-input v-model="form.taskCode" placeholder="请选择生产任务" >
+                <el-button slot="append" icon="el-icon-search" @click="handleTaskSelect"></el-button>
               </el-input>
             </el-form-item>
-            <WorkstationSelect ref="wsSelect"  @onSelected="onWorkstationSelected"> </WorkstationSelect>
+            <ProtaskSelect ref="taskSelect" :workorderId="form.workorderId" @onSelected="onTaskSelected"> </ProtaskSelect>
           </el-col>
         </el-row>
         <el-row>
@@ -285,7 +277,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
         <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>
-        <el-button type="success" @click="handleFinish" v-if="form.status =='PREPARE' && optType !='view'  && form.workorderId !=null">审 批</el-button>
+        <el-button type="success" @click="handleExecute" v-if="form.status =='PREPARE' && optType !='view'  && form.workorderId !=null">审 批</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -297,9 +289,10 @@ import { listFeedback, getFeedback, delFeedback, addFeedback, updateFeedback, ex
 import WorkorderSelect from "@/components/workorderSelect/single.vue"
 import WorkstationSelect from "@/components/workstationSelect/simpletableSingle.vue"
 import UserSingleSelect from "@/components/userSelect/single.vue"
+import ProtaskSelect from "@/components/TaskSelect/taskSelectSingle.vue"
 export default {
   name: "Feedback",
-  components: {WorkorderSelect,WorkstationSelect,UserSingleSelect},
+  components: {WorkorderSelect,WorkstationSelect,UserSingleSelect,ProtaskSelect},
   dicts: ['mes_order_status', 'mes_feedback_type'],
   data() {
     return {
@@ -406,6 +399,9 @@ export default {
         workstationId: null,
         workstationCode: null,
         workstationName: null,
+        processId: null,
+        processCode: null,
+        processName: null,
         workorderId: null,
         workorderCode: null,
         workorderName: null,
@@ -508,8 +504,8 @@ export default {
       });
     },
     //执行
-    handleExecute(row){
-      const recordIds = row.recordId || this.ids;
+    handleExecute(){
+      const recordIds = this.form.recordId;
       this.$modal.confirm('确认执行报工？').then(function() {
         return execute(recordIds)//执行报工
       }).then(() => {
@@ -539,6 +535,7 @@ export default {
     },
     onWorkorderSelected(row){
       if(row != undefined && row != null){
+        debugger;
         this.form.workorderId = row.workorderId;
         this.form.workorderCode = row.workorderCode;
         this.form.workorderName = row.workorderName;
@@ -549,14 +546,21 @@ export default {
         this.form.unitOfMeasure = row.unitOfMeasure;
       }
     },
-    handleWorkstationSelect(){
-      this.$refs.wsSelect.showFlag = true;
+    handleTaskSelect(){
+      this.$refs.taskSelect.showFlag = true;
+      this.$refs.taskSelect.getList();
     },
-    onWorkstationSelected(row){
+    onTaskSelected(row){
       if(row != undefined && row != null){
+        this.form.taskId = row.taskId;
+        this.form.taskCode = row.taskCode;
+        this.form.taskName = row.taskName;
         this.form.workstationId = row.workstationId;
         this.form.workstationCode = row.workstationCode;
         this.form.workstationName = row.workstationName;
+        this.form.processId = row.processId;
+        this.form.processCode = row.processCode;
+        this.form.processName = row.processName;
       }
     },
     //点击人员选择按钮

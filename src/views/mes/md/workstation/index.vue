@@ -207,17 +207,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="线边库">
-              <el-cascader v-model="warehouseInfo"
-                :options="warehouseOptions"
-                :props="warehouseProps"
-                @change="handleWarehouseChanged"
-              >                  
-              </el-cascader>
-            </el-form-item>
-          </el-col>
+          </el-col>        
           <el-col :span="8">
             <el-form-item label="是否启用" prop="enableFlag">
               <el-radio-group v-model="form.enableFlag" disabled v-if="optType=='view'">
