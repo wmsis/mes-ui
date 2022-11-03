@@ -42,3 +42,12 @@ export function delWorkorder(workorderId) {
     method: 'delete'
   })
 }
+
+// 查询物料依赖列表
+export function listItems(query) {
+  return request({
+    url: '/mes/pro/workorder/listItems',
+    method: 'get',
+    params: query
+  })
+}

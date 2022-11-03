@@ -331,7 +331,9 @@
         <el-tab-pane label="BOM组成"> 
           <Workorderbom ref="bomlist" :optType="optType" :workorder="form" @handleAddSub="handleSubAdd" ></Workorderbom>        
         </el-tab-pane>
-        <el-tab-pane label="物料需求"></el-tab-pane>
+        <el-tab-pane label="物料需求">
+          <WorkorderItemList :optType="optType" :workorder="form"></WorkorderItemList>
+        </el-tab-pane>
       </el-tabs>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
@@ -346,6 +348,7 @@
 <script>
 import { listWorkorder, getWorkorder, delWorkorder, addWorkorder, updateWorkorder } from "@/api/mes/pro/workorder";
 import Workorderbom from "./bom/bom.vue";
+import WorkorderItemList from "./items/item.vue";
 import ItemSelect  from "@/components/itemSelect/single.vue";
 import ClientSelect from "@/components/clientSelect/single.vue";
 import {genCode} from "@/api/system/autocode/rule"
@@ -359,7 +362,8 @@ export default {
     Treeselect,
     ItemSelect ,
     ClientSelect,
-    Workorderbom
+    Workorderbom,
+    WorkorderItemList
   },
   data() {
     return {
