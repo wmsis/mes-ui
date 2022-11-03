@@ -116,13 +116,15 @@ export default {
                     this.form.endTime = endDate.getFullYear()+'-'+(endDate.getMonth()+1)+'-'+endDate.getDate()+' '+endDate.getHours()+':'+endDate.getMinutes()+':'+endDate.getSeconds();
                     updateProtask(this.form).then(response =>{
                         console.log("update success:"+id);
+                        this.$modal.msgSuccess("保存成功");
                     },err =>{
                         debugger;
                         console.log("update failed:"+err.msg);
+                        this.$modal.msgSuccess("保存失败");
                     });
                 });
-                this.changedTaskIds =[];                
-                this.$modal.msgSuccess("保存成功");
+                //this.changedTaskIds =[];                
+                
             }            
         },
         handleRefresh(){

@@ -162,17 +162,19 @@ export default {
       // 3.1 自动调整类型,当存在子节点时自动升级为project
       gantt.config.auto_types = false;
       // 3.2 设置不可以拖动进度
-      gantt.config.drag_progress = true;
+      gantt.config.drag_progress = false;
       // 3.3 设置Task不可以拖动
       gantt.config.drag_move = true;
       // 3.4 设置不可以拖动关系
-      gantt.config.drag_links = true;
+      gantt.config.drag_links = false;
       // 3.5 设置不可拖动Task 大小
       gantt.config.drag_resize = true;
       // 3.6 单击显示添加详情
       gantt.config.details_on_create = true;
       // 3.7 双击显示明细
       gantt.config.details_on_dblclick = true;
+      //时间范围自动适应
+      gantt.config.fit_tasks = true;
 
       let t = this.$props.tasks;
       let c = this.$props.ids;

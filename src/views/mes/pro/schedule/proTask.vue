@@ -139,7 +139,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="生产时长" prop="duration">
-              <el-input-number :precision="0" :step="1" v-model="form.duration" @change="calculateEndTime" placeholder="请输入生产时长" />
+              <el-input-number :min="1" :precision="0" :step="1" v-model="form.duration" @change="calculateEndTime" placeholder="请输入生产时长" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
