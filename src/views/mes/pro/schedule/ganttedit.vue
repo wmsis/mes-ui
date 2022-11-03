@@ -109,6 +109,7 @@ export default {
                     let nTask = this.tasks.data.filter(task => task.id == id)[0];
                     let startDate = new Date(nTask.start_date);
                     let endDate = new Date(nTask.end_date);
+                    this.form = nTask;
                     this.form.taskId = nTask.id;
                     this.form.startTime = startDate.getFullYear()+'-'+(startDate.getMonth()+1)+'-'+startDate.getDate()+' '+startDate.getHours()+':'+startDate.getMinutes()+':'+startDate.getSeconds();
                     this.form.duration = nTask.duration;
