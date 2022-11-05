@@ -284,7 +284,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
         <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>
-        <el-button type="success" @click="handleExecute" v-if="form.status =='PREPARE' && optType !='view'  && form.feedbackId !=null">审 批</el-button>
+        <el-button type="success" @click="handleExecute" v-if="form.status =='PREPARE' && optType !='view'  && form.recordId !=null">审 批</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -496,12 +496,15 @@ export default {
           if (this.form.recordId != null) {
             updateFeedback(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
+              this.open=false;
               this.getList();
+              
             });
           } else {
             addFeedback(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
-              this.getList();
+              this.open=false;
+              this.getList();                            
             });
           }
         }
