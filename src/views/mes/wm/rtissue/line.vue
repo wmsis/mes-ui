@@ -371,10 +371,7 @@ export default {
           this.form.itemName = obj.itemName;
           this.form.specification = obj.specification;
           this.form.unitOfMeasure = obj.unitOfMeasure;  
-          this.form.batchCode = obj.batchCode;        
-          this.form.warehouseId = obj.warehouseId;
-          this.form.locationId = obj.locationId;
-          this.form.areaId = obj.areaId;
+          this.form.batchCode = obj.batchCode;              
           this.form.quantityRt = obj.quantityOnhand;
           this.form.quantityMax = obj.quantityOnhand;
         }
