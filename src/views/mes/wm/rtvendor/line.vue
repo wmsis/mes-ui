@@ -75,7 +75,7 @@
                       <el-button slot="append" @click="handleSelectStock" icon="el-icon-search"></el-button>
                     </el-input>
                 </el-form-item>
-                <StockSelect ref="stockSelect" :batchCode="batchCdoe" :vendorId="vendorId" @onSelected="onStockSelected"></StockSelect>
+                <StockSelect ref="stockSelect" :batchCode="batchCode" :vendorId="vendorId" @onSelected="onStockSelected"></StockSelect>
             </el-col>
             <el-col :span="8">
                 <el-form-item label="产品物料名称" prop="itemName">
@@ -338,6 +338,7 @@ export default {
           this.form.itemName = obj.itemName;
           this.form.specification = obj.specification;
           this.form.unitOfMeasure = obj.unitOfMeasure;  
+          this.form.batchCode = obj.batchCode;
           this.form.warehouseId = obj.warehouseId;
           this.form.warehouseCode = obj.warehouseCode;
           this.form.warehouseName = obj.warehouseName;

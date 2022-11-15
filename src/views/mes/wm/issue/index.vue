@@ -107,9 +107,9 @@
         </template>
       </el-table-column>
       <el-table-column label="领料单名称" align="center" prop="issueName" :show-overflow-tooltip="true"/>    
-      <el-table-column label="仓库名称" align="center" prop="warehouseName" />     
-      <el-table-column label="库区名称" align="center" prop="locationName" />     
-      <el-table-column label="库位名称" align="center" prop="areaName" />
+      <el-table-column label="生产工单" align="center" prop="workorderCode" />     
+      <el-table-column label="客户编号" align="center" prop="clientCode" />     
+      <el-table-column label="客户名称" align="center" prop="clientName" />
       <el-table-column label="领料日期" align="center" prop="issueDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.issueDate, '{y}-{m}-{d}') }}</span>
@@ -390,6 +390,9 @@ export default {
         workorderId: null,
         workorderCode: null,
         workorderName: null,
+        clientId:null,
+        clientCode:null,
+        clientName:null,
         taskId: null,
         taskCode: null,
         warehouseId: null,
@@ -540,9 +543,11 @@ export default {
     },
     onWorkorderSelected(row){
       if(row != undefined && row != null){
+        debugger;
         this.form.workorderId = row.workorderId;
         this.form.workorderCode = row.workorderCode;
         this.form.workorderName = row.workorderName;
+        this.form.clientId = row.clientId;
         this.form.clientCode = row.clientCode;
         this.form.clientName = row.clientName;
       }
