@@ -73,16 +73,6 @@
           v-hasPermi="['system:autocode:rule:remove']"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-refresh"
-          size="mini"
-          @click="handleRefreshCache"
-          v-hasPermi="['system:autocode:rule:remove']"
-        >刷新缓存</el-button>
-      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -189,7 +179,7 @@
 </template>
 
 <script>
-import { listRule, getRule, delRule, addRule, updateRule, refreshCache } from "@/api/system/autocode/rule";
+import { listRule, getRule, delRule, addRule, updateRule } from "@/api/system/autocode/rule";
 
 export default {
   name: "autoCodeRule",

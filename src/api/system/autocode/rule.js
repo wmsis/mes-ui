@@ -49,19 +49,3 @@ export function delRule(ruleId) {
     method: 'delete'
   })
 }
-
-// 刷新字典缓存
-export function refreshCache() {
-  return request({
-    url: '/system/autocode/rule/refreshCache',
-    method: 'delete'
-  })
-}
-
-// 获取字典选择框列表
-export function optionselect() {
-  return request({
-    url: '/system/autocode/rule/optionselect',
-    method: 'get'
-  })
-}
