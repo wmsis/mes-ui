@@ -158,8 +158,8 @@
               <el-input v-model="form.dateFormat" placeholder="请输入日期时间格式" />
             </el-form-item>
 
-            <el-form-item label="输入字符" prop="inpurtCharacter" v-if="form.partType=='INPUTCHAR'">
-              <el-input v-model="form.inpurtCharacter" placeholder="请填写输入字符" />
+            <el-form-item label="输入字符" prop="inputCharacter" v-if="form.partType=='INPUTCHAR'">
+              <el-input v-model="form.inputCharacter" placeholder="请填写输入字符" />
             </el-form-item>
 
             <el-form-item label="固定字符" prop="fixCharacter" v-if="form.partType=='FIXCHAR'">
