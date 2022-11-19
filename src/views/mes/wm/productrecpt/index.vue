@@ -211,7 +211,7 @@
 </template>
 
 <script>
-import { listProductrecpt, getProductrecpt, delProductrecpt, addProductrecpt, updateProductrecpt } from "@/api/mes/wm/productrecpt";
+import { listProductrecpt, getProductrecpt, delProductrecpt, addProductrecpt, updateProductrecpt ,execute} from "@/api/mes/wm/productrecpt";
 import WorkorderSelect from "@/components/workorderSelect/single.vue"
 import Productrecptline from "./line.vue"
 import {getTreeList} from "@/api/mes/wm/warehouse"
@@ -393,6 +393,16 @@ export default {
         this.open = true;
         this.title = "修改产品入库单";
       });
+    },
+    //执行入库
+    handleExecute(row){
+      const recptIds = row.recptId || this.ids;
+      this.$modal.confirm('确认执行入库？').then(function() {
+        return execute(recptIds)//执行入库
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("入库成功");
+      }).catch(() => {});
     },
     /** 提交按钮 */
     submitForm() {

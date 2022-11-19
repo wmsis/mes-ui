@@ -42,3 +42,11 @@ export function delProductrecpt(recptId) {
     method: 'delete'
   })
 }
+
+//执行入库
+export function execute(recptId) {
+  return request({
+    url: '/mes/wm/productrecpt/' + recptId,
+    method: 'put'
+  })
+}
