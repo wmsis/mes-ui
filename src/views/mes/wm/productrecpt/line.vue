@@ -112,7 +112,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="入库数量" prop="quantityRecived">
-              <el-input v-model="form.quantityRecived" placeholder="请输入入库数量" />
+              <el-input-number :min="0" :max="form.quantityMax" v-model="form.quantityRecived" placeholder="请输入入库数量" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -121,7 +121,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="入库仓库">
+            <el-form-item label="入库仓库" prop="warehouseId">
               <el-cascader v-model="warehouseInfo"
                 :options="warehouseOptions"
                 :props="warehouseProps"
@@ -218,6 +218,9 @@ export default {
       rules: {
         itemId: [
           { required: true, message: "产品不能为空", trigger: "blur" }
+        ],
+        warehouseId: [
+          { required: true, message: "入库仓库不能为空", trigger: "blur" }
         ],
         quantityRecived: [
           { required: true, message: "入库数量不能为空", trigger: "blur" }
