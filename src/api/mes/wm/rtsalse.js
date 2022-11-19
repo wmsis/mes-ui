@@ -42,3 +42,10 @@ export function delRtsalse(rtId) {
     method: 'delete'
   })
 }
+
+export function execute(rtId){
+  return request({
+    url: '/mes/wm/rtsalse/'+rtId,
+    method: 'put'
+  })
+}

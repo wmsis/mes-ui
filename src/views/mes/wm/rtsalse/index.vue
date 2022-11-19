@@ -92,7 +92,15 @@
 
     <el-table v-loading="loading" :data="rtsalseList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="退货单编号" width="140px" align="center" prop="rtCode" />
+      <el-table-column label="退货单编号" width="140px" align="center" prop="rtCode" >
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            @click="handleView(scope.row)"
+            v-hasPermi="['mes:wm:rtsalse:query']"
+          >{{scope.row.rtCode}}</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="退货单名称" width="150px" align="center" prop="rtName" :show-overflow-tooltip="true"/>
       <el-table-column label="销售订单编号" width="120px" align="center" prop="soCode" />
       <el-table-column label="客户名称" width="150px" align="center" prop="clientName" :show-overflow-tooltip="true"/>
@@ -254,7 +262,7 @@
 </template>
 
 <script>
-import { listRtsalse, getRtsalse, delRtsalse, addRtsalse, updateRtsalse } from "@/api/mes/wm/rtsalse";
+import { listRtsalse, getRtsalse, delRtsalse, addRtsalse, updateRtsalse ,execute} from "@/api/mes/wm/rtsalse";
 import Rtsalseline from "./line.vue";
 import ClientSelectSingle from "@/components/clientSelect/single.vue"
 import {getTreeList} from "@/api/mes/wm/warehouse"
@@ -460,6 +468,30 @@ export default {
       this.title = "添加产品销售退货单";
       this.optType = "add";
     },
+    // 查询明细按钮操作
+    handleView(row){
+      this.reset();
+      const rtIds = row.rtId
+      getRtsalse(rtIds).then(response => {
+        this.form = response.data;
+        this.warehouseInfo[0] = response.data.warehouseId;    
+        this.warehouseInfo[1] = response.data.locationId;    
+        this.warehouseInfo[2] = response.data.areaId; 
+        this.open = true;
+        this.title = "查看销售退货单信息";
+        this.optType = "view";
+      });
+    },
+    //执行入库
+    handleExecute(row){
+      const rtIds = row.rtId || this.ids;
+      this.$modal.confirm('确认执行退货？').then(function() {
+        return execute(rtIds)//执行退货
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("退货成功");
+      }).catch(() => {});
+    },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
@@ -470,7 +502,7 @@ export default {
         this.warehouseInfo[1] = response.data.locationId;    
         this.warehouseInfo[2] = response.data.areaId;    
         this.open = true;
-        this.title = "修改产品销售退货单";
+        this.title = "修改销售退货单";
         this.optType = "add";
       });
     },
