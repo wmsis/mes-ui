@@ -377,7 +377,7 @@ export default {
           this.form.specification = obj.specification;
           this.form.unitOfMeasure = obj.unitOfMeasure;  
           this.form.batchCode = obj.batchCode;
-          this.form.quantityRecpt = obj.quantityOnhand;
+          this.form.quantityRecived = obj.quantityOnhand;
           this.form.quantityMax = obj.quantityOnhand;
         }
     },

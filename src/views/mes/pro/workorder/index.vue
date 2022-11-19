@@ -149,8 +149,8 @@
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="工单数量" align="center" prop="quantity" />                 
       <el-table-column label="调整数量" align="center" prop="quantityChanged" />
-      <el-table-column label="已排产数量" align="center" width="100px" prop="quantityScheduled" />
       <el-table-column label="已生产数量" align="center" width="100px" prop="quantityProduced" /> 
+      <el-table-column label="批次号" align="center" width="100px" prop="batchCode" />
       <el-table-column label="客户编码" align="center" prop="clientCode" />
       <el-table-column label="客户名称" align="center" prop="clientName" :show-overflow-tooltip="true"/>
       <el-table-column label="需求日期" align="center" prop="requestDate" width="180">
@@ -282,12 +282,12 @@
           </el-col>          
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="工单数量" prop="quantity">
               <el-input-number :min="1" v-model="form.quantity" placeholder="请输入生产数量" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="需求日期" prop="requestDate">
               <el-date-picker clearable
                 v-model="form.requestDate"
@@ -296,7 +296,12 @@
                 placeholder="请选择需求日期">
               </el-date-picker>
             </el-form-item>
-          </el-col>          
+          </el-col>     
+          <el-col :span="8">
+            <el-form-item label="批次号" prop="batchCode">
+              <el-input v-model="form.batchCode" placeholder="请输入批次号" />
+            </el-form-item>
+          </el-col>     
         </el-row>
         <el-row v-if="form.orderSource == 'ORDER'">
           <el-col :span="12">
