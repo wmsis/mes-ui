@@ -64,11 +64,6 @@
       </el-table-column>
       <el-table-column label="库区名称" align="center" prop="locationName" />
       <el-table-column label="面积" align="center" prop="area" />
-      <el-table-column label="是否开启库位管理" align="center" prop="areaFlag" >
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.areaFlag"/>
-        </template>
-      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -135,25 +130,7 @@
           <el-form-item label="面积" prop="area">
             <el-input-number :min="0" :step="1" :percision="2" v-model="form.area" placeholder="请输入面积" />
           </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="是否开启库位管理" prop="areaFlag">
-            <el-radio-group v-model="form.areaFlag" disabled v-if="optType=='view'">
-                <el-radio
-                  v-for="dict in dict.type.sys_yes_no"
-                  :key="dict.value"
-                  :label="dict.value"
-                >{{dict.label}}</el-radio>
-              </el-radio-group>
-              <el-radio-group v-model="form.areaFlag" v-else>
-                <el-radio
-                  v-for="dict in dict.type.sys_yes_no"
-                  :key="dict.value"
-                  :label="dict.value"
-                >{{dict.label}}</el-radio>
-              </el-radio-group>
-          </el-form-item>
-        </el-col>
+        </el-col>      
       </el-row>
       <el-row>
         <el-col :span="24">
