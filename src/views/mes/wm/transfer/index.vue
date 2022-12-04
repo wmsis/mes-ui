@@ -248,6 +248,10 @@
         </el-row>
 
       </el-form>
+      <el-divider v-if="form.transferId !=null" content-position="center">物料信息</el-divider> 
+        <el-card shadow="always" v-if="form.transferId !=null" class="box-card">
+          <Transferline ref=line :transferId="form.transferId" :fromWarehouseId="form.fromWarehouseId" :toWarehouseId="form.toWarehouseId" :optType="optType"></Transferline>
+        </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
         <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">确 定</el-button>        
@@ -260,9 +264,11 @@
 <script>
 import { listTransfer, getTransfer, delTransfer, addTransfer, updateTransfer } from "@/api/mes/wm/transfer";
 import {listWarehouse} from "@/api/mes/wm/warehouse"; 
-import {genCode} from "@/api/system/autocode/rule"
+import {genCode} from "@/api/system/autocode/rule";
+import Transferline from "./line.vue";
 export default {
   name: "Transfer",
+  components: {Transferline},
   dicts: ['mes_transfer_type','mes_order_status'],
   data() {
     return {
@@ -423,6 +429,7 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          debugger;
           if (this.form.transferId != null) {
             updateTransfer(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");

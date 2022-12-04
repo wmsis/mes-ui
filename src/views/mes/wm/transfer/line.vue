@@ -1,276 +1,5 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="装箱单ID" prop="transferId">
-        <el-input
-          v-model="queryParams.transferId"
-          placeholder="请输入装箱单ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="库存记录ID" prop="materialStockId">
-        <el-input
-          v-model="queryParams.materialStockId"
-          placeholder="请输入库存记录ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品物料ID" prop="itemId">
-        <el-input
-          v-model="queryParams.itemId"
-          placeholder="请输入产品物料ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品物料编码" prop="itemCode">
-        <el-input
-          v-model="queryParams.itemCode"
-          placeholder="请输入产品物料编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品物料名称" prop="itemName">
-        <el-input
-          v-model="queryParams.itemName"
-          placeholder="请输入产品物料名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="单位" prop="unitOfMeasure">
-        <el-input
-          v-model="queryParams.unitOfMeasure"
-          placeholder="请输入单位"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="装箱数量" prop="quantityTransfer">
-        <el-input
-          v-model="queryParams.quantityTransfer"
-          placeholder="请输入装箱数量"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="生产工单ID" prop="workorderId">
-        <el-input
-          v-model="queryParams.workorderId"
-          placeholder="请输入生产工单ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="生产工单编号" prop="workorderCode">
-        <el-input
-          v-model="queryParams.workorderCode"
-          placeholder="请输入生产工单编号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="批次号" prop="batchCode">
-        <el-input
-          v-model="queryParams.batchCode"
-          placeholder="请输入批次号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移出仓库ID" prop="fromWarehouseId">
-        <el-input
-          v-model="queryParams.fromWarehouseId"
-          placeholder="请输入移出仓库ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移出仓库编码" prop="fromWarehouseCode">
-        <el-input
-          v-model="queryParams.fromWarehouseCode"
-          placeholder="请输入移出仓库编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移出仓库名称" prop="fromWarehouseName">
-        <el-input
-          v-model="queryParams.fromWarehouseName"
-          placeholder="请输入移出仓库名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移出库区ID" prop="fromLocationId">
-        <el-input
-          v-model="queryParams.fromLocationId"
-          placeholder="请输入移出库区ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移出库区编码" prop="fromLocationCode">
-        <el-input
-          v-model="queryParams.fromLocationCode"
-          placeholder="请输入移出库区编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移出库区名称" prop="fromLocationName">
-        <el-input
-          v-model="queryParams.fromLocationName"
-          placeholder="请输入移出库区名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移出库位ID" prop="fromAreaId">
-        <el-input
-          v-model="queryParams.fromAreaId"
-          placeholder="请输入移出库位ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移出库位编码" prop="fromAreaCode">
-        <el-input
-          v-model="queryParams.fromAreaCode"
-          placeholder="请输入移出库位编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移出库位名称" prop="fromAreaName">
-        <el-input
-          v-model="queryParams.fromAreaName"
-          placeholder="请输入移出库位名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移入仓库ID" prop="toWarehouseId">
-        <el-input
-          v-model="queryParams.toWarehouseId"
-          placeholder="请输入移入仓库ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移入仓库编码" prop="toWarehouseCode">
-        <el-input
-          v-model="queryParams.toWarehouseCode"
-          placeholder="请输入移入仓库编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移入仓库名称" prop="toWarehouseName">
-        <el-input
-          v-model="queryParams.toWarehouseName"
-          placeholder="请输入移入仓库名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移入库区ID" prop="toLocationId">
-        <el-input
-          v-model="queryParams.toLocationId"
-          placeholder="请输入移入库区ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移入库区编码" prop="toLocationCode">
-        <el-input
-          v-model="queryParams.toLocationCode"
-          placeholder="请输入移入库区编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移入库区名称" prop="toLocationName">
-        <el-input
-          v-model="queryParams.toLocationName"
-          placeholder="请输入移入库区名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移入库位ID" prop="toAreaId">
-        <el-input
-          v-model="queryParams.toAreaId"
-          placeholder="请输入移入库位ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移入库位编码" prop="toAreaCode">
-        <el-input
-          v-model="queryParams.toAreaCode"
-          placeholder="请输入移入库位编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="移入库位名称" prop="toAreaName">
-        <el-input
-          v-model="queryParams.toAreaName"
-          placeholder="请输入移入库位名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="有效期" prop="expireDate">
-        <el-date-picker clearable
-          v-model="queryParams.expireDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择有效期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="供应商ID" prop="vendorId">
-        <el-input
-          v-model="queryParams.vendorId"
-          placeholder="请输入供应商ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="供应商编码" prop="vendorCode">
-        <el-input
-          v-model="queryParams.vendorCode"
-          placeholder="请输入供应商编码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="供应商名称" prop="vendorName">
-        <el-input
-          v-model="queryParams.vendorName"
-          placeholder="请输入供应商名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="供应商简称" prop="vendorNick">
-        <el-input
-          v-model="queryParams.vendorNick"
-          placeholder="请输入供应商简称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -279,20 +8,10 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['wm:transferline:add']"
+          v-hasPermi="['mes:wm:transferline:add']"
         >新增</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['wm:transferline:edit']"
-        >修改</el-button>
-      </el-col>
+   
       <el-col :span="1.5">
         <el-button
           type="danger"
@@ -301,79 +20,44 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['wm:transferline:remove']"
+          v-hasPermi="['mes:wm:transferline:remove']"
         >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['wm:transferline:export']"
-        >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="transferlineList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="明细行ID" align="center" prop="lineId" />
-      <el-table-column label="装箱单ID" align="center" prop="transferId" />
-      <el-table-column label="库存记录ID" align="center" prop="materialStockId" />
-      <el-table-column label="产品物料ID" align="center" prop="itemId" />
-      <el-table-column label="产品物料编码" align="center" prop="itemCode" />
-      <el-table-column label="产品物料名称" align="center" prop="itemName" />
+      <el-table-column type="selection" width="55" align="center" />        
+      <el-table-column label="产品物料编码" width="120px" align="center" prop="itemCode" />
+      <el-table-column label="产品物料名称" width="150px" align="center" prop="itemName" />
       <el-table-column label="规格型号" align="center" prop="specification" />
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
-      <el-table-column label="装箱数量" align="center" prop="quantityTransfer" />
-      <el-table-column label="生产工单ID" align="center" prop="workorderId" />
-      <el-table-column label="生产工单编号" align="center" prop="workorderCode" />
-      <el-table-column label="批次号" align="center" prop="batchCode" />
-      <el-table-column label="移出仓库ID" align="center" prop="fromWarehouseId" />
-      <el-table-column label="移出仓库编码" align="center" prop="fromWarehouseCode" />
-      <el-table-column label="移出仓库名称" align="center" prop="fromWarehouseName" />
-      <el-table-column label="移出库区ID" align="center" prop="fromLocationId" />
-      <el-table-column label="移出库区编码" align="center" prop="fromLocationCode" />
-      <el-table-column label="移出库区名称" align="center" prop="fromLocationName" />
-      <el-table-column label="移出库位ID" align="center" prop="fromAreaId" />
-      <el-table-column label="移出库位编码" align="center" prop="fromAreaCode" />
-      <el-table-column label="移出库位名称" align="center" prop="fromAreaName" />
-      <el-table-column label="移入仓库ID" align="center" prop="toWarehouseId" />
-      <el-table-column label="移入仓库编码" align="center" prop="toWarehouseCode" />
-      <el-table-column label="移入仓库名称" align="center" prop="toWarehouseName" />
-      <el-table-column label="移入库区ID" align="center" prop="toLocationId" />
-      <el-table-column label="移入库区编码" align="center" prop="toLocationCode" />
-      <el-table-column label="移入库区名称" align="center" prop="toLocationName" />
-      <el-table-column label="移入库位ID" align="center" prop="toAreaId" />
-      <el-table-column label="移入库位编码" align="center" prop="toAreaCode" />
-      <el-table-column label="移入库位名称" align="center" prop="toAreaName" />
-      <el-table-column label="有效期" align="center" prop="expireDate" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.expireDate, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="供应商ID" align="center" prop="vendorId" />
-      <el-table-column label="供应商编码" align="center" prop="vendorCode" />
-      <el-table-column label="供应商名称" align="center" prop="vendorName" />
-      <el-table-column label="供应商简称" align="center" prop="vendorNick" />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="转移数量" align="center" prop="quantityTransfer" />
+      <el-table-column label="生产工单" align="center" prop="workorderCode" />
+      <el-table-column label="供应商编码" width="100px" align="center" prop="vendorCode" />      
+      <el-table-column label="供应商简称" width="100px" align="center" prop="vendorNick" />      
+      <el-table-column label="批次号" width="150px" align="center" prop="batchCode" />      
+      <el-table-column label="移出仓库" align="center" prop="fromWarehouseName" />  
+      <el-table-column label="移出库区" width="120px" align="center" prop="fromLocationName" />   
+      <el-table-column label="移出库位" align="center" prop="fromAreaName" />   
+      <el-table-column label="移入仓库" align="center" prop="toWarehouseName" />     
+      <el-table-column label="移入库区" align="center" prop="toLocationName" />  
+      <el-table-column label="移入库位" align="center" prop="toAreaName" />
+      <el-table-column label="操作" width="120px" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['wm:transferline:edit']"
+            v-hasPermi="['mes:wm:transferline:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['wm:transferline:remove']"
+            v-hasPermi="['mes:wm:transferline:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -388,118 +72,81 @@
     />
 
     <!-- 添加或修改转移单行对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="装箱单ID" prop="transferId">
-          <el-input v-model="form.transferId" placeholder="请输入装箱单ID" />
-        </el-form-item>
-        <el-form-item label="库存记录ID" prop="materialStockId">
-          <el-input v-model="form.materialStockId" placeholder="请输入库存记录ID" />
-        </el-form-item>
-        <el-form-item label="产品物料ID" prop="itemId">
-          <el-input v-model="form.itemId" placeholder="请输入产品物料ID" />
-        </el-form-item>
-        <el-form-item label="产品物料编码" prop="itemCode">
-          <el-input v-model="form.itemCode" placeholder="请输入产品物料编码" />
-        </el-form-item>
-        <el-form-item label="产品物料名称" prop="itemName">
-          <el-input v-model="form.itemName" placeholder="请输入产品物料名称" />
-        </el-form-item>
-        <el-form-item label="规格型号" prop="specification">
-          <el-input v-model="form.specification" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="单位" prop="unitOfMeasure">
-          <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
-        </el-form-item>
-        <el-form-item label="装箱数量" prop="quantityTransfer">
-          <el-input v-model="form.quantityTransfer" placeholder="请输入装箱数量" />
-        </el-form-item>
-        <el-form-item label="生产工单ID" prop="workorderId">
-          <el-input v-model="form.workorderId" placeholder="请输入生产工单ID" />
-        </el-form-item>
-        <el-form-item label="生产工单编号" prop="workorderCode">
-          <el-input v-model="form.workorderCode" placeholder="请输入生产工单编号" />
-        </el-form-item>
-        <el-form-item label="批次号" prop="batchCode">
-          <el-input v-model="form.batchCode" placeholder="请输入批次号" />
-        </el-form-item>
-        <el-form-item label="移出仓库ID" prop="fromWarehouseId">
-          <el-input v-model="form.fromWarehouseId" placeholder="请输入移出仓库ID" />
-        </el-form-item>
-        <el-form-item label="移出仓库编码" prop="fromWarehouseCode">
-          <el-input v-model="form.fromWarehouseCode" placeholder="请输入移出仓库编码" />
-        </el-form-item>
-        <el-form-item label="移出仓库名称" prop="fromWarehouseName">
-          <el-input v-model="form.fromWarehouseName" placeholder="请输入移出仓库名称" />
-        </el-form-item>
-        <el-form-item label="移出库区ID" prop="fromLocationId">
-          <el-input v-model="form.fromLocationId" placeholder="请输入移出库区ID" />
-        </el-form-item>
-        <el-form-item label="移出库区编码" prop="fromLocationCode">
-          <el-input v-model="form.fromLocationCode" placeholder="请输入移出库区编码" />
-        </el-form-item>
-        <el-form-item label="移出库区名称" prop="fromLocationName">
-          <el-input v-model="form.fromLocationName" placeholder="请输入移出库区名称" />
-        </el-form-item>
-        <el-form-item label="移出库位ID" prop="fromAreaId">
-          <el-input v-model="form.fromAreaId" placeholder="请输入移出库位ID" />
-        </el-form-item>
-        <el-form-item label="移出库位编码" prop="fromAreaCode">
-          <el-input v-model="form.fromAreaCode" placeholder="请输入移出库位编码" />
-        </el-form-item>
-        <el-form-item label="移出库位名称" prop="fromAreaName">
-          <el-input v-model="form.fromAreaName" placeholder="请输入移出库位名称" />
-        </el-form-item>
-        <el-form-item label="移入仓库ID" prop="toWarehouseId">
-          <el-input v-model="form.toWarehouseId" placeholder="请输入移入仓库ID" />
-        </el-form-item>
-        <el-form-item label="移入仓库编码" prop="toWarehouseCode">
-          <el-input v-model="form.toWarehouseCode" placeholder="请输入移入仓库编码" />
-        </el-form-item>
-        <el-form-item label="移入仓库名称" prop="toWarehouseName">
-          <el-input v-model="form.toWarehouseName" placeholder="请输入移入仓库名称" />
-        </el-form-item>
-        <el-form-item label="移入库区ID" prop="toLocationId">
-          <el-input v-model="form.toLocationId" placeholder="请输入移入库区ID" />
-        </el-form-item>
-        <el-form-item label="移入库区编码" prop="toLocationCode">
-          <el-input v-model="form.toLocationCode" placeholder="请输入移入库区编码" />
-        </el-form-item>
-        <el-form-item label="移入库区名称" prop="toLocationName">
-          <el-input v-model="form.toLocationName" placeholder="请输入移入库区名称" />
-        </el-form-item>
-        <el-form-item label="移入库位ID" prop="toAreaId">
-          <el-input v-model="form.toAreaId" placeholder="请输入移入库位ID" />
-        </el-form-item>
-        <el-form-item label="移入库位编码" prop="toAreaCode">
-          <el-input v-model="form.toAreaCode" placeholder="请输入移入库位编码" />
-        </el-form-item>
-        <el-form-item label="移入库位名称" prop="toAreaName">
-          <el-input v-model="form.toAreaName" placeholder="请输入移入库位名称" />
-        </el-form-item>
-        <el-form-item label="有效期" prop="expireDate">
-          <el-date-picker clearable
-            v-model="form.expireDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择有效期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="供应商ID" prop="vendorId">
-          <el-input v-model="form.vendorId" placeholder="请输入供应商ID" />
-        </el-form-item>
-        <el-form-item label="供应商编码" prop="vendorCode">
-          <el-input v-model="form.vendorCode" placeholder="请输入供应商编码" />
-        </el-form-item>
-        <el-form-item label="供应商名称" prop="vendorName">
-          <el-input v-model="form.vendorName" placeholder="请输入供应商名称" />
-        </el-form-item>
-        <el-form-item label="供应商简称" prop="vendorNick">
-          <el-input v-model="form.vendorNick" placeholder="请输入供应商简称" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
+    <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">       
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="产品物料" prop="itemCode">
+              <el-input v-model="form.itemCode" placeholder="选择库存物资" >
+                  <el-button slot="append" @click="handleSelectStock" icon="el-icon-search"></el-button>
+              </el-input>
+            </el-form-item>
+            <StockSelect ref="stockSelect" :warehouseId="fromWarehouseId"  @onSelected="onStockSelected"></StockSelect>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="产品物料名称" prop="itemName">
+              <el-input v-model="form.itemName" placeholder="请输入产品物料名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="单位" prop="unitOfMeasure">
+              <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="规格型号" prop="specification">
+              <el-input v-model="form.specification" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="批次号" prop="batchCode">
+              <el-input v-model="form.batchCode" placeholder="请输入批次号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="供应商名称" prop="vendorName">
+              <el-input v-model="form.vendorName" placeholder="请输入供应商名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="生产工单" prop="workorderCode">
+              <el-input v-model="form.workorderCode" placeholder="请输入生产工单编号" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="移出仓库" prop="fromWarehouse">
+              <el-input v-model="fromWarehouse"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="移入仓库" prop="toWarehouseId">
+              <el-cascader v-model="warehouseInfo"
+                :options="warehouseOptions"
+                :props="warehouseProps"
+                @change="handleToWarehouseChanged"
+              >                  
+              </el-cascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="转移数量" prop="quantityTransfer">
+              <el-input-number :min="0" :max="form.quantityMax" v-model="form.quantityTransfer" placeholder="请输入转移数量" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -511,11 +158,29 @@
 
 <script>
 import { listTransferline, getTransferline, delTransferline, addTransferline, updateTransferline } from "@/api/mes/wm/transferline";
-
+import StockSelect from "@/components/stockSelect/single.vue"
+import {getTreeList} from "@/api/mes/wm/warehouse"
 export default {
   name: "Transferline",
+  components: {
+    StockSelect
+  },
+  props: {
+    transferId: null,
+    fromWarehouseId: null,
+    toWarehouseId: null,
+    optType: null,
+  },
   data() {
     return {
+      fromWarehouse: null,
+      warehouseInfo:[],
+      warehouseOptions:[],
+      warehouseProps:{
+        multiple: false,
+        value: 'pId',
+        label: 'pName',
+      },
       // 遮罩层
       loading: true,
       // 选中数组
@@ -538,24 +203,60 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        transferId: null,        materialStockId: null,        itemId: null,        itemCode: null,        itemName: null,        specification: null,        unitOfMeasure: null,        quantityTransfer: null,        workorderId: null,        workorderCode: null,        batchCode: null,        fromWarehouseId: null,        fromWarehouseCode: null,        fromWarehouseName: null,        fromLocationId: null,        fromLocationCode: null,        fromLocationName: null,        fromAreaId: null,        fromAreaCode: null,        fromAreaName: null,        toWarehouseId: null,        toWarehouseCode: null,        toWarehouseName: null,        toLocationId: null,        toLocationCode: null,        toLocationName: null,        toAreaId: null,        toAreaCode: null,        toAreaName: null,        expireDate: null,        vendorId: null,        vendorCode: null,        vendorName: null,        vendorNick: null,      },
+        transferId: this.transferId,
+        materialStockId: null,        
+        itemId: null,        
+        itemCode: null,        
+        itemName: null,        
+        specification: null,        
+        unitOfMeasure: null,        
+        quantityTransfer: null,  
+        quantityMax: null,      
+        workorderId: null,        
+        workorderCode: null,        
+        batchCode: null,        
+        fromWarehouseId:null,        
+        fromWarehouseCode: null,        
+        fromWarehouseName: null,       
+        fromLocationId: null,        
+        fromLocationCode: null,        
+        fromLocationName: null,        
+        fromAreaId: null,        
+        fromAreaCode: null,        
+        fromAreaName: null,        
+        toWarehouseId: null,        
+        toWarehouseCode: null,       
+        toWarehouseName: null,        
+        toLocationId: null,        
+        toLocationCode: null,        
+        toLocationName: null,        
+        toAreaId: null,        
+        toAreaCode: null,        
+        toAreaName: null,        
+        expireDate: null,        
+        vendorId: null,        
+        vendorCode: null,        
+        vendorName: null,        
+        vendorNick: null,      
+      },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        transferId: [
-          { required: true, message: "装箱单ID不能为空", trigger: "blur" }
-        ],        materialStockId: [
-          { required: true, message: "库存记录ID不能为空", trigger: "blur" }
-        ],        itemId: [
-          { required: true, message: "产品物料ID不能为空", trigger: "blur" }
-        ],        quantityTransfer: [
-          { required: true, message: "装箱数量不能为空", trigger: "blur" }
+        itemCode: [
+          { required: true, message: "请选择移出的物资", trigger: "blur" }
+        ],        
+        toWarehouseId: [
+          { required: true, message: "请指定移入仓库", trigger: "blur" }
+        ],        
+        quantityTransfer: [
+          { required: true, message: "转移数量不能为空", trigger: "blur" }
         ],      }
     };
   },
   created() {
     this.getList();
+    this.getWarehouseList();
   },
   methods: {
     /** 查询转移单行列表 */
@@ -567,6 +268,23 @@ export default {
         this.loading = false;
       });
     },
+    getWarehouseList(){
+      getTreeList().then( response =>{        
+        this.warehouseOptions = response.data;
+        this.warehouseOptions.map(w =>{
+          w.children.map(l =>{
+                  let lstr =JSON.stringify(l.children).replace(/locationId/g,'lId').replace(/areaId/g, 'pId').replace(/areaName/g,'pName');                  
+                  l.children = JSON.parse(lstr);
+          });
+            
+          let wstr = JSON.stringify(w.children).replace(/warehouseId/g,'wId').replace(/locationId/g, 'pId').replace(/locationName/g,'pName');  
+          w.children =  JSON.parse(wstr); 
+
+        });
+        let ostr=JSON.stringify(this.warehouseOptions).replace(/warehouseId/g,'pId').replace(/warehouseName/g, 'pName');
+        this.warehouseOptions = JSON.parse(ostr);
+      });
+    },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -575,7 +293,51 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        lineId: null,        transferId: null,        materialStockId: null,        itemId: null,        itemCode: null,        itemName: null,        specification: null,        unitOfMeasure: null,        quantityTransfer: null,        workorderId: null,        workorderCode: null,        batchCode: null,        fromWarehouseId: null,        fromWarehouseCode: null,        fromWarehouseName: null,        fromLocationId: null,        fromLocationCode: null,        fromLocationName: null,        fromAreaId: null,        fromAreaCode: null,        fromAreaName: null,        toWarehouseId: null,        toWarehouseCode: null,        toWarehouseName: null,        toLocationId: null,        toLocationCode: null,        toLocationName: null,        toAreaId: null,        toAreaCode: null,        toAreaName: null,        expireDate: null,        vendorId: null,        vendorCode: null,        vendorName: null,        vendorNick: null,        remark: null,        attr1: null,        attr2: null,        attr3: null,        attr4: null,        createBy: null,        createTime: null,        updateBy: null,        updateTime: null      };
+        lineId: null,        
+        transferId: this.transferId,        
+        materialStockId: null,        
+        itemId: null,        
+        itemCode: null,        
+        itemName: null,        
+        specification: null,        
+        unitOfMeasure: null,        
+        quantityTransfer: null,        
+        workorderId: null,        
+        workorderCode: null,        
+        batchCode: null,        
+        fromWarehouseId: this.fromWarehouseId,        
+        fromWarehouseCode: null,        
+        fromWarehouseName: null,        
+        fromLocationId: null,        
+        fromLocationCode: null,        
+        fromLocationName: null,        
+        fromAreaId: null,        
+        fromAreaCode: null,        
+        fromAreaName: null,        
+        toWarehouseId: this.toWarehouseId,        
+        toWarehouseCode: null,        
+        toWarehouseName: null,        
+        toLocationId: null,        
+        toLocationCode: null,        
+        toLocationName: null,        
+        toAreaId: null,        
+        toAreaCode: null,        
+        toAreaName: null,        
+        expireDate: null,        
+        vendorId: null,        
+        vendorCode: null,        
+        vendorName: null,        
+        vendorNick: null,        
+        remark: null,        
+        attr1: null,        
+        attr2: null,        
+        attr3: null,        
+        attr4: null,        
+        createBy: null,        
+        createTime: null,        
+        updateBy: null,        
+        updateTime: null      
+      };
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -606,14 +368,20 @@ export default {
       const lineId = row.lineId || this.ids
       getTransferline(lineId).then(response => {
         this.form = response.data;
+        this.fromWarehouse = response.data.fromWarehouseName+" / "+response.data.fromLocationName+" / "+response.data.fromAreaName;
+        this.warehouseInfo[0] = response.data.toWarehouseId;    
+        this.warehouseInfo[1] = response.data.toLocationId;    
+        this.warehouseInfo[2] = response.data.toAreaId;
         this.open = true;
         this.title = "修改转移单行";
       });
     },
     /** 提交按钮 */
     submitForm() {
+      debugger; 
       this.$refs["form"].validate(valid => {
-        if (valid) {
+        if (valid) {         
+
           if (this.form.lineId != null) {
             updateTransferline(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
@@ -640,12 +408,48 @@ export default {
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
     },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download('wm/transferline/export', {
-        ...this.queryParams
-      }, `transferline_${new Date().getTime()}.xlsx`)
-    }
+    handleSelectStock(){
+      this.$refs.stockSelect.showFlag = true;
+      this.$refs.stockSelect.getList();
+    },
+    //物料选择弹出框
+    onStockSelected(obj){
+      debugger;
+        if(obj != undefined && obj != null){
+          this.form.materialStockId = obj.materialStockId;
+          this.form.itemId = obj.itemId;
+          this.form.itemCode = obj.itemCode;
+          this.form.itemName = obj.itemName;
+          this.form.specification = obj.specification;
+          this.form.unitOfMeasure = obj.unitOfMeasure;  
+          this.form.batchCode = obj.batchCode;
+          this.form.quantityTransfer = obj.quantityOnhand;
+          this.form.quantityMax = obj.quantityOnhand;
+          this.form.fromWarehouseId = obj.warehouseId;
+          this.form.fromWarehouseCode = obj.warehouseCode;
+          this.form.fromWarehouseName = obj.warehouseName;
+          this.form.fromAreaId = obj.areaId;
+          this.form.fromAreaCode = obj.areaCode;
+          this.form.fromAreaName = obj.areaName;
+          this.form.fromLocationId  = obj.locationId;
+          this.form.fromLocationCode = obj.locationCode;
+          this.form.fromLocationName = obj.locationName;
+          this.form.vendorId = obj.vendorId;
+          this.form.vendorCode = obj.vendorCode;
+          this.form.vendorName = obj.vendorName;
+          this.form.workorderId = obj.workorderId;
+          this.form.workorderCode = obj.workorderCode; 
+          this.fromWarehouse = obj.warehouseName +" / "+ obj.locationName +" / "+ obj.areaName;
+        }
+    },
+    //选择默认的仓库、库区、库位
+    handleToWarehouseChanged(obj){      
+      if(obj !=null){
+        this.form.toWarehouseId = obj[0];
+        this.form.toLocationId = obj[1];
+        this.form.toAreaId = obj[2];
+      }
+    },
   }
 };
 </script>
