@@ -8,6 +8,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
+          v-if="optType != 'view'"
           v-hasPermi="['mes:wm:transferline:add']"
         >新增</el-button>
       </el-col>
@@ -20,6 +21,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
+          v-if="optType != 'view'"
           v-hasPermi="['mes:wm:transferline:remove']"
         >删除</el-button>
       </el-col>
@@ -41,9 +43,9 @@
       <el-table-column label="移出库区" width="120px" align="center" prop="fromLocationName" />   
       <el-table-column label="移出库位" align="center" prop="fromAreaName" />   
       <el-table-column label="移入仓库" align="center" prop="toWarehouseName" />     
-      <el-table-column label="移入库区" align="center" prop="toLocationName" />  
+      <el-table-column label="移入库区" width="120px" align="center" prop="toLocationName" />  
       <el-table-column label="移入库位" align="center" prop="toAreaName" />
-      <el-table-column label="操作" width="120px" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" v-if="optType != 'view'" width="120px" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
