@@ -87,43 +87,43 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="产品物料名称" prop="itemName">
-              <el-input v-model="form.itemName" placeholder="请输入产品物料名称" />
+              <el-input v-model="form.itemName" readonly="readonly" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="单位" prop="unitOfMeasure">
-              <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
+              <el-input v-model="form.unitOfMeasure" readonly="readonly" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="规格型号" prop="specification">
-              <el-input v-model="form.specification" type="textarea" placeholder="请输入内容" />
+              <el-input v-model="form.specification" type="textarea" readonly="readonly" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="批次号" prop="batchCode">
-              <el-input v-model="form.batchCode" placeholder="请输入批次号" />
+              <el-input v-model="form.batchCode" readonly="readonly" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="供应商名称" prop="vendorName">
-              <el-input v-model="form.vendorName" placeholder="请输入供应商名称" />
+              <el-input v-model="form.vendorName" readonly="readonly" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="生产工单" prop="workorderCode">
-              <el-input v-model="form.workorderCode" placeholder="请输入生产工单编号" />
+              <el-input v-model="form.workorderCode" readonly="readonly" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="移出仓库" prop="fromWarehouse">
-              <el-input v-model="fromWarehouse"/>
+              <el-input v-model="fromWarehouse" readonly="readonly"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">

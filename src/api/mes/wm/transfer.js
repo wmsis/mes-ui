@@ -42,3 +42,11 @@ export function delTransfer(transferId) {
     method: 'delete'
   })
 }
+
+//执行转移
+export function execute(transferId){
+  return request({
+    url: '/mes/wm/transfer/'+transferId,
+    method: 'put'
+  })
+}

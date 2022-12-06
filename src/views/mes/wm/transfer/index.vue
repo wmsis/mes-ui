@@ -119,6 +119,30 @@
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-video-play"
+            v-if="(scope.row.status =='PREPARE' && scope.row.transferType == 'INNER')"            
+            @click="handleExecute(scope.row)"
+            v-hasPermi="['mes:wm:transfer:edit']"
+          >执行转移</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-video-play"
+            v-if="(scope.row.status =='PREPARE' && scope.row.transferType == 'OUTER')"            
+            @click="handleTransOut(scope.row)"
+            v-hasPermi="['mes:wm:transfer:edit']"
+          >执行移出</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-video-play"
+            v-if="(scope.row.status =='CONFIRMED' && scope.row.transferType == 'OUTER')"            
+            @click="handleExecute(scope.row)"
+            v-hasPermi="['mes:wm:transfer:edit']"
+          >执行移入</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-if="scope.row.status == 'PREPARE'"
@@ -262,7 +286,7 @@
 </template>
 
 <script>
-import { listTransfer, getTransfer, delTransfer, addTransfer, updateTransfer } from "@/api/mes/wm/transfer";
+import { listTransfer, getTransfer, delTransfer, addTransfer, updateTransfer, execute} from "@/api/mes/wm/transfer";
 import {listWarehouse} from "@/api/mes/wm/warehouse"; 
 import {genCode} from "@/api/system/autocode/rule";
 import Transferline from "./line.vue";
@@ -446,6 +470,18 @@ export default {
         }
       });
     },
+    handleTransOut(row){
+      const transferId = row.transferId
+      getTransfer(transferId).then(response => {
+        this.form = response.data; 
+        this.form.status = 'CONFIRMED';
+        updateTransfer(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+      });
+    },
     /** 删除按钮操作 */
     handleDelete(row) {
       const transferIds = row.transferId || this.ids;
@@ -454,6 +490,16 @@ export default {
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
+      }).catch(() => {});
+    },
+    //执行转移
+    handleExecute(row){
+      const transferIds = row.transferId || this.ids;
+      this.$modal.confirm('确认执行转移？').then(function() {
+        return execute(transferIds)//执行转移
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("转移成功");
       }).catch(() => {});
     },
     /** 导出按钮操作 */
