@@ -162,6 +162,7 @@ export default {
       multiple: true,
       // 显示搜索条件
       showSearch: true,
+      itemTypeName: null,
       // 总条数
       total: 0,
       //物料产品分类树
@@ -203,6 +204,12 @@ export default {
       // 表单参数
       form: {},
     };
+  },
+  watch: {
+    // 根据名称筛选分类树
+    itemTypeName(val) {
+      this.$refs.tree.filter(val);
+    }
   },
   created() {
     this.getList();
