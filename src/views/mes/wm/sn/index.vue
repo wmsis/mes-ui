@@ -70,7 +70,15 @@
       <el-table-column label="规格型号" align="center" prop="specification" />
       <el-table-column label="单位" align="center" prop="unitOfMeasure" />
       <el-table-column label="批次号" align="center" prop="batchCode" />
-      <el-table-column label="SN码数量" align="center" prop="snNum" />
+      <el-table-column label="SN码数量" align="center" prop="snNum" >
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            @click="handleView(scope.row)"
+            v-hasPermi="['mes:wm:sn:query']"
+          >{{scope.row.genDate}}</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="生成时间" align="center" prop="genDate" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.rtDate, '{y}-{m}-{d} {h}:{mi}:{s}') }}</span>
@@ -231,6 +239,10 @@ export default {
       this.ids = selection.map(item => item.snId)
       this.single = selection.length!==1
       this.multiple = !selection.length
+    },
+    //点开查看界面
+    handleView(row){
+      
     },
     /** 新增按钮操作 */
     handleAdd() {
