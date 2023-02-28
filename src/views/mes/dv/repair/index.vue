@@ -269,7 +269,7 @@
       </el-form>
       <el-divider v-if="form.repairId !=null" content-position="center">维修内容</el-divider>
       <el-card shadow="always" v-if="form.repairId !=null" class="box-card">
-        <Repairline ref="line" :repairId="form.issueId" :optType="optType"></Repairline>    
+        <Repairline ref="line" :repairId="form.repairId" :optType="optType"></Repairline>    
       </el-card>
 
       <div slot="footer" class="dialog-footer">
