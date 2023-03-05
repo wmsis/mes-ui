@@ -224,6 +224,22 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row v-else-if="form.barcodeType=='WORKSTATION'">
+          <el-col :span="12">
+            <el-form-item label="工作站" prop="bussinessCode">
+              <el-input v-model="form.bussinessCode" placeholder="请选择工作站" >
+                <el-button slot="append" icon="el-icon-search" @click="handleWorkstationSelect"></el-button>
+              </el-input>
+            </el-form-item>
+            <WorkstationSelect ref="wsSelect"  @onSelected="onWorkstationSelected"> </WorkstationSelect>      
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="工作站名称" prop="bussinessName">
+              <el-input v-model="form.bussinessName" readonly="readonly" >
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <!--根据不同的条码类型展示不同的业务内容选择 end-->
         <el-row>
           <el-col :span="24">
@@ -265,12 +281,13 @@ import { listBarcode, getBarcode, delBarcode, addBarcode, updateBarcode } from "
 import ItemSelect  from "@/components/itemSelect/single.vue";
 import VendorSelect from "@/components/vendorSelect/single.vue";
 import PackageSelectSingle from "@/components/package/single.vue";
+import WorkstationSelect from "@/components/workstationSelect/simpletableSingle.vue"
 import Barcodeconfig from "./config.vue"
 export default {
   name: "Barcode",
   dicts: ['mes_barcode_type','mes_barcode_formart','sys_yes_no'],
   components: {
-    ItemSelect,VendorSelect,PackageSelectSingle,Barcodeconfig
+    ItemSelect,VendorSelect,PackageSelectSingle,Barcodeconfig,WorkstationSelect
   },
   data() {
     return {
@@ -467,6 +484,19 @@ export default {
           this.form.bussinessId = obj.packageId;
           this.form.bussinessCode = obj.packageCode;
           this.form.bussinessName = obj.clientName;
+          this.form.barcodeContent= "".concat(this.form.barcodeType,'-',this.form.bussinessCode);
+        }
+    },
+    /**选择工作站 */
+    handleWorkstationSelect(){
+      this.$refs.wsSelect.showFlag = true;
+    },
+    /**工作站选择返回 */
+    onWorkstationSelected(obj){
+      if(obj != undefined && obj != null){
+          this.form.bussinessId = obj.workstationId;
+          this.form.bussinessCode = obj.workstationCode;
+          this.form.bussinessName = obj.workstationName;
           this.form.barcodeContent= "".concat(this.form.barcodeType,'-',this.form.bussinessCode);
         }
     },

@@ -284,7 +284,9 @@
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
         <el-button type="primary" @click="submitForm" v-if="form.status =='PREPARE' && optType !='view' ">保 存</el-button>
-        <el-button type="success" @click="handleExecute" v-if="form.status =='PREPARE' && optType !='view'  && form.recordId !=null">审 批</el-button>
+        <el-button type="primary" @click="handleSubmit" v-if="form.status =='PREPARE' && optType !='view' ">提交审批</el-button>
+        <el-button type="success" @click="handleExecute" v-if="form.status =='APPROVING'  && form.recordId !=null">审批通过</el-button>
+        <el-button type="danger" @click="handleReject" v-if="form.status =='APPROVING'  && form.recordId !=null">审批不通过</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -510,13 +512,13 @@ export default {
         }
       });
     },
-    handleFinish(){
-      this.form.status = "FINISHED";
+    handleSubmit(){
+      this.form.status = "APPROVING";
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.recordId != null) {
             updateFeedback(this.form).then(response => {
-              this.$modal.msgSuccess("审批成功");
+              this.$modal.msgSuccess("提交成功");
               this.open = false;
               this.getList();
             });
