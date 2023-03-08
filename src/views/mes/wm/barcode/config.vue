@@ -30,6 +30,15 @@
               ></el-switch>
         </template>
       </el-table-column>
+      <el-table-column label="默认打印模板" align="center" prop="defaultTemplate" >
+        <template slot-scope="scope">
+          {{scope.row.defaultTemplate}}
+          <el-button
+            type="text"
+            @click="handleSetReport(scope.row)"
+          >设置</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     
     <pagination
@@ -39,6 +48,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+    <ReportSelect ref="reportRef" @onSelected="onReportSelected"></ReportSelect>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="showFlag=false">确 定</el-button>
       <el-button @click="showFlag=false">取 消</el-button>
@@ -48,9 +58,10 @@
 
 <script>
 import { listBarcodeconfig, getBarcodeconfig, delBarcodeconfig, addBarcodeconfig, updateBarcodeconfig } from "@/api/mes/wm/barcodeconfig";
-
+import ReportSelect from "@/components/reportSelect/single.vue";
 export default {
   name: "Barcodeconfig",
+  components: {ReportSelect},
   dicts: ['sys_yes_no', 'mes_barcode_type','mes_barcode_formart'],
   data() {
     return {
@@ -59,6 +70,8 @@ export default {
       loading: true,
       // 选中数组
       ids: [],
+      //当前编辑的行
+      selectedConfigId: null,
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -167,7 +180,24 @@ export default {
         }
       });
     },
-
+    //弹出选择框
+    handleSetReport(row){
+      this.$refs.reportRef.showFlag = true;
+      this.selectedConfigId = row.configId;
+      this.form = row;
+    },
+    //报表选择返回
+    onReportSelected(row){
+      debugger;
+      if(row != null && this.form !=null ){
+        this.form.defaultTemplate = row.name;
+        updateBarcodeconfig(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+      }
+    },
     //赋码自动生成修改
     handleAutoGenChange(row) {
       let text = row.autoGenFlag === "Y" ? "启用" : "停用";

@@ -66,7 +66,17 @@
           v-hasPermi="['mes:wm:barcode:edit']"
         >条码设置</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          icon="el-icon-printer"
+          size="mini"
+          @click="handleBatchPrint"
+          v-hasPermi="['mes:wm:barcode:view']"
+        >批量打印</el-button>
+      </el-col>
       <Barcodeconfig ref="barcodeconfig"></Barcodeconfig>
+      <BarcodeBatchPrint ref="barcodebatchprint"></BarcodeBatchPrint>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -114,7 +124,7 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['mes:wm:barcode:remove']"
-          >打印</el-button>
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -283,11 +293,12 @@ import VendorSelect from "@/components/vendorSelect/single.vue";
 import PackageSelectSingle from "@/components/package/single.vue";
 import WorkstationSelect from "@/components/workstationSelect/simpletableSingle.vue"
 import Barcodeconfig from "./config.vue"
+import BarcodeBatchPrint from "./batchprint.vue"
 export default {
   name: "Barcode",
   dicts: ['mes_barcode_type','mes_barcode_formart','sys_yes_no'],
   components: {
-    ItemSelect,VendorSelect,PackageSelectSingle,Barcodeconfig,WorkstationSelect
+    ItemSelect,VendorSelect,PackageSelectSingle,Barcodeconfig,WorkstationSelect,BarcodeBatchPrint
   },
   data() {
     return {
@@ -502,7 +513,12 @@ export default {
     },
     handleConfig(){
       this.$refs.barcodeconfig.showFlag = true;
+    },
+
+    handleBatchPrint(){
+      this.$refs.barcodebatchprint.showFlag = true;
     }
+
   }
 };
 </script>
