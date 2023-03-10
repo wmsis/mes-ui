@@ -247,7 +247,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="产品物料编码" prop="itemCode">
-              <el-input v-if="form.iqcId ==null " v-model="form.itemCode" placeholder="请输入产品物料编码" >
+              <el-input v-if="form.iqcId ==null " v-model="form.itemCode" readonly placeholder="请选择物料" >
                 <el-button slot="append" @click="handleSelectProduct" icon="el-icon-search"></el-button>
               </el-input>
               <!--如果已经保存过，则产品不允许再修改，需要修改就删除重做-->
@@ -270,7 +270,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="供应商编码" prop="vendorCode">
-              <el-input v-model="form.vendorCode" placeholder="请输入供应商编码" >
+              <el-input v-model="form.vendorCode" readonly placeholder="请选择供应商" >
                 <el-button slot="append" @click="handleSelectVendor" icon="el-icon-search"></el-button>
               </el-input>
             </el-form-item>
@@ -481,10 +481,10 @@ export default {
           { required: true, message: "来料检验单名称不能为空", trigger: "blur" }
         ],
  
-        vendorId: [
+        vendorCode: [
           { required: true, message: "供应商不能为空", trigger: "blur" }
         ],
-        itemId: [
+        itemCode: [
           { required: true, message: "物料不能为空", trigger: "blur" }
         ],
         quantityRecived: [

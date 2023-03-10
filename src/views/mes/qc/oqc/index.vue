@@ -209,7 +209,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="产品编码" prop="itemCode">
-              <el-input v-if="form.oqcId ==null " v-model="form.itemCode" placeholder="请选择产品" >
+              <el-input v-if="form.oqcId ==null " readonly v-model="form.itemCode" placeholder="请选择产品" >
                 <el-button slot="append" @click="handleSelectProduct" icon="el-icon-search"></el-button>
               </el-input>
               <!--如果已经保存过，则产品不允许再修改，需要修改就删除重做-->
@@ -242,7 +242,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="客户编号" prop="clientCode">
-              <el-input v-model="form.clientCode" placeholder="请输入客户编码" >
+              <el-input v-model="form.clientCode" readonly placeholder="请输选择客户" >
                 <el-button slot="append" @click="handleSelectClient" icon="el-icon-search"></el-button>
               </el-input>
             </el-form-item>
@@ -265,17 +265,17 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="发货数量" prop="quantityOut">
-              <el-input v-model="form.quantityOut" placeholder="请输入发货数量" />
+              <el-input-number :min="1" v-model="form.quantityOut" placeholder="请输入发货数量" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="检测数量" prop="quantityCheck">
-              <el-input v-model="form.quantityCheck" placeholder="请输入本次检测数量" />
+              <el-input-number :min="1" v-model="form.quantityCheck" placeholder="请输入本次检测数量" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="不合格数量" prop="quantityUnqualified">
-              <el-input readonly="readonly" v-model="form.quantityUnqualified" />
+              <el-input-number :min="0" readonly="readonly" v-model="form.quantityUnqualified" />
             </el-form-item>
           </el-col>
         </el-row>
