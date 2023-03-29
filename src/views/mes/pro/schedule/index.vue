@@ -138,6 +138,14 @@
       </el-table-column>
     </el-table>
 
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
+
     <!-- 添加或修改生产工单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
       <el-form ref="form" :model="form" label-width="80px">
@@ -292,6 +300,8 @@ export default {
       loading: true,
       // 显示搜索条件
       showSearch: true,
+      // 总条数
+      total: 0,
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -308,6 +318,8 @@ export default {
       open: false,
       // 查询参数
       queryParams: {
+        pageNum: 1,
+        pageSize: 10,
         workorderCode: null,
         workorderName: null,
         orderSource: null,
@@ -346,7 +358,8 @@ export default {
     getList() {
       this.loading = true;
       listWorkorder(this.queryParams).then(response => {
-        this.workorderList = this.handleTree(response.data, "workorderId", "parentId");
+        this.workorderList = this.handleTree(response.rows, "workorderId", "parentId");
+        this.total = response.total;
         this.loading = false;
       });
     },
