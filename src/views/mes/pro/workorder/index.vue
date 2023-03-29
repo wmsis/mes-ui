@@ -192,6 +192,13 @@
         </template>
       </el-table-column>
     </el-table>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
 
     <!-- 添加或修改生产工单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
@@ -337,7 +344,7 @@
           <Workorderbom ref="bomlist" :optType="optType" :workorder="form" @handleAddSub="handleSubAdd" ></Workorderbom>        
         </el-tab-pane>
         <el-tab-pane label="物料需求">
-          <WorkorderItemList :optType="optType" :workorder="form"></WorkorderItemList>
+         
         </el-tab-pane>
       </el-tabs>
       <div slot="footer" class="dialog-footer">
@@ -381,6 +388,8 @@ export default {
       showSearch: true,
       // 非单个禁用
       single: true,
+      // 总条数
+      total: 0,
       // 非多个禁用
       multiple: true,
       // 生产工单表格数据
@@ -393,6 +402,8 @@ export default {
       open: false,
       // 查询参数
       queryParams: {
+        pageNum: 1,
+        pageSize: 10,
         workorderCode: null,
         workorderName: null,
         orderSource: null,
@@ -456,7 +467,8 @@ export default {
     getList() {
       this.loading = true;
       listWorkorder(this.queryParams).then(response => {
-        this.workorderList = this.handleTree(response.data, "workorderId", "parentId");
+        this.workorderList = this.handleTree(response.rows, "workorderId", "parentId");
+        this.total = response.total;
         this.loading = false;
       });
     },
