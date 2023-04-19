@@ -205,7 +205,7 @@
           <el-col :span="12">
             <el-form-item  label="设备分类" prop="machineryTypeId">
               <treeselect v-model="form.machineryTypeId" :options="machineryTypeOptions" :normalizer="normalizer" disabled v-if="optType=='view'"  />
-              <treeselect v-model="form.machineryTypeId" :options="machineryTypeOptions" :normalizer="normalizer" placeholder="请选择所属分类" v-else />
+              <treeselect v-model="form.machineryTypeId" :options="machineryTypeOptions" :normalizer="normalizer" placeholder="请选择所属分类" v-else :disable-branch-nodes='true' />
             </el-form-item>
           </el-col>
         </el-row>
@@ -400,7 +400,6 @@ export default {
     },
     getWorkshops(){
       listAllWorkshop().then( response => {
-        debugger;
         this.workshopOptions =response.data;
       });
     },
@@ -431,7 +430,6 @@ export default {
     },
     // 节点单击事件
     handleNodeClick(data) {
-      debugger;
       this.queryParams.machineryTypeId = data.machineryTypeId;
       this.handleQuery();
     },
@@ -584,7 +582,6 @@ export default {
     },
     //自动生成编码
     handleAutoGenChange(autoGenFlag){
-      debugger;
       if(autoGenFlag){
         genCode('MACHINERY_CODE').then(response =>{
           this.form.machineryCode = response;

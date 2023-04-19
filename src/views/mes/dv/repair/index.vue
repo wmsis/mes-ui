@@ -184,20 +184,20 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="设备编号" prop="machineryCode">
-              <el-input v-model="form.machineryCode" placeholder="请输入设备编号" >
-                <el-button slot="append" @click="handleMachineryAdd" icon="el-icon-search"></el-button>
+              <el-input v-model="form.machineryCode" placeholder="请选择设备" disabled >
+                <el-button style="border-color: #46a6ff; background-color: #46a6ff;color: white;" slot="append" @click="handleMachineryAdd" icon="el-icon-search"></el-button>
               </el-input>
             </el-form-item>
             <MachinerySelectSingle ref="machinerySelect" @onSelected="onMachineryAdd"></MachinerySelectSingle>
           </el-col>
           <el-col :span="8">
             <el-form-item label="设备名称" prop="machineryName">
-              <el-input v-model="form.machineryName" placeholder="请选择设备" />
+              <el-input v-model="form.machineryName" placeholder="请选择设备" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="品牌" prop="machineryBrand">
-              <el-input v-model="form.machineryBrand" placeholder="请输入品牌" />
+              <el-input v-model="form.machineryBrand" placeholder="请选择设备" disabled/>
             </el-form-item>
           </el-col>
         </el-row>

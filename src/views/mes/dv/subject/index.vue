@@ -175,7 +175,7 @@
           <el-input type="textarea" v-model="form.subjectContent" placeholder="请输入项目内容" />
         </el-form-item>
         <el-form-item label="标准" prop="subjectStandard">
-          <el-input type="textarea" v-model="form.subjectStandard" placeholder="请输入标准" />
+          <el-input type="textarea" v-model="form.subjectStandard" placeholder="请输入标准" autosize/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
