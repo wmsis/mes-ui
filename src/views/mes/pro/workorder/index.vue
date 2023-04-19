@@ -264,7 +264,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="产品编号" prop="productCode">
-              <el-input v-model="form.productCode" placeholder="请输入产品编号" >
+              <el-input v-model="form.productCode" placeholder="请选择产品" >
                 <el-button slot="append" @click="handleSelectProduct" icon="el-icon-search"></el-button>
               </el-input>
               <ItemSelect ref="itemSelect" @onSelected="onItemSelected" > </ItemSelect>
@@ -272,19 +272,19 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="产品名称" prop="productName">
-              <el-input v-model="form.productName" placeholder="请输入产品名称" />
+              <el-input v-model="form.productName" placeholder="请选择产品" disabled/>
             </el-form-item>
           </el-col>          
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="规格型号" prop="productSpc">
-              <el-input v-model="form.productSpc" placeholder="请输入规格型号" />
+              <el-input v-model="form.productSpc" placeholder="请选择产品" disabled/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="单位" prop="unitOfMeasure">
-              <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
+              <el-input v-model="form.unitOfMeasure" placeholder="请选择产品" disabled/>
             </el-form-item>
           </el-col>          
         </el-row>
@@ -447,9 +447,6 @@ export default {
         productName: [
           { required: true, message: "产品名称不能为空", trigger: "blur" }
         ],
-        unitOfMeasure: [
-          { required: true, message: "单位不能为空", trigger: "blur" }
-        ],
         quantity: [
           { required: true, message: "生产数量不能为空", trigger: "blur" }
         ],
@@ -540,7 +537,6 @@ export default {
     },
     //从BOM行中直接新增
     handleSubAdd(row){
-      debugger;
       this.open = false;
       this.reset();
       this.getTreeselect();
@@ -652,7 +648,6 @@ export default {
     },
     //物料选择弹出框
     onItemSelected(obj){
-        debugger;
         if(obj != undefined && obj != null){
           this.form.productId = obj.itemId;
           this.form.productCode = obj.itemCode;
@@ -671,7 +666,6 @@ export default {
     },
     //自动生成编码
     handleAutoGenChange(autoGenFlag){
-      debugger;
       if(autoGenFlag){
         genCode('WORKORDER_CODE').then(response =>{
           this.form.workorderCode = response;

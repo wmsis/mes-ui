@@ -118,7 +118,7 @@
         <el-row>
             <el-col :span="8">
                 <el-form-item label="产品物料编码" prop="itemCode">
-                    <el-input v-model="form.itemCode" placeholder="请输入产品编号" >
+                    <el-input v-model="form.itemCode" placeholder="请选择产品" >
                         <el-button slot="append" @click="handleSelectProduct" icon="el-icon-search"></el-button>
                     </el-input>
                     <ItemSelect ref="itemSelect" @onSelected="onItemSelected" > </ItemSelect>
@@ -126,19 +126,19 @@
             </el-col>        
             <el-col :span="8">
                 <el-form-item label="产品物料名称" prop="itemName">
-                    <el-input v-model="form.itemName" placeholder="请输入产品物料名称" />
+                    <el-input v-model="form.itemName" placeholder="请选择产品" disabled/>
                 </el-form-item>
             </el-col>    
             <el-col :span="8">
                 <el-form-item label="单位" prop="unitOfMeasure">
-                    <el-input v-model="form.unitOfMeasure" placeholder="请输入单位" />
+                    <el-input v-model="form.unitOfMeasure" placeholder="请选择产品" disabled/>
                 </el-form-item>
             </el-col>    
         </el-row>
         <el-row>
             <el-col :span="24">
                 <el-form-item label="规格型号" prop="specification">
-                    <el-input v-model="form.specification" type="textarea" placeholder="请输入内容" />
+                    <el-input v-model="form.specification" type="textarea" placeholder="请选择产品" disabled/>
                 </el-form-item>
             </el-col>
         </el-row>
