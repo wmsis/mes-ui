@@ -437,6 +437,8 @@ export default {
               this.open = false;
               this.getList();
               this.formLoading = false;
+            },err =>{
+              this.formLoading = false;
             });
           } else {
             addCalplan(this.form).then(response => {
@@ -462,7 +464,21 @@ export default {
       let that = this;
       this.$modal.confirm('是否完成计划编制？【完成后将不能更改】').then(function(){
         that.form.status = 'CONFIRMED';
-        that.submitForm();
+        that.$refs["form"].validate(valid => {
+        if (valid) {
+          if (that.form.planId != null) {
+            updateCalplan(that.form).then(response => {
+              that.$modal.msgSuccess("已完成");
+              that.open = false;
+              that.getList();
+              that.formLoading = false;
+            },err =>{
+              that.form.status = 'PREPARE';
+              that.formLoading = false;
+            });
+          }
+        }
+      });
       });
     },
     /** 导出按钮操作 */
