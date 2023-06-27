@@ -224,7 +224,7 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        workstationId: [
+        workstationName: [
           { required: true, message: "工作站不能为空", trigger: "blur" }
         ],
         quantity: [
