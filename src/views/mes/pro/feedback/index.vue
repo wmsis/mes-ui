@@ -513,9 +513,9 @@ export default {
       });
     },
     handleSubmit(){
-      this.form.status = "APPROVING";
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.status = "APPROVING";
           if (this.form.recordId != null) {
             updateFeedback(this.form).then(response => {
               this.$modal.msgSuccess("提交成功");
