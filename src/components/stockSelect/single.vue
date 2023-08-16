@@ -245,9 +245,12 @@ export default {
       this.loading = true;
       listWmstock(this.queryParams).then(response => {
         if(response.rows){
-          this.wmstockList = response.rows.filter((el) =>{
+          if(this.warehouseCode.indexOf('VIR') == -1){
+            //如果不是查询线边库的物资，则在查询结果中过滤掉线边库的数据
+            this.wmstockList = response.rows.filter((el) =>{
             return el.warehouseCode.indexOf('VIR') == -1;
-          });
+            });
+          }
           this.total = response.total;
           this.loading = false;
         }
