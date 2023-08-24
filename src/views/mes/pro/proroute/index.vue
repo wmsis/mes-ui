@@ -125,7 +125,7 @@
     />
 
     <!-- 添加或修改工艺路线对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="960px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="1080px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="8">

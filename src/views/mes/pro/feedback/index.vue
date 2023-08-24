@@ -228,7 +228,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="form.isCheck == 'N'">
           <el-col :span="8">
             <el-form-item label="报工数量" prop="quantityFeedback">
               <el-input readonly="readonly" v-model="form.quantityFeedback" />
@@ -242,6 +242,18 @@
           <el-col :span="8">
             <el-form-item label="不良品数量" prop="quantityUnquanlified">
               <el-input-number :min="0" @change="handleQuantityChanged" v-model="form.quantityUnquanlified" placeholder="请输入不良品数量" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-else>
+          <el-col :span="8">
+            <el-form-item label="报工数量" prop="quantityFeedback">
+              <el-input readonly="readonly" v-model="form.quantityFeedback" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="待检测数量" prop="quantityUncheck">
+              <el-input-number :min="0" @change="handleQuantityChanged" v-model="form.quantityUncheck" placeholder="请输入待检测数量" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -367,12 +379,6 @@ export default {
         workorderCode: [
           { required: true, message: "生产工单不能为空", trigger: "blur" }
         ],
-        quantityQualified: [
-          { required: true, message: "请输入合格品数量", trigger: "blur"}
-        ],
-        quantityUnquanlified: [
-          { required: true, message: "请输入不合格品数量", trigger: "blur"}
-        ],
         nickName: [
           { required: true, message: "请选择报工人", trigger: "blur"}
         ],
@@ -444,7 +450,7 @@ export default {
       this.resetForm("form");
     },
     handleQuantityChanged(){
-      this.form.quantityFeedback = this.form.quantityQualified + this.form.quantityUnquanlified;
+      this.form.quantityFeedback = this.form.quantityQualified + this.form.quantityUnquanlified + this.form.quantityUncheck;
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -559,7 +565,6 @@ export default {
     },
     onWorkorderSelected(row){
       if(row != undefined && row != null){
-        debugger;
         this.form.workorderId = row.workorderId;
         this.form.workorderCode = row.workorderCode;
         this.form.workorderName = row.workorderName;
@@ -575,6 +580,7 @@ export default {
       this.$refs.taskSelect.getList();
     },
     onTaskSelected(row){
+      debugger;
       if(row != undefined && row != null){
         this.form.taskId = row.taskId;
         this.form.taskCode = row.taskCode;
@@ -585,6 +591,7 @@ export default {
         this.form.processId = row.processId;
         this.form.processCode = row.processCode;
         this.form.processName = row.processName;
+        this.form.isCheck = row.isCheck;
       }
     },
     //点击人员选择按钮

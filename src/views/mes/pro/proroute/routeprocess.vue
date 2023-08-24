@@ -52,6 +52,11 @@
           <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.keyFlag"/>
         </template>
       </el-table-column>
+      <el-table-column label="质检确认" width="100px" align="center" prop="isCheck">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.isCheck"/>
+        </template>
+      </el-table-column>
       <el-table-column label="准备时间" align="center" prop="defaultPreTime" />
       <el-table-column label="等待时间" align="center" prop="defaultSufTime" />
       <el-table-column label="甘特图显示颜色" align="center" prop="colorCode" >
@@ -159,6 +164,26 @@
                 </el-form-item>
             </el-col>
             <el-col :span="8">
+              <el-form-item label="是否需要质检确认" prop="isCheck">
+                    <el-tooltip effect="dark" placement="right">
+                    <div slot="content">
+                        是：当前工序报工时需要进行质检确认</br>
+                        质检合格数量作为最终生产数量                                            
+                    </div>
+                    <el-select v-model="form.isCheck">
+                        <el-option
+                        v-for="dict in dict.type.sys_yes_no"
+                        :key="dict.value"
+                        :label="dict.label"
+                        :value="dict.value"
+                        ></el-option>
+                    </el-select>
+                    </el-tooltip>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
                 <el-form-item label="准备时间" prop="defaultPreTime">
                     <el-tooltip effect="dark" content="当前系统支持的最小时间粒度为1小时" placement="right">
                         <el-input-number :min="0" :step="1" v-model="form.defaultPreTime" placeholder="请输入准备时间" />
@@ -248,6 +273,9 @@ export default {
         ],
         keyFlag: [
         { required: true, message: "请指定当前工序是否关键工序", trigger: "blur" }
+        ],
+        isCheck: [
+        { required: true, message: "请指定当前工序是否需要质检确认", trigger: "blur" }
         ]
       }
     };
@@ -289,6 +317,7 @@ export default {
         processId: null,
         processCode: null,
         processName: null,
+        isCheck: 'N',
         orderNum: 1,
         nextProcessId: null,
         nextProcessCode: null,

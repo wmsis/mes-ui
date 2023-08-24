@@ -261,7 +261,7 @@
         </el-step>
       </el-steps>
       <el-card v-for=" (item,index) in processOptions " :key="index" v-if="activeProcess == index && form.workorderId !=null">
-        <ProTask :workorderId="form.workorderId" :processId="item.processId" :colorCode="item.colorCode" :optType="optType"></ProTask>
+        <ProTask :workorderId="form.workorderId" :routeId="item.routeId" :processId="item.processId" :colorCode="item.colorCode" :optType="optType"></ProTask>
       </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="cancel" v-if="optType =='view' || form.status !='PREPARE' ">返回</el-button>
@@ -368,13 +368,13 @@ export default {
     },
     getGanttTasks(){
       listGanttTaskList(this.queryParams).then(response =>{
-        debugger;
         this.tasks.data = response.data.data;
         this.tasks.links = response.data.links;
         this.$refs.ganttChar.reload();
       });
     },
 
+    //获取当前产品对应的生产工序
     getProcess(){
         listProductprocess(this.form.productId).then(response =>{
             this.processOptions = response.data;
@@ -458,7 +458,6 @@ export default {
     },
     //从BOM行中直接新增
     handleSubAdd(row){
-      debugger;
       this.open = false;
       this.reset();
       this.getTreeselect();
@@ -513,11 +512,10 @@ export default {
         this.form.parentId = row.workorderId;
       }
       getWorkorder(row.workorderId).then(response => {
-        debugger;
         this.form = response.data;
         this.getProcess();
         this.open = true;
-        this.title = "修改生产工单";
+        this.title = "生产排产";
         this.optType="edit";
       });
     },
@@ -573,7 +571,6 @@ export default {
     },
     //物料选择弹出框
     onItemSelected(obj){
-        debugger;
         if(obj != undefined && obj != null){
           this.form.productId = obj.itemId;
           this.form.productCode = obj.itemCode;
@@ -592,7 +589,6 @@ export default {
     },
     //自动生成编码
     handleAutoGenChange(autoGenFlag){
-      debugger;
       if(autoGenFlag){
         genCode('WORKORDER_CODE').then(response =>{
           this.form.workorderCode = response;

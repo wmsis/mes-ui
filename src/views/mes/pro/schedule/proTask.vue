@@ -199,6 +199,7 @@ export default {
         workstationId: null,
         workstationCode: null,
         workstationName: null,
+        routeId: this.routeId,
         processId: this.processId,
         processCode: null,
         processName: null,
@@ -242,6 +243,7 @@ export default {
   props:{
       workorderId: null,
       colorCode: null,
+      routeId: null,
       processId: null,
       optType: null
   },
@@ -301,6 +303,7 @@ export default {
         workstationId: null,
         workstationCode: null,
         workstationName: null,
+        routeId: this.routeId,
         processId: this.processId,
         processCode: null,
         processName: null,
