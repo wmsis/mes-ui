@@ -428,7 +428,6 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {      
-      this.formLoading = true;
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.planId != null) {
@@ -436,9 +435,6 @@ export default {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
-              this.formLoading = false;
-            },err =>{
-              this.formLoading = false;
             });
           } else {
             addCalplan(this.form).then(response => {
