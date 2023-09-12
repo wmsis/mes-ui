@@ -110,7 +110,7 @@ export default {
   data() {
     return {
         loading: true,
-        queryParams: {},
+        queryParams: {status:'CONFIRMED'},
         workorderList: [],
         lineChartData: lineChartData.newVisitis
     }
@@ -122,7 +122,7 @@ export default {
     getList() {
       this.loading = true;
       listWorkorder(this.queryParams).then(response => {
-        this.workorderList = response.data;
+        this.workorderList = response.rows;
         this.loading = false;
       });
     },
