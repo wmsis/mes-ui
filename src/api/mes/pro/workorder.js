@@ -51,3 +51,10 @@ export function listItems(query) {
     params: query
   })
 }
+
+export function dofinish(workorderId){
+  return request({
+    url: '/mes/pro/workorder/'+workorderId,
+    method: 'put'
+  })
+}
