@@ -475,6 +475,15 @@ export default {
         quantityCheck: [
           { required: true, message: "检测数量不能为空", trigger: "blur" }
         ],
+
+        quantityUnqualified: [
+          { required: true, message: "不合格品数量不能为空", trigger: "blur" }
+        ],
+
+        quantityQualified: [
+          { required: true, message: "合格品数量不能为空", trigger: "blur" }
+        ]
+
       }
     };
   },
