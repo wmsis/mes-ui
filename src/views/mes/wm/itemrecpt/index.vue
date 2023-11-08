@@ -105,7 +105,6 @@
         </template>
       </el-table-column>
       <el-table-column label="入库单名称" align="center" prop="recptName" :show-overflow-tooltip="true"/>
-      <el-table-column label="检验单编号" align="center" width="180px" prop="iqcCode" />
       <el-table-column label="供应商名称" align="center" prop="vendorName" :show-overflow-tooltip="true"/>      
       <el-table-column label="入库日期" align="center" prop="recptDate" width="180">
         <template slot-scope="scope">
@@ -123,7 +122,7 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-delete"
+            icon="el-icon-video-play"
             v-if="scope.row.status =='PREPARE'"
             @click="handleExecute(scope.row)"
             v-hasPermi="['mes:wm:itemrecpt:edit']"
@@ -211,14 +210,6 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="来料检验单" prop="iqcCode">
-              <el-input v-model="form.iqcCode" readonly="readonly" placeholder="请选择来料检验单" >
-                <el-button slot="append" @click="handleSelectIqc" icon="el-icon-search"></el-button>
-              </el-input>
-              <IqcSelect ref="iqcSelect" @onSelected="onIqcSelected"></IqcSelect>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="供应商" prop="vendorName">
               <el-input v-model="form.vendorName" readonly="readonly" placeholder="请选择供应商" >
                 <el-button slot="append" @click="handleSelectVendor" icon="el-icon-search"></el-button>
@@ -235,6 +226,9 @@
               >                  
               </el-cascader>
             </el-form-item>
+          </el-col>
+          <el-col :span="8">
+
           </el-col>
         </el-row>               
         <el-row>
@@ -445,7 +439,6 @@ export default {
       this.reset();
       const recptIds = row.recptId
       getItemrecpt(recptIds).then(response => {
-        debugger;
         this.form = response.data;
         this.warehouseInfo[0] = response.data.warehouseId;    
         this.warehouseInfo[1] = response.data.locationId;    

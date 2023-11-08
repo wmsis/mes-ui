@@ -8,7 +8,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['mes:wm:productsalseline:add']"
+          v-hasPermi="['mes:wm:productsalse:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -19,7 +19,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['mes:wm:productsalseline:edit']"
+          v-hasPermi="['mes:wm:productsalse:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -30,7 +30,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['mes:wm:productsalseline:remove']"
+          v-hasPermi="['mes:wm:productsalse:remove']"
         >删除</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -47,6 +47,12 @@
       <el-table-column label="仓库名称" align="center" prop="warehouseName" />
       <el-table-column label="库区名称" align="center" prop="locationName" />
       <el-table-column label="库位名称" align="center" prop="areaName" />
+      <el-table-column label="是否检验" align="center" prop="iqcCheck">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.oqcCheck"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="检验单编号" width="120" align="center" prop="oqcCode" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -56,7 +62,7 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-if="optType != 'view'"
-            v-hasPermi="['mes:wm:productsalseline:remove']"
+            v-hasPermi="['mes:wm:productsalse:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -135,6 +141,35 @@
           </el-col>
         </el-row>
         <el-row>
+          <el-col :span="8">
+            <el-form-item label="是否检验">
+              <el-radio-group v-model="form.oqcCheck" disabled v-if="optType=='view'">
+                <el-radio
+                  v-for="dict in dict.type.sys_yes_no"
+                  :key="dict.value"
+                  :label="dict.value"
+                >{{dict.label}}</el-radio>
+              </el-radio-group>
+
+              <el-radio-group v-model="form.oqcCheck" v-else>
+                <el-radio
+                  v-for="dict in dict.type.sys_yes_no"
+                  :key="dict.value"
+                  :label="dict.value"
+                >{{dict.label}}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item v-if="form.oqcCheck == 'Y'" label="出货检验单" prop="oqcCode">
+              <el-input v-model="form.oqcCode" placeholder="请输入出货检验单" >
+                <el-button slot="append" @click="handleSelectOqc" icon="el-icon-search"></el-button>
+              </el-input>
+            </el-form-item>
+            <OqcSelectSingle ref="oqcSelect" @onSelected="onOqcSelected"></OqcSelectSingle>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="24">
             <el-form-item label="备注" prop="remark">
               <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -153,9 +188,11 @@
 <script>
 import { listProductsalseline, getProductsalseline, delProductsalseline, addProductsalseline, updateProductsalseline } from "@/api/mes/wm/productsalseline";
 import StockSelect from "@/components/stockSelect/single.vue"
+import OqcSelectSingle from "@/components/oqcSelect/single.vue"
 export default {
   name: "Productsalseline",
-  components: {StockSelect},
+  dicts: ['sys_yes_no'],
+  components: {StockSelect,OqcSelectSingle},
   props: {
     salseId: null,
     optType: null,
@@ -271,6 +308,9 @@ export default {
         areaId: this.areaId,
         areaCode: null,
         areaName: null,
+        oqcCheck: 'N',
+        oqcId: null,
+        oqcCode: null,
         remark: null,
         attr1: null,
         attr2: null,
@@ -379,6 +419,17 @@ export default {
           this.form.areaName = obj.areaName;
           this.form.quantitySalse = obj.quantityOnhand;
           this.form.quantityMax = obj.quantityOnhand;
+        }
+    },
+    //OQC检验单选择
+    handleSelectOqc(){
+      this.$refs.oqcSelect.showFlag = true;
+    },
+    //OQC检验单选择弹出框
+    onOqcSelected(obj){
+        if(obj != undefined && obj != null){
+          this.form.oqcId = obj.oqcId;
+          this.form.oqcCode = obj.oqcCode;
         }
     },
   }
