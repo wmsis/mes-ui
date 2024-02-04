@@ -25,13 +25,13 @@
                     >{{scope.row.workorderCode}}</el-button>
                     </template>
                 </el-table-column>
-                <el-table-column label="订单编号" width="140" align="center" prop="sourceCode" />            
+                <el-table-column label="订单编号" width="140" align="center" prop="sourceCode" v-if="false"/>            
                 <el-table-column label="客户名称" align="center" prop="clientName" :show-overflow-tooltip="true"/>
-                <el-table-column label="产品编号" width="120" align="center" prop="productCode" />
+                <el-table-column label="产品编号" width="120" align="center" prop="productCode"  v-if="false"/>
                 <el-table-column label="产品名称" width="250px" align="center" prop="productName" :show-overflow-tooltip="true"/>
                 <el-table-column label="规格型号" align="center" prop="productSpc" :show-overflow-tooltip="true"/>
                 <el-table-column label="单位" align="center" prop="unitOfMeasure" />
-                <el-table-column label="生产进度" align="center" width="200px" >
+                <el-table-column label="生产进度" align="center" width="300px" >
                     <template slot-scope="scope">
                         <el-progress :text-inside="true" :stroke-width="20" :percentage="parseFloat(((scope.row.quantityProduced/scope.row.quantity*100).toFixed(2)))"></el-progress>
                     </template>

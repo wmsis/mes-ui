@@ -79,8 +79,8 @@ export default {
       }
       
       // 1.2 表格列设置
-      gantt.config.duration_unit="hour";
-      gantt.config.duration_step=8;
+      gantt.config.duration_unit="day";//设置持续时间单位
+      gantt.config.duration_step=1;     //设置与“duration”数据属性的一个单位对应的“gantt.config.duration_unit”单位数
       gantt.config.grid_width=520;
       gantt.config.columns = [
         {name:"text", label:"任务名", tree:true, width:'200' },
@@ -101,7 +101,6 @@ export default {
         }
       };
 
-
       // 1.5 初始化的时候就展开树结构
       gantt.config.open_tree_initially = true;
       // 1.6 显示到任务上的文本
@@ -117,13 +116,6 @@ export default {
       gantt.config.show_task_cells = true;
 
       // 2 时间配置
-      // 2.1 时间坐标轴单位 minute/hour/day/week/quarter/month/year
-     // gantt.config.scale_unit = "hour";
-      // 2.2 日期格式
-     // gantt.config.date_scale = "%H";
-      // 2.3 时间坐标为月份的时候  先显示年份再月份
-     // gantt.config.subscales = [{unit: "month", step: 1, date: "%Y,%F"}];
-      
       var weekScaleTemplate = function (date) {
         var dateToStr = gantt.date.date_to_str("%M %d");
         var endDate = gantt.date.add(gantt.date.add(date, 1, "week"), -1, "day");
@@ -133,58 +125,28 @@ export default {
       var dayTemplate = function(date){
         var dateToStr = gantt.date.date_to_str("%M %d");
         var weekDay = gantt.date.date_to_str("%D");
-        return dateToStr(date); + "(" + weekDay(date) + ")";
+        return dateToStr(date) + "(" + weekDay(date) + ")";
       };
 
       var daysStyle = function(date){
-          // you can use gantt.isWorkTime(date)
-          // when gantt.config.work_time config is enabled
-          // In this sample it's not so we just check week days
-
           if(date.getDay() === 0 || date.getDay() === 6){
             return "weekend";
           }
           return "";
-        };
+      };
 
       gantt.config.scales =[
-        {unit:"week", step:1,format: weekScaleTemplate},
-        {unit:"day", step:1,format: dayTemplate,css: daysStyle},
+        {unit:"week", step:1,format: weekScaleTemplate},          //星期刻度样式
+        {unit:"day", step:1,format: dayTemplate,css: daysStyle},  //天刻度样式
         {unit:"hour", step:8,format: "%H:%i"}, //这里的step要根据当前的班次设置来。如果是三班倒则是8，如果是两班倒则是12。
       ]
       
-      gantt.config.scale_height = 50;
+      gantt.config.scale_height = 50; //甘特图表头高度
 
       // 2.4 定义从后端获取或发送到后端的日期数据解析格式
       gantt.config.xml_date = "%Y-%m-%d %H:%i:%s";
 
-      // 3 拖动配置
-      // 3.1 自动调整类型,当存在子节点时自动升级为project
-      gantt.config.auto_types = false;
-      // 3.2 设置不可以拖动进度
-      gantt.config.drag_progress = false;
-      // 3.3 设置Task不可以拖动
-      gantt.config.drag_move = true;
-      // 3.4 设置不可以拖动关系
-      gantt.config.drag_links = false;
-      // 3.5 设置不可拖动Task 大小
-      gantt.config.drag_resize = true;
-      // 3.6 单击显示添加详情
-      gantt.config.details_on_create = true;
-      // 3.7 双击显示明细
-      gantt.config.details_on_dblclick = true;
-      //时间范围自动适应
-      gantt.config.fit_tasks = true;
-
-      let t = this.$props.tasks;
-      let c = this.$props.ids;
-      gantt.attachEvent("onAfterTaskUpdate",function(id,obj){
-        debugger;
-        let tt = t.data.filter( item=> item.id == id);
-        tt=obj;  
-        c.push(id);              
-      });
-
+      
 
     }
   }
@@ -197,11 +159,11 @@ export default {
   .gantt_tree_icon.gantt_file, .gantt_tree_icon.gantt_folder_open, .gantt_tree_icon.gantt_folder_closed{width: 10px; background-image: none;}
   /* 任务线 */
   .gantt_task_line{
-    height: 16px !important;
+    /* height: 16px !important;
     line-height: 16px !important;
     margin-top: 8px;
     border: none !important;
-    border-radius: 8px;
+    border-radius: 8px; */
   }
   .gantt_task_line.gantt_milestone{border-radius: 0;}
   /* 里程碑 */
