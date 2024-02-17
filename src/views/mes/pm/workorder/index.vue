@@ -285,7 +285,12 @@ export default {
       getWorkorder(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.optType = "edit";
+        if(this.form.status != 'FINISHED'){
+          this.optType = "edit";
+        }
+        else{
+          this.optType = "view";
+        }
         this.title = "修改设计工单";
       });
     },

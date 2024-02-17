@@ -10,7 +10,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="enableFlag">
-        <el-select v-model="queryParams.enableFlag" placeholder="项目状态" clearable>
+        <el-select v-model="queryParams.enableFlag" placeholder="开启状态" clearable>
           <el-option
             v-for="dict in dict.type.sys_yes_no"
             :key="dict.value"
@@ -54,7 +54,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="orderNum" label="排序" width="80"></el-table-column>
-      <el-table-column prop="enableFlag" label="状态" width="80">
+      <el-table-column prop="enableFlag" label="开启状态" width="80">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.enableFlag"/>
         </template>
@@ -128,7 +128,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="项目状态">
+            <el-form-item label="开启状态">
               <el-radio-group v-model="form.enableFlag">
                 <el-radio
                   v-for="dict in dict.type.sys_yes_no"
