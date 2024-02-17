@@ -57,6 +57,11 @@
               <dict-tag :options="dict.type.workorder_type" :value="scope.row.type" />
             </template>
           </el-table-column>
+          <el-table-column label="单据状态" align="center" prop="status">
+            <template slot-scope="scope">
+              <dict-tag :options="dict.type.mes_order_status" :value="scope.row.status" />
+            </template>
+          </el-table-column>
           <el-table-column label="机柜附件" align="center" prop="file" v-if="false" />
           <el-table-column label="是否启用" align="center" prop="enableFlag">
             <template slot-scope="scope">
@@ -129,7 +134,7 @@ import Bomlist from "./bomlist";
 
 export default {
   name: "Workorder",
-  dicts: ['sys_yes_no', 'workorder_type'],
+  dicts: ['sys_yes_no', 'workorder_type', 'mes_order_status'],
   components: { Treeselect, Bomlist },
   data() {
     return {
@@ -293,7 +298,7 @@ export default {
         this.title = "修改设计工单";
       });
     },
-    handleFinish(row){
+    handleFinish(row) {
       const workorderIds = row.workorderId || this.ids;
       this.$modal.confirm('确认完成工单？').then(function() {
         return dofinish(workorderIds) //完成工单
