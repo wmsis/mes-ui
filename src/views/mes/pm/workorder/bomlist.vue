@@ -32,7 +32,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['mes:pro:workorder:remove']"
+          v-hasPermi="['mes:pm:workorder:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -42,7 +42,7 @@
           icon="el-icon-top"
           size="mini"
           @click="handleImport"
-          v-hasPermi="['pm:workorder:edit']"
+          v-hasPermi="['mes:pm:workorder:edit']"
         >导入</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -55,7 +55,7 @@
           <el-button
             type="text"
             @click="handleView(scope.row)"
-            v-hasPermi="['pm:workorder:query']"
+            v-hasPermi="['mes:pm:workorder:query']"
           >{{scope.row.itemCode}}</el-button>
         </template>
       </el-table-column>
@@ -69,14 +69,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['pm:workorder:edit']"
+            v-hasPermi="['mes:pm:workorder:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['pm:workorder:remove']"
+            v-hasPermi="['mes:pm:workorder:remove']"
           >删除</el-button>
         </template>
       </el-table-column>

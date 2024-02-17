@@ -36,13 +36,13 @@
         </el-form>
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
-            <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['pm:workorder:add']">新增</el-button>
+            <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['mes:pm:workorder:add']">新增</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['pm:workorder:edit']">修改</el-button>
+            <el-button type="success" plain icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['mes:pm:workorder:edit']">修改</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete" v-hasPermi="['pm:workorder:remove']">删除</el-button>
+            <el-button type="danger" plain icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete" v-hasPermi="['mes:pm:workorder:remove']">删除</el-button>
           </el-col>
           <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
         </el-row>
@@ -57,24 +57,24 @@
               <dict-tag :options="dict.type.workorder_type" :value="scope.row.type" />
             </template>
           </el-table-column>
-          <el-table-column label="机柜附件" align="center" prop="file" v-if="false"/>
+          <el-table-column label="机柜附件" align="center" prop="file" v-if="false" />
           <el-table-column label="是否启用" align="center" prop="enableFlag">
             <template slot-scope="scope">
               <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.enableFlag" />
             </template>
           </el-table-column>
-          <el-table-column label="备注" align="center" prop="remark" v-if="false"/>
+          <el-table-column label="备注" align="center" prop="remark" v-if="false" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['pm:workorder:edit']">修改</el-button>
-              <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['pm:workorder:remove']">删除</el-button>
+              <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['mes:pm:workorder:edit']">修改</el-button>
+              <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['mes:pm:workorder:remove']">删除</el-button>
+              <el-button size="mini" type="text" icon="el-icon-circle-check" v-if="scope.row.status =='CONFIRMED'" @click="handleFinish(scope.row)" v-hasPermi="['mes:pm:workorder:update']">完成</el-button>
             </template>
           </el-table-column>
         </el-table>
         <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize" @pagination="getList" />
       </el-col>
     </el-row>
-
     <!-- 添加或修改设计工单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="1000px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -102,7 +102,7 @@
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
-      <el-tabs type="border-card" v-if="form.id != null">        
+      <el-tabs type="border-card" v-if="form.id != null">
         <el-tab-pane label="采购BOM">
           <Bomlist v-if="form.id !=null" :optType="optType" :workorderId="form.id"></Bomlist>
         </el-tab-pane>
@@ -121,7 +121,7 @@
   </div>
 </template>
 <script>
-import { listWorkorder, getWorkorder, delWorkorder, addWorkorder, updateWorkorder } from "@/api/mes/pm/workorder";
+import { listWorkorder, getWorkorder, delWorkorder, addWorkorder, updateWorkorder, dofinish } from "@/api/mes/pm/workorder";
 import { treeselect } from "@/api/mes/pm/tree";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -285,14 +285,22 @@ export default {
       getWorkorder(id).then(response => {
         this.form = response.data;
         this.open = true;
-        if(this.form.status != 'FINISHED'){
+        if (this.form.status != 'FINISHED') {
           this.optType = "edit";
-        }
-        else{
+        } else {
           this.optType = "view";
         }
         this.title = "修改设计工单";
       });
+    },
+    handleFinish(row){
+      const workorderIds = row.workorderId || this.ids;
+      this.$modal.confirm('确认完成工单？').then(function() {
+        return dofinish(workorderIds) //完成工单
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("更改成功");
+      }).catch(() => {});
     },
     /** 提交按钮 */
     submitForm() {

@@ -43,6 +43,13 @@ export function delWorkorder(id) {
   })
 }
 
+export function dofinish(workorderId){
+  return request({
+    url: '/pm/workorder/'+workorderId,
+    method: 'put'
+  })
+}
+
 // 查询设计工单采购BOM列表
 export function listWorkorderBom(query) {
   return request({
