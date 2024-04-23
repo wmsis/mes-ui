@@ -19,7 +19,7 @@
           <el-form-item label="机柜编号" prop="code">
             <el-input v-model="queryParams.code" placeholder="请输入机柜编号" clearable @keyup.enter.native="handleQuery" />
           </el-form-item>
-          <el-form-item label="工单类型" prop="type">
+          <el-form-item label="工单类型" prop="type" v-if="false">
             <el-select v-model="queryParams.type" placeholder="请选择工单类型" clearable>
               <el-option v-for="dict in dict.type.workorder_type" :key="dict.value" :label="dict.label" :value="dict.value" />
             </el-select>
@@ -52,7 +52,7 @@
           <el-table-column label="子任务ID" align="center" prop="childtaskId" />
           <el-table-column label="机柜名称" align="center" prop="name" />
           <el-table-column label="机柜编号" align="center" prop="code" />
-          <el-table-column label="工单类型" align="center" prop="type">
+          <el-table-column label="工单类型" align="center" prop="type" v-if="false">
             <template slot-scope="scope">
               <dict-tag :options="dict.type.workorder_type" :value="scope.row.type" />
             </template>
@@ -90,7 +90,7 @@
         <el-form-item label="机柜名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入机柜名称" />
         </el-form-item>
-        <el-form-item label="工单类型" prop="type">
+        <el-form-item label="工单类型" prop="type" v-if="false">
           <el-select v-model="form.type" placeholder="请选择工单类型">
             <el-option v-for="dict in dict.type.workorder_type" :key="dict.value" :label="dict.label" :value="parseInt(dict.value)"></el-option>
           </el-select>
@@ -185,9 +185,6 @@ export default {
         ],
         name: [
           { required: true, message: "机柜名称不能为空", trigger: "blur" }
-        ],
-        type: [
-          { required: true, message: "工单类型不能为空", trigger: "change" }
         ]
       }
     };
